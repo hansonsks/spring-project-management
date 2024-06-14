@@ -42,7 +42,7 @@ public class Task {
     @JoinColumn(name = "state_id")
     private State state;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private ToDo todo;
 }

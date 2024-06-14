@@ -73,6 +73,6 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<ToDo> todoList = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "collaborators", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "collaborators", fetch = FetchType.LAZY)
     private List<ToDo> collaborators = new ArrayList<>();
 }

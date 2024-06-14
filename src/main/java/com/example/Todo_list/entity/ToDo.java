@@ -51,7 +51,7 @@ public class ToDo {
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.REMOVE)
     private List<Task> tasks = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "todos_collaborators",
             joinColumns = @JoinColumn(name = "todo_id"),
