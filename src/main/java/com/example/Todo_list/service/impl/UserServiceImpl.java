@@ -1,9 +1,7 @@
 package com.example.Todo_list.service.impl;
 
-import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.exception.NullEntityException;
-import com.example.Todo_list.repository.RoleRepository;
 import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -48,6 +46,19 @@ public class UserServiceImpl implements UserService {
         } else {
             logger.error("UserService.findUserById(): No User with userId=" + id + " was found");
             throw new EntityNotFoundException("No User with userId=" + id + " was found");
+        }
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isPresent()) {
+            logger.info("UserService.findUserByEmail(): Found " + user.get());
+            return user.get();
+        } else {
+            logger.error("UserService.findUserByEmail(): No User with email=" + email + " was found");
+            throw new EntityNotFoundException("No User with email=" + email + " was found");
         }
     }
 

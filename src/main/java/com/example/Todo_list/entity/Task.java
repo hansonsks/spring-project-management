@@ -27,6 +27,7 @@ public class Task {
     )
     private String name;
 
+    @NotBlank(message = "Your task's description must not be empty")
     @Column(name = "description")
     @Size(
             max = 255,

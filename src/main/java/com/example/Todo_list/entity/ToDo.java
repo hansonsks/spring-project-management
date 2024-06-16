@@ -43,12 +43,11 @@ public class ToDo {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @NotBlank(message = "The creation date must not be empty")
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "toDo", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
     private List<Task> tasks = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)

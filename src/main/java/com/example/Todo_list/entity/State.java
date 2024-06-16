@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = {"tasks"})
 @EqualsAndHashCode(of = "id")
 @Table(name = "states")
 public class State {

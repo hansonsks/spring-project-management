@@ -1,9 +1,7 @@
 package com.example.Todo_list.service.impl;
 
-import com.example.Todo_list.entity.State;
 import com.example.Todo_list.entity.Task;
 import com.example.Todo_list.exception.NullEntityException;
-import com.example.Todo_list.repository.StateRepository;
 import com.example.Todo_list.repository.TaskRepository;
 import com.example.Todo_list.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
@@ -54,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTaskOfToDo(Long todoId) {
+    public List<Task> findAllTaskOfToDo(Long todoId) {
         logger.info("TaskService.getAllTaskOfToDo(): Finding all tasks by todoId" + todoId);
         return taskRepository.findByTodoId(todoId);
     }
