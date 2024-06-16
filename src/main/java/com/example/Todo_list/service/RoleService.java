@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface RoleService {
 
+    Role findRoleById(Long id);
+
     Role findRoleByName(String name);
 
     void deleteRoleByName(String name);

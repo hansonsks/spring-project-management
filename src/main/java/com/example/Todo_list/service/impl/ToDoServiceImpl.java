@@ -57,13 +57,13 @@ public class ToDoServiceImpl implements ToDoService {
 
     @Override
     public List<ToDo> findAllToDo() {
-        logger.info("ToDoService.getAllToDo(): Finding all ToDos");
+        logger.info("ToDoService.findAllToDo(): Finding all ToDos");
         return toDoRepository.findAll();
     }
 
     @Override
     public List<ToDo> findAllToDoOfUserId(Long userId) {
-        logger.info("ToDoService.getAllToDoOfUserId(): Finding all ToDos of ownerId/userId=" + userId);
+        logger.info("ToDoService.findAllToDoOfUserId(): Finding all ToDos of ownerId/userId=" + userId);
         return toDoRepository.findTodoByOwnerId(userId);
     }
 

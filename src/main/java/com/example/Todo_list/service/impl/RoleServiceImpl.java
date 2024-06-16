@@ -20,6 +20,19 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
+    public Role findRoleById(Long id) {
+        Optional<Role> role = roleRepository.findById(id);
+
+        if (role.isPresent()) {
+            logger.info("RoleService.findRoleById(): Found " + role.get());
+            return role.get();
+        } else {
+            logger.error("RoleService.findRoleById(): No Role with id=" + id + " was found");
+            throw new EntityNotFoundException("No Role with id=" + id + " was found");
+        }
+    }
+
+    @Override
     public Role findRoleByName(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Cannot find Role with null or empty name");
