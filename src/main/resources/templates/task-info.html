@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{header}"></div>
+<div class="col-md-offset-2">
+    <div>
+        <h2>Task</h2>
+        <table class="table">
+            <tr>
+                <td>Id:</td>
+                <td>
+                    <b th:text="${task.id}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>Name:</td>
+                <td>
+                    <b th:text="${task.name}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>Description:</td>
+                <td>
+                    <b th:text="${task.description}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>Priority:</td>
+                <td>
+                    <b th:text="${task.priority}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>State:</td>
+                <td>
+                    <b th:text="${task.state}"></b>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <a class="btn btn-info" th:href="@{|/users/${task.id}/todos/${task.toDoId}/update|}">Edit</a>
+            <a class="btn btn-info" th:href="@{|/users/${task.id}/delete|}">Remove</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
