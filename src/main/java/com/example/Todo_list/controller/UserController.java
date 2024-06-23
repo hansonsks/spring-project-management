@@ -1,23 +1,20 @@
 package com.example.Todo_list.controller;
 
-import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.service.RoleService;
 import com.example.Todo_list.service.UserService;
-import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +24,7 @@ public class UserController {
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordService passwordService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/create")
     public String showUserRegistrationForm(Model model) {
@@ -68,7 +65,7 @@ public class UserController {
         return String.format("redirect:/todos/all/users/%d", newUser.getId());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
+    @PreAuthorize("hasAuthority('ADMIN') or #id==authentication.principal.id")
     @GetMapping("/{id}/read")
     public String displayUserInfo(@PathVariable Long id, Model model) {
         User user = userService.findUserById(id);
@@ -77,7 +74,7 @@ public class UserController {
         return "user-info";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
+    @PreAuthorize("hasAuthority('ADMIN') or #id==authentication.principal.id")
     @GetMapping("/{id}/update")
     public String showUserUpdatePage(@PathVariable Long id, Model model) {
         User user = userService.findUserById(id);
@@ -87,7 +84,7 @@ public class UserController {
         return "user-update";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
+    @PreAuthorize("hasAuthority('ADMIN') or #id==authentication.principal.id")
     @PostMapping("/{id}/update")
     public String updateUser(
             @PathVariable Long id,
@@ -115,7 +112,7 @@ public class UserController {
             return "user-update?error=true";
         }
 
-        if (!passwordService.matches(oldPassword, oldUser.getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {
             logger.error("UserController.updateUser(): Incorrect old password");
             result.rejectValue("password", "error.password", "Old password does not match");
             user.setRole(oldUser.getRole());
@@ -126,7 +123,7 @@ public class UserController {
         logger.info("UserController.updateUser(): Updating " + user);
 
         user.setRole(roleService.findRoleById(roleId));
-        user.setPassword(passwordService.encodePassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.updateUser(user);
 
         if (!oldRole.equals(user.getRole())) {

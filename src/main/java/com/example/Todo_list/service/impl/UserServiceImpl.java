@@ -2,29 +2,25 @@ package com.example.Todo_list.service.impl;
 
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.exception.NullEntityException;
-import com.example.Todo_list.repository.OAuthUserRepository;
 import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.service.UserService;
-import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
-    private final OAuthUserRepository oAuthUserRepository;
-    private final PasswordService passwordService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User save(User user) {
@@ -34,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         logger.info("UserService.save(): Encrypting user password...");
-        user.setPassword(passwordService.encodePassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         logger.info("UserService.save(): Saving " + user);
         return userRepository.save(user);
@@ -82,7 +78,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Long id) {
         User user = this.findUserById(id);
         logger.info("UserService.deleteUserById(): Deleting " + user);
-        oAuthUserRepository.deleteByUser(user);
         userRepository.delete(user);
     }
 

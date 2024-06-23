@@ -5,7 +5,6 @@ import com.example.Todo_list.exception.NullEntityException;
 import com.example.Todo_list.repository.StateRepository;
 import com.example.Todo_list.service.StateService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class StateServiceImpl implements StateService {
 

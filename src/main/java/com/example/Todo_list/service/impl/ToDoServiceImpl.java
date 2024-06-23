@@ -8,7 +8,6 @@ import com.example.Todo_list.repository.ToDoRepository;
 import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.service.ToDoService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ToDoServiceImpl implements ToDoService {
 
