@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>List of Users</title>
+    <style>
+        .role-box {
+            padding: 5px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .admin {
+            background-color: #FFCCCB;
+            color: red;
+        }
+
+        .user {
+            background-color: #90EE90;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{header}"></div>
+<div class="container mt-4">
+    <h2 class="mb-3">List of Users</h2>
+    <div class="row mb-3">
+        <div class="col-md-12 text-right">
+            <a th:href="@{/users/create}" class="btn btn-primary btn-lg" sec:authorize="hasAuthority('ADMIN')" >Create New User</a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">No.</th>
+            <th scope="col">Id</th>
+            <th scope="col">Full name</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Role</th>
+            <th scope="col" colspan="2">Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, iStat: ${users}">
+            <th scope="row" th:text="${iStat.index + 1}"/>
+            <td th:text="${user.id}"/>
+            <td>
+                <a th:href="@{|/todos/all/users/${user.id}|}" th:text="${user.firstName + ' ' + user.lastName}"/>
+            </td>
+            <td th:text="${user.email}"/>
+            <td th:class="'role-box ' + ${user.role.name.toLowerCase()}" th:text="${user.role.name.substring(0, 1) + user.role.name.substring(1).toLowerCase()}"/>
+            <td>
+                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{|/users/${user.id}/update|}" class="btn btn-warning btn-sm">Edit User</a>
+            </td>
+            <td>
+                <a sec:authorize="hasAuthority('ADMIN') and #authentication.principal.id != #vars.user.id" th:href="@{|/users/${user.id}/delete|}" class="btn btn-danger btn-sm">Remove User</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

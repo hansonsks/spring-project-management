@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>User Details</title>
+</head>
+<body>
+<div th:replace="~{header}"></div>
+<div class="container mt-4">
+    <h2 class="mb-3">User Details</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-3">Id:</dt>
+                <dd class="col-sm-9" th:text="${user.id}"></dd>
+                <dt class="col-sm-3">First name:</dt>
+                <dd class="col-sm-9" th:text="${user.firstName}"></dd>
+                <dt class="col-sm-3">Last name:</dt>
+                <dd class="col-sm-9" th:text="${user.lastName}"></dd>
+                <dt class="col-sm-3">E-mail:</dt>
+                <dd class="col-sm-9" th:text="${user.email}"></dd>
+                <dt class="col-sm-3">Role:</dt>
+                <dd class="col-sm-9"
+                    th:text="${user.role.name.substring(0, 1) + user.role.name.substring(1).toLowerCase()}">
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 text-left">
+            <a th:href="@{|/users/${user.id}/update|}" class="btn btn-warning btn-lg">Edit Account</a>
+        </div>
+        <div class="col-md-12 text-left" sec:authorize="hasAuthority('ADMIN') and #authentication.principal.id!=#vars.user.id">
+            <a th:href="@{|/users/${user.id}/delete|}" class="btn btn-danger btn-lg">Delete Account</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
