@@ -7,7 +7,7 @@
 
     <style>
       .trivial {
-        background-color: lightblue;,
+        background-color: lightblue;
       }
 
       .low {
@@ -57,7 +57,7 @@
         <div class="col-md-12 text-right">
             <form class="form-inline" th:action="@{|/tasks/create/todos/${todo.id}|}" method="get">
                 <button sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.todo.getOwner().id"
-                        type="submit" class="btn btn-primary ">Create Task</button>
+                        type="submit" class="btn btn-primary">Create Task</button>
             </form>
         </div>
     </div>
@@ -105,7 +105,6 @@
                 <div class="col-md-8">
                     <form class="form-inline" th:action="@{/todos/{id}/add(id = ${todo.id})}" method="get"
                           sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.todo.getOwner().id">
-                        <input type="hidden" name="user_id" value="-1">
                         <select class="form-control" name="user_id" id="users">
                             <option value="-1">Select Collaborator...</option>
                             <option th:each="user : ${users}" th:value="${user.id}"

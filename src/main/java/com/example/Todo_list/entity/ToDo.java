@@ -32,6 +32,7 @@ public class ToDo {
     )
     private String title;
 
+    @NotBlank(message = "Your TODO description must not be empty")
     @Column(name = "description", nullable = false)
     @Size(
             max = 255,

@@ -1,12 +1,12 @@
 package com.example.Todo_list.controller;
 
-import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.service.RoleService;
 import com.example.Todo_list.service.UserService;
 import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class UserController {
 
     @PostMapping("/create")
     public String createUser(
-            @Validated @ModelAttribute("user") User user,
+            @Valid @ModelAttribute("user") User user,
             BindingResult result
     ) {
         logger.info("UserController.createUser(): Attempting to create user");
@@ -94,7 +91,7 @@ public class UserController {
             @RequestParam("roleId") Long roleId,
             @RequestParam("oldPassword") String oldPassword,
             Model model,
-            @Validated @ModelAttribute("user") User user,
+            @Valid @ModelAttribute("user") User user,
             BindingResult result
     ) {
         User oldUser = userService.findUserById(id);
@@ -118,6 +115,7 @@ public class UserController {
         if (!passwordService.matches(oldPassword, oldUser.getPassword())) {
             logger.error("UserController.updateUser(): Incorrect old password");
             result.rejectValue("password", "error.password", "Old password does not match");
+
             user.setRole(oldUser.getRole());
             model.addAttribute("roles", roleService.findAllRoles());
             return String.format("redirect:/users/%d/update?incorrectOldPassword=true", id);
@@ -129,10 +127,8 @@ public class UserController {
         user.setPassword(passwordService.encodePassword(user.getPassword()));
         userService.updateUser(user);
 
-        if (!oldRole.equals(user.getRole())) {
-            return "redirect:/logout";
-        }
-        return String.format("redirect:/users/%d/read", id);
+        return "redirect:/logout";
+        // return String.format("redirect:/users/%d/read", id);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') and #userId != authentication.principal.id")

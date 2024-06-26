@@ -22,8 +22,8 @@ public class User {
 
     @NotBlank(message = "Your first name must not be empty")
     @Pattern(
-            regexp = "[A-Z][a-z]+",
-            message = "Your first name must begin with a capital letter and contain letters only"
+            regexp = "[a-zA-Z]+",
+            message = "Your first name must contain letters only"
     )
     @Column(name = "first_name", nullable = false)
     @Size(
@@ -33,22 +33,19 @@ public class User {
     )
     private String firstName;
 
-    @NotBlank(message = "Your last name must not be empty")
     @Pattern(
-            regexp = "[A-Z][a-z]+",
-            message = "Your last name must begin with a capital letter and contain letters only"
+            regexp = "[a-zA-Z]*",
+            message = "Your last name must contain letters only"
     )
     @Column(name = "last_name", nullable = false)
     @Size(
-            min = 3,
             max = 255,
             message = "Your last name must have a minimum of 3 characters and a maximum of 255 characters"
     )
     private String lastName;
 
     @Email
-    @NotBlank(message = "Your email must not be empty")
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", unique = true)
     @Size(max = 255, message = "Your email must not exceed 255 characters")
     private String email;
 
@@ -58,7 +55,7 @@ public class User {
             message = "Your password must contain at least 8 characters, one uppercase letter, one lowercase letter, " +
                     "one digit, and one special character"
     )
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     @Size(
             min = 8,
             max = 255,
