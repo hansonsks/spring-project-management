@@ -26,6 +26,10 @@ public class WebSecurityUserDetails implements UserDetails {
         this.authorities = List.of(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 
+    public boolean isGitHubConnected() {
+        return false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
