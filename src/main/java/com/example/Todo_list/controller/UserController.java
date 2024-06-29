@@ -62,7 +62,7 @@ public class UserController {
 
         user.setRole(roleService.findRoleByName("USER"));
         User newUser = userService.save(user);
-        return String.format("redirect:/todos/all/users/%d", newUser.getId());
+        return "redirect:/login-form?signUpSuccess=true";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -91,41 +91,61 @@ public class UserController {
             @RequestParam("roleId") Long roleId,
             @RequestParam("oldPassword") String oldPassword,
             Model model,
-            @Valid @ModelAttribute("user") User user,
+            @Valid @ModelAttribute("user") User newUser,
             BindingResult result
     ) {
         User oldUser = userService.findUserById(id);
-        Role oldRole = oldUser.getRole();
+        newUser.setRole(roleService.findRoleById(roleId));
+        System.out.println(roleId);
 
         logger.info("UserController.updateUser(): Attempting to update " + oldUser);
 
         if (result.hasErrors()) {
-            user.setRole(oldUser.getRole());
+            newUser.setRole(oldUser.getRole());
             model.addAttribute("roles", roleService.findAllRoles());
+
+            if (result.hasFieldErrors("firstName")) {
+                logger.error("UserController.updateUser(): Your first name must contain letters only and" +
+                             "have a minimum of 3 characters and a maximum of 255 characters");
+                return String.format("redirect:/users/%d/update?badFirstName=true", id);
+            }
+
+            if (result.hasFieldErrors("lastName")) {
+                logger.error("UserController.updateUser(): Your last name must contain letters only and " +
+                             "have a maximum of 255 characters");
+                return String.format("redirect:/users/%d/update?badLastName=true", id);
+            }
 
             if (result.hasFieldErrors("password")) {
                 logger.error("UserController.updateUser(): Password too weak");
                 return String.format("redirect:/users/%d/update?weakNewPassword=true", id);
             }
 
-            logger.error("UserController.updateUser(): Error found in data received, aborting user update");
-            return "user-update?error=true";
+            if (result.hasFieldErrors("email")) {
+                logger.error("UserController.updateUser(): Invalid email");
+                return String.format("redirect:/users/%d/update?badEmail=true", id);
+            }
+
+            if (!passwordService.matches(oldPassword, oldUser.getPassword())) {
+                logger.error("UserController.updateUser(): Incorrect old password");
+                result.rejectValue("password", "error.password", "Old password does not match");
+
+                newUser.setRole(oldUser.getRole());
+                model.addAttribute("roles", roleService.findAllRoles());
+                return String.format("redirect:/users/%d/update?incorrectOldPassword=true", id);
+            }
+
+            if (newUser.getRole() == null) {
+                logger.error("UserController.updateUser(): Error found in data received, aborting user update");
+                return String.format("redirect:/users/%d/update?error=true", id);
+            }
         }
 
-        if (!passwordService.matches(oldPassword, oldUser.getPassword())) {
-            logger.error("UserController.updateUser(): Incorrect old password");
-            result.rejectValue("password", "error.password", "Old password does not match");
+        logger.info("UserController.updateUser(): Updating " + newUser);
 
-            user.setRole(oldUser.getRole());
-            model.addAttribute("roles", roleService.findAllRoles());
-            return String.format("redirect:/users/%d/update?incorrectOldPassword=true", id);
-        }
-
-        logger.info("UserController.updateUser(): Updating " + user);
-
-        user.setRole(roleService.findRoleById(roleId));
-        user.setPassword(passwordService.encodePassword(user.getPassword()));
-        userService.updateUser(user);
+        newUser.setRole(roleService.findRoleById(roleId));
+        newUser.setPassword(passwordService.encodePassword(newUser.getPassword()));
+        userService.updateUser(newUser);
 
         return "redirect:/logout";
         // return String.format("redirect:/users/%d/read", id);
@@ -134,14 +154,22 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') and #userId != authentication.principal.id")
     @GetMapping("/{user_id}/delete")
     public String deleteUser(@PathVariable("user_id") Long userId) {
-        logger.info("UserController.deleteUser(): Deleting user with userId=" + userId);
-        userService.deleteUserById(userId);
-        return "redirect:/users/all";
+        if (userService.findUserById(userId).getCollaborators().isEmpty()) {
+            logger.info("UserController.deleteUser(): Deleting user with userId=" + userId);
+            userService.deleteUserById(userId);
+            return "redirect:/users/all";
+        }
+
+        logger.error("UserController.deleteUser(): Unable to delete user with collaborators with userId= " + userId);
+        return String.format("redirect:/users/all?badDeleteUserId=%d", userId);
     }
 
     @GetMapping("/all")
-    public String showUserList(Model model) {
+    public String showUserList(Model model,
+                               @RequestParam(name = "badDeleteUserId", required = false) Long badDeleteUserId) {
         model.addAttribute("users", userService.findAllUser());
+        model.addAttribute("badDeleteUserId", badDeleteUserId);
+
         logger.info("UserController.showUserList(): Displaying all users");
         return "user-list";
     }
