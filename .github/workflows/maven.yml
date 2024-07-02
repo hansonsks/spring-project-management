@@ -21,7 +21,7 @@ jobs:
           cache: maven
       - name: Copy Test Configuration
         run: |
-          cp src/test/java/resources/application-test.properties application.properties
+          cp src/test/java/resources/application-test.properties src/main/java/resources/application.properties
       - name: Run Tests with Maven
         run: mvn -B test --file pom.xml
       - name: Update dependency graph
