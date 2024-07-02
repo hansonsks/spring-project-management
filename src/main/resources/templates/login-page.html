@@ -46,6 +46,13 @@
             margin-bottom: 10px;
         }
 
+        .signup-message {
+          background-color: rgba(0, 255, 0, 0.3);
+          border-radius: 5px;
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+
         .error-message {
             background-color: rgba(255, 0, 0, 0.25);
             border-radius: 5px;
@@ -80,6 +87,7 @@
     <div class="form-group">
       <button type="submit" class="btn btn-primary btn-block">Login</button>
     </div>
+    <div th:if="${param.signUpSuccess}" class="signup-message text-success text-center">Your account has been created. Please log in.</div>
     <div th:if="${param.logout}" class="logout-message text-success text-center">You have been logged out</div>
     <div th:if="${param.error}" class="error-message text-center">Invalid username or password</div>
     <div class="text-center mt-3">

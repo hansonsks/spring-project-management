@@ -38,7 +38,7 @@
             <th scope="col">No.</th>
             <th scope="col">Id</th>
             <th scope="col">Full name</th>
-            <th scope="col">E-mail</th>
+            <th sec:authorize="hasAuthority('ADMIN')" scope="col">E-mail</th>
             <th scope="col">Role</th>
             <th scope="col" colspan="2">Operations</th>
         </tr>
@@ -48,16 +48,26 @@
             <th scope="row" th:text="${iStat.index + 1}"/>
             <td th:text="${user.id}"/>
             <td>
-                <a th:href="@{|/todos/all/users/${user.id}|}" th:text="${user.firstName + ' ' + user.lastName}"/>
+                <span sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id == #vars.user.id">
+                    <a th:href="@{|/users/${user.id}/read|}" th:text="${user.firstName + ' ' + user.lastName}"/>
+                </span>
+                <span sec:authorize="!((hasAuthority('ADMIN') or #authentication.principal.id == #vars.user.id))">
+                    <span th:text="${user.firstName + ' ' + user.lastName}"/>
+                </span>
             </td>
-            <td th:text="${user.email}"/>
+            <td sec:authorize="hasAuthority('ADMIN')" th:text="${user.email}"/>
             <td th:class="'role-box ' + ${user.role.name.toLowerCase()}" th:text="${user.role.name.substring(0, 1) + user.role.name.substring(1).toLowerCase()}"/>
             <td>
-                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{|/users/${user.id}/update|}" class="btn btn-warning btn-sm">Edit User</a>
+                <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id == #vars.user.id" th:href="@{|/users/${user.id}/update|}" class="btn btn-warning btn-sm">Edit User</a>
             </td>
             <td>
                 <a sec:authorize="hasAuthority('ADMIN') and #authentication.principal.id != #vars.user.id" th:href="@{|/users/${user.id}/delete|}" class="btn btn-danger btn-sm">Remove User</a>
             </td>
+        </tr>
+        <tr th:if="${badDeleteUserId != null}">
+            <div th:class="'alert alert-danger mt-2'" role="alert">
+                This user cannot be deleted due to existing collaborations with other users.
+            </div>
         </tr>
         </tbody>
     </table>
