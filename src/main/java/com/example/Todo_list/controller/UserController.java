@@ -1,6 +1,5 @@
 package com.example.Todo_list.controller;
 
-import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.service.RoleService;
 import com.example.Todo_list.service.UserService;
