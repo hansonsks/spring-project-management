@@ -1,19 +1,44 @@
+-- PostgreSQL Does not have MySQL's CREATE EVENT feature
+-- To actually schedule this function to run at a specific time, you can use a cron job or a task scheduler
+
+CREATE OR REPLACE FUNCTION clear_and_reinitialize_tables()
+RETURNS VOID AS $$
+BEGIN
+    -- Disable foreign key checks
+SET CONSTRAINTS ALL DEFERRED;
+
+-- Truncate tables
+TRUNCATE TABLE oauth_users;
+TRUNCATE TABLE roles;
+TRUNCATE TABLE states;
+TRUNCATE TABLE tasks;
+TRUNCATE TABLE todos;
+TRUNCATE TABLE todos_collaborators;
+TRUNCATE TABLE users;
+
+-- Reset sequence values (PostgreSQL equivalent of AUTO_INCREMENT)
+ALTER SEQUENCE roles_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE states_id_seq RESTART WITH 1;
+ALTER SEQUENCE tasks_id_seq RESTART WITH 1;
+ALTER SEQUENCE todos_id_seq RESTART WITH 1;
+ALTER SEQUENCE todos_collaborators_id_seq RESTART WITH 1;
+ALTER SEQUENCE oauth_users_id_seq RESTART WITH 1;
+
+-- Re-enable foreign key checks
+SET CONSTRAINTS ALL IMMEDIATE;
+
+-- Re-initialize Tables
 INSERT INTO roles (name) VALUES ('ADMIN');
 INSERT INTO roles (name) VALUES ('USER');
 
 INSERT INTO users (first_name, last_name, email, password, role_id)
 VALUES
-    -- Admin Password: Admin123?
     ('Admin',  'Doe', 'admin@mail.com', '$2a$10$oSJ00.BgokS3L96e0x4VKOKtilabLz.lLgHsvz5tVgKbt5hrG/Mvu', 1),
-
-    -- All User Passwords: User123?
     ('User',   'Doe', 'user@mail.com',  '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
     ('UserOne', 'Doe', 'user1@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
     ('UserTwo', 'Doe', 'user2@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
-    ('UserThree', 'Doe', 'user3@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
-
-    -- GitHubUser Password: GitHubUser123?
-    ('GitHubUser', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1);
+    ('UserThree', 'Doe', 'user3@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2);
 
 INSERT INTO states (name) VALUES
                               ('New'),
@@ -64,7 +89,5 @@ INSERT INTO todos_collaborators (todo_id, collaborator_id)
 VALUES
     (1, 2),
     (1, 3);
-
-INSERT INTO oauth_users (provider, provider_user_id, user_id)
-VALUES
-    ('github', 'github12345', 6);
+END;
+$$ LANGUAGE plpgsql;

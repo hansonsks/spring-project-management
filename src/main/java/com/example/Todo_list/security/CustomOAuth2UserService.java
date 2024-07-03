@@ -40,16 +40,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (oAuthUser.isPresent()) {
             return new CustomOAuth2UserDetails(oAuthUser.get().getUser(), oAuth2User, provider);
         } else {
-            return new CustomOAuth2UserDetails(createUser(provider, oAuth2User), oAuth2User, provider);
+            return new CustomOAuth2UserDetails(createGitHubUser(provider, oAuth2User), oAuth2User, provider);
         }
     }
 
-    private User createUser(String provider, OAuth2User oAuth2User) {
+    private User createGitHubUser(String provider, OAuth2User oAuth2User) {
         User user = new User();
         Role role = roleRepository.findByName("ADMIN").get();
         user.setFirstName(oAuth2User.getAttribute("login"));
         user.setLastName("");
         user.setEmail(oAuth2User.getAttribute("email"));
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            user.setEmail(user.getFirstName() + "@placeholder.email");
+        }
         user.setPassword(passwordService.generateEncodedPassword(32));
         user.setRole(role);
 
@@ -65,5 +68,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         oAuthUserRepository.save(oAuthUser);
 
         return user;
+    }
+
+    private User createGoogleUser() {
+        return null;    // TODO: Implement this if needed
     }
 }
