@@ -12,7 +12,6 @@ class TodoListApplicationTests {
 
 	@Test
 	void contextLoads() {
-		System.out.println("Active profile: " + System.getProperty("spring.profiles.active"));
 	}
 
 }

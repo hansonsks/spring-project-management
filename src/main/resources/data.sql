@@ -1,25 +1,27 @@
-SET FOREIGN_KEY_CHECKS = 0;
-    
-    -- Truncate tables
-TRUNCATE TABLE oauth_users;
-TRUNCATE TABLE roles;
-TRUNCATE TABLE states;
-TRUNCATE TABLE tasks;
-TRUNCATE TABLE todos;
-TRUNCATE TABLE todos_collaborators;
-TRUNCATE TABLE users;
-
--- Reset auto-increment values
-ALTER TABLE roles AUTO_INCREMENT = 1;
-ALTER TABLE users AUTO_INCREMENT = 1;
-ALTER TABLE states AUTO_INCREMENT = 1;
-ALTER TABLE tasks AUTO_INCREMENT = 1;
-ALTER TABLE todos AUTO_INCREMENT = 1;
-ALTER TABLE todos_collaborators AUTO_INCREMENT = 1;
-ALTER TABLE oauth_users AUTO_INCREMENT = 1;
-
--- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
+-- Commented this part of the script out for tests
+-- The same code will be ran inside scheduled_reset.sql anyways
+-- SET FOREIGN_KEY_CHECKS = 0;
+--
+--     -- Truncate tables
+-- TRUNCATE TABLE oauth_users;
+-- TRUNCATE TABLE roles;
+-- TRUNCATE TABLE states;
+-- TRUNCATE TABLE tasks;
+-- TRUNCATE TABLE todos;
+-- TRUNCATE TABLE todos_collaborators;
+-- TRUNCATE TABLE users;
+--
+-- -- Reset auto-increment values
+-- ALTER TABLE roles AUTO_INCREMENT = 1;
+-- ALTER TABLE users AUTO_INCREMENT = 1;
+-- ALTER TABLE states AUTO_INCREMENT = 1;
+-- ALTER TABLE tasks AUTO_INCREMENT = 1;
+-- ALTER TABLE todos AUTO_INCREMENT = 1;
+-- ALTER TABLE todos_collaborators AUTO_INCREMENT = 1;
+-- ALTER TABLE oauth_users AUTO_INCREMENT = 1;
+--
+-- -- Re-enable foreign key checks
+-- SET FOREIGN_KEY_CHECKS = 1;
 
     -- Re-initialize Tables
 INSERT INTO roles (name) VALUES ('ADMIN');
