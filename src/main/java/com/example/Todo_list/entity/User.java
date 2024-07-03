@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class User {
     )
     private String lastName;
 
-    @Email
+    @Email(message = "Your email must be valid")
     @Column(name = "email", unique = true)
     @Size(max = 255, message = "Your email must not exceed 255 characters")
     private String email;
