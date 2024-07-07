@@ -1,11 +1,13 @@
 package com.example.Todo_list.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +24,6 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Your first name must not be empty")
-    @Pattern(
-            regexp = "[a-zA-Z]+",
-            message = "Your first name must contain letters only"
-    )
     @Column(name = "first_name", nullable = false)
     @Size(
             min = 3,
@@ -34,10 +32,6 @@ public class User {
     )
     private String firstName;
 
-    @Pattern(
-            regexp = "[a-zA-Z]*",
-            message = "Your last name must contain letters only"
-    )
     @Column(name = "last_name", nullable = false)
     @Size(
             max = 255,
