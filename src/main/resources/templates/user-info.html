@@ -32,7 +32,15 @@
             <a th:href="@{|/todos/all/users/${user.id}|}" class="btn btn-info btn-lg">View TODOs</a>
         </div>
         <div class="col-md-12 text-left" style="margin-bottom: 10px;">
-            <a th:href="@{|/users/${user.id}/update|}" class="btn btn-warning btn-lg">Edit Account</a>
+            <a th:if="${!#authentication.principal.isOAuthUser()}"
+               th:href="@{|/users/${user.id}/update|}"
+               class="btn btn-warning btn-lg">Edit Account
+            </a>
+            <a th:if="${#authentication.principal.isOAuthUser()}"
+               th:href="@{|/users/${user.id}/oauth-update|}"
+               class="btn btn-warning btn-lg">
+                Edit Account
+            </a>
         </div>
         <div class="col-md-12 text-left" sec:authorize="hasAuthority('ADMIN') and #authentication.principal.id != #vars.user.id" style="margin-bottom: 10px;">
             <a th:href="@{|/users/${user.id}/delete|}" class="btn btn-danger btn-lg">Delete Account</a>

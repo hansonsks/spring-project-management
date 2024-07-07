@@ -24,6 +24,10 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Your first name must not be empty")
+//    @Pattern(
+//            regexp = "[a-zA-Z]+",
+//            message = "Your first name must contain letters only"
+//    )
     @Column(name = "first_name", nullable = false)
     @Size(
             min = 3,
@@ -32,6 +36,10 @@ public class User {
     )
     private String firstName;
 
+//    @Pattern(
+//            regexp = "[a-zA-Z]*",
+//            message = "Your last name must contain letters only"
+//    )
     @Column(name = "last_name", nullable = false)
     @Size(
             max = 255,

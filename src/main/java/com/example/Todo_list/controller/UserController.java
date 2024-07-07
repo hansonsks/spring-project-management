@@ -94,8 +94,6 @@ public class UserController {
             BindingResult result
     ) {
         User oldUser = userService.findUserById(id);
-        newUser.setRole(roleService.findRoleById(roleId));
-        System.out.println(roleId);
 
         logger.info("UserController.updateUser(): Attempting to update " + oldUser);
 
@@ -140,13 +138,56 @@ public class UserController {
             }
         }
 
-        logger.info("UserController.updateUser(): Updating " + newUser);
+        logger.info("UserController.updateUser(): Updating to " + newUser);
 
         newUser.setRole(roleService.findRoleById(roleId));
         newUser.setPassword(passwordService.encodePassword(newUser.getPassword()));
         userService.updateUser(newUser);
 
-        return "redirect:/logout";
+        return "redirect:/logout?updateSuccess=true";
+        // return String.format("redirect:/users/%d/read", id);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
+    @GetMapping("/{id}/oauth-update")
+    public String showOAuthUserUpdatePage(@PathVariable Long id, Model model) {
+        User user = userService.findUserById(id);
+        model.addAttribute("user", user);
+        model.addAttribute("roles", roleService.findAllRoles());
+        logger.info("UserController.showOAuthUserUpdatePage(): Displaying user update page with " + user);
+        return "oauth-user-update";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
+    @PostMapping("/{id}/oauth-update")
+    public String updateOAuthUser(
+            @PathVariable Long id,
+            @RequestParam("roleId") Long roleId,
+            Model model,
+            @Valid @ModelAttribute("user") User newUser,
+            BindingResult result
+    ) {
+        User oldUser = userService.findUserById(id);
+
+        logger.info("UserController.updateOAuthUser(): Attempting to update " + oldUser);
+
+        if (result.hasErrors()) {
+            newUser.setRole(oldUser.getRole());
+            model.addAttribute("roles", roleService.findAllRoles());
+
+            if (result.hasFieldErrors("email")) {
+                logger.error("UserController.updateUser(): Invalid email");
+                return String.format("redirect:/users/%d/oauth-update?badEmail=true", id);
+            }
+        }
+
+        logger.info("UserController.updateOAuthUser(): Updating to " + newUser);
+
+        newUser.setPassword(oldUser.getPassword());
+        newUser.setRole(roleService.findRoleById(roleId));
+        userService.updateUser(newUser);
+
+        return "redirect:/logout?updateSuccess=true";
         // return String.format("redirect:/users/%d/read", id);
     }
 
