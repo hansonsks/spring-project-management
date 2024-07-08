@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -24,6 +25,7 @@ public class WebSecurityConfig {
 
     private final WebSecurityUserDetailsService userDetailsService;
     private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
     
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
@@ -51,7 +53,8 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login-form?logout=true")
+                        // .logoutSuccessUrl("/login-form?logout=true")
+                        .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
@@ -61,6 +64,7 @@ public class WebSecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login-form")
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        .successHandler(new CustomOAuth2AuthenticationSuccessHandler(authorizedClientService))
                 );
 
         return http.build();
