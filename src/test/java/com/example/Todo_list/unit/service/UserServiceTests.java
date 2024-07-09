@@ -81,7 +81,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() saves a new User")
     void testSaveUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
 
@@ -91,13 +91,13 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() throws a NullEntityException when trying to save a null User")
     void testSaveNullUser() {
         assertThrows(NullEntityException.class, () -> userService.save(null));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findUserById() returns an existing User given an existing ID")
     void testFindUserById() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
@@ -107,7 +107,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findUserById() throws EntityNotFoundException if a User with the given ID was not found")
     void testFindUserByInvalidId() {
         when(userRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
@@ -116,7 +116,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findUserByEmail() returns an existing given an existing email")
     void testFindUserByEmail() {
         when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(user));
 
@@ -126,7 +126,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findUserByEmail() returns an existing User given an existing email even if they use OAuth2 to login")
     void testFindOAuthUserByEmail() {
         when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(userWithOAuth));
 
@@ -136,7 +136,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findUserByEmail() throws EntityNotFoundException if a User with the given email was not found")
     void testFindUserByInvalidEmail() {
         when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
@@ -145,7 +145,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateUser() updates an existing User")
     void testUpdateUser() {
         when(userRepository.findById(any(long.class))).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
@@ -156,7 +156,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateUser() updates an existing User even if they use OAuth2 to login")
     void testUpdateOAuthUser() {
         when(userRepository.findById(any(long.class))).thenReturn(Optional.of(userWithOAuth));
         when(userRepository.save(any(User.class))).thenReturn(userWithOAuth);
@@ -167,21 +167,21 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateUser() throws EntityNotFoundException if the User given to update did not exist before")
     void testUpdateInvalidUser() {
         assertThrows(EntityNotFoundException.class, () -> userService.updateUser(user));
         verify(userRepository, times(0)).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateUser() throws NullEntityException if the User is null")
     void testUpdateNullUser() {
         assertThrows(NullEntityException.class, () -> userService.updateUser(null));
         verify(userRepository, times(0)).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteUserById() deletes a User given the user's ID")
     void testDeleteUser() {
         when(userRepository.findById(any(long.class))).thenReturn(Optional.of(user));
 
@@ -191,7 +191,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteUserById() deletes a User even if they used OAuth2 to login")
     void testDeleteOAuthUser() {
         when(userRepository.findById(any(long.class))).thenReturn(Optional.of(userWithOAuth));
 
@@ -202,14 +202,14 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteUserById() throws EntityNotFoundException if a User with the given ID was not found")
     void testDeleteInvalidUser() {
         assertThrows(EntityNotFoundException.class, () -> userService.deleteUserById(user.getId()));
         verify(userRepository, times(0)).delete(any(User.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllUser() returns the list of all User when it is empty")
     void testFindAllUsersEmpty() {
         List<User> expected = new ArrayList<>();
         when(userRepository.findAll()).thenReturn(expected);
@@ -221,7 +221,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllUser() returns the list of all User when it is non-empty")
     void testFindAllUsersNonEmpty() {
         List<User> expected = new ArrayList<>(List.of(user, userWithOAuth));
         when(userRepository.findAll()).thenReturn(expected);
