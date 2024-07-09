@@ -40,13 +40,28 @@ public class UserController {
         logger.info("UserController.createUser(): Attempting to create user");
 
         if (result.hasErrors()) {
-            if (result.hasFieldErrors("password")) {
-                logger.error("UserController.createUser(): Password too weak");
-                return "redirect:/users/create?badPassword=true";
+            if (result.hasFieldErrors("firstName")) {
+                logger.error("UserController.createUser(): Bad first name");
+                result.reject("error.firstName");
             }
 
-            logger.error("UserController.createUser(): Failed to create user using given information (Unknown Error)");
-            return "redirect:/users/create?error=true";
+            if (result.hasFieldErrors("lastName")) {
+                logger.error("UserController.createUser(): Bad last name");
+                result.reject("error.lastName");
+            }
+
+            if (result.hasFieldErrors("email")) {
+                logger.error("UserController.createUser(): Invalid Email");
+                result.reject("error.email");
+            }
+
+            if (result.hasFieldErrors("password")) {
+                logger.error("UserController.createUser(): Password too weak");
+                result.reject("error.password");
+            }
+
+            // logger.error("UserController.createUser(): Failed to create user using given information (Unknown Error)");
+            return "user-create";
         }
 
         try {
@@ -60,7 +75,7 @@ public class UserController {
         }
 
         user.setRole(roleService.findRoleByName("USER"));
-        User newUser = userService.save(user);
+        userService.save(user);
         return "redirect:/login-form?signUpSuccess=true";
     }
 
@@ -102,14 +117,13 @@ public class UserController {
             model.addAttribute("roles", roleService.findAllRoles());
 
             if (result.hasFieldErrors("firstName")) {
-                logger.error("UserController.updateUser(): Your first name must contain letters only and" +
+                logger.error("UserController.updateUser(): Your first name must " +
                              "have a minimum of 3 characters and a maximum of 255 characters");
                 return String.format("redirect:/users/%d/update?badFirstName=true", id);
             }
 
             if (result.hasFieldErrors("lastName")) {
-                logger.error("UserController.updateUser(): Your last name must contain letters only and " +
-                             "have a maximum of 255 characters");
+                logger.error("UserController.updateUser(): Your last name must have a maximum of 255 characters");
                 return String.format("redirect:/users/%d/update?badLastName=true", id);
             }
 
@@ -175,8 +189,14 @@ public class UserController {
             newUser.setRole(oldUser.getRole());
             model.addAttribute("roles", roleService.findAllRoles());
 
+            if (result.hasFieldErrors("firstName")) {
+                logger.error("UserController.updateOAuthUser(): Your first name must have a minimum of 3 characters " +
+                        "and a maximum of 255 characters");
+                return String.format("redirect:/users/%d/oauth-update?badFirstName=true", id);
+            }
+
             if (result.hasFieldErrors("email")) {
-                logger.error("UserController.updateUser(): Invalid email");
+                logger.error("UserController.updateOAuthUser(): Invalid email");
                 return String.format("redirect:/users/%d/oauth-update?badEmail=true", id);
             }
         }
@@ -207,7 +227,7 @@ public class UserController {
     @GetMapping("/all")
     public String showUserList(Model model,
                                @RequestParam(name = "badDeleteUserId", required = false) Long badDeleteUserId) {
-        model.addAttribute("users", userService.findAllUser());
+        model.addAttribute("users", userService.findAllUsers());
         model.addAttribute("badDeleteUserId", badDeleteUserId);
 
         logger.info("UserController.showUserList(): Displaying all users");
