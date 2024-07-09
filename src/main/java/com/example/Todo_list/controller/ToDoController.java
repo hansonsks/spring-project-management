@@ -69,7 +69,7 @@ public class ToDoController {
     public String displayToDo(@PathVariable("id") Long id, Model model) {
         ToDo todo = toDoService.findToDoById(id);
         List<Task> tasks = taskService.findAllTaskOfToDo(id);
-        List<User> users = userService.findAllUser()
+        List<User> users = userService.findAllUsers()
                                         .stream()
                                         .filter(user -> !Objects.equals(user.getId(), todo.getOwner().getId()))
                                         .toList();

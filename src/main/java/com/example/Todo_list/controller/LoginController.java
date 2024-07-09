@@ -19,7 +19,7 @@ public class LoginController {
 
     @GetMapping({"/", "home"})
     public String home(Model model) {
-        model.addAttribute("users", userService.findAllUser());
+        model.addAttribute("users", userService.findAllUsers());
         return "home";
     }
 }
