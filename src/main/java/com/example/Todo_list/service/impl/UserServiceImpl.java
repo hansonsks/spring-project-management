@@ -6,6 +6,7 @@ import com.example.Todo_list.repository.OAuthUserRepository;
 import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.service.UserService;
 import com.example.Todo_list.utils.PasswordService;
+import com.example.Todo_list.utils.SampleTodoInitializer;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OAuthUserRepository oAuthUserRepository;
     private final PasswordService passwordService;
+    private final SampleTodoInitializer todoInitializer;
 
     @Override
     public User save(User user) {
@@ -37,7 +39,12 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordService.encodePassword(user.getPassword()));
 
         logger.info("UserService.save(): Saving " + user);
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        logger.info("UserService.save(): Initializing user's todo list...");
+        todoInitializer.initUserToDo(user);
+
+        return user;
     }
 
     @Override
@@ -87,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllUser() {
+    public List<User> findAllUsers() {
         logger.info("UserService.findAllUser(): Finding all users");
         return userRepository.findAll();
     }

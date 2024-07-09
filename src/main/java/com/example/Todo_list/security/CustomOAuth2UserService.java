@@ -6,6 +6,7 @@ import com.example.Todo_list.repository.OAuthUserRepository;
 import com.example.Todo_list.repository.RoleRepository;
 import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.utils.PasswordService;
+import com.example.Todo_list.utils.SampleTodoInitializer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final RoleRepository roleRepository;
     private final OAuthUserRepository oAuthUserRepository;
     private final PasswordService passwordService;
+    private final SampleTodoInitializer todoInitializer;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // TODO: Transition hard-coding values to using CommonOAuth2Provider values
+        // TODO: Transition hard-coding values to using CommonOAuth2Provider values or an Enum class
         System.out.println(Arrays.toString(CommonOAuth2Provider.values()));
 
         // Hard-coded GitHub only, should have switch-cases for Facebook, Google, etc.
@@ -74,6 +76,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             logger.info("CustomOAuth2UserService.createGitHubUser(): Saving " + user);
             userRepository.save(user);
+
+            logger.info("CustomOAuth2UserService.createGitHubUser(): Initializing user's todo list...");
+            todoInitializer.initUserToDo(user);
         }
 
         OAuthUser oAuthUser = new OAuthUser();
@@ -88,6 +93,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createGoogleUser() {
+        return null;    // TODO: Implement this if needed
+    }
+
+    private User createFacebookUser() {
+        return null;    // TODO: Implement this if needed
+    }
+
+    private User createOktaUser() {
         return null;    // TODO: Implement this if needed
     }
 }
