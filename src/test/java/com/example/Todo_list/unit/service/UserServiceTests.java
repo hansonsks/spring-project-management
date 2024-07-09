@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -211,10 +210,10 @@ public class UserServiceTests {
     @Test
     @DisplayName("findAllUser() returns the list of all User when it is empty")
     void testFindAllUsersEmpty() {
-        List<User> expected = new ArrayList<>();
+        List<User> expected = List.of();
         when(userRepository.findAll()).thenReturn(expected);
 
-        List<User> actual = userService.findAllUser();
+        List<User> actual = userService.findAllUsers();
         assertEquals(actual, expected);
 
         verify(userRepository, times(1)).findAll();
@@ -223,10 +222,10 @@ public class UserServiceTests {
     @Test
     @DisplayName("findAllUser() returns the list of all User when it is non-empty")
     void testFindAllUsersNonEmpty() {
-        List<User> expected = new ArrayList<>(List.of(user, userWithOAuth));
+        List<User> expected = List.of(user, userWithOAuth);
         when(userRepository.findAll()).thenReturn(expected);
 
-        List<User> actual = userService.findAllUser();
+        List<User> actual = userService.findAllUsers();
         assertEquals(actual, expected);
 
         verify(userRepository, times(1)).findAll();

@@ -18,7 +18,7 @@ public class StateRepositoryTests {
     private StateRepository stateRepository;
 
     @Test
-    @DisplayName("StateRepository.findByName() finds a State given its name")
+    @DisplayName("findByName() finds a State given its name")
     void testFindByNameFound() {
         List<String> stateNames = List.of("New", "In Progress", "Under Review", "Completed");
         for (String stateName : stateNames) {
@@ -31,7 +31,7 @@ public class StateRepositoryTests {
     }
 
     @Test
-    @DisplayName("StateRepository.findByName() returns an empty Optional<State> if no State with the given name exists")
+    @DisplayName("findByName() returns an empty Optional<State> if no State with the given name exists")
     void testFindByNameNotFound() {
         assertFalse(stateRepository.findByName("Unknown State").isPresent());
     }

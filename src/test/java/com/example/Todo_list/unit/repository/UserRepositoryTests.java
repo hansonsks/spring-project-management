@@ -16,7 +16,7 @@ public class UserRepositoryTests {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("UserRepository.findByEmail() finds a User based on their email")
+    @DisplayName("findByEmail() finds a User based on their email")
     void testFindByEmailFound() {
         // Test using admin email
         String adminEmail = "admin@mail.com";
@@ -36,7 +36,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    @DisplayName("UserRepository.findByEmail() returns an empty Optional<User> if no user with the email exists")
+    @DisplayName("findByEmail() returns an empty Optional<User> if no user with the email exists")
     void testFindByEmailNotFound() {
         String invalidEmail = "error@mail.com";
         assertFalse(userRepository.findByEmail(invalidEmail).isPresent());

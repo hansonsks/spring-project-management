@@ -19,7 +19,7 @@ public class TaskRepositoryTests {
     private TaskRepository taskRepository;
 
     @Test
-    @DisplayName("TaskRepository.findByTodoId() returns a List<Task> associated with a ToDo given its ID")
+    @DisplayName("findByTodoId() returns a List<Task> associated with a ToDo given its ID")
     void testFindTasksByTodoIdFound() {
         Long todoId = 1L;
         List<Task> tasks = taskRepository.findByTodoId(todoId);
@@ -37,7 +37,7 @@ public class TaskRepositoryTests {
     }
 
     @Test
-    @DisplayName("TaskRepository.findByTodoId() returns an empty List<Task> if the TodoId was not found")
+    @DisplayName("findByTodoId() returns an empty List<Task> if the TodoId was not found")
     void testFindTasksByTodoIdNotFound() {
         assertTrue(taskRepository.findByTodoId(999L).isEmpty());
     }

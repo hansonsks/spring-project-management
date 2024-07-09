@@ -22,7 +22,7 @@ public class OAuthUserRepositoryTests {
     private OAuthUserRepository oAuthUserRepository;
 
     @Test
-    @DisplayName("OAuthUserRepository.findByUser() finds an OAuthUser given a User")
+    @DisplayName("findByUser() finds an OAuthUser given a User")
     void testFindOAuthUserByUser() {
         User githubUser = userRepository.findByEmail("githubuser@mail.com").get();
         assertTrue(oAuthUserRepository.findByUser(githubUser).isPresent());
@@ -33,13 +33,13 @@ public class OAuthUserRepositoryTests {
     }
 
     @Test
-    @DisplayName("OAuthUserRepository.findByProviderAndProviderUserId() finds an OAuthUser given the Provider name and ID")
+    @DisplayName("findByProviderAndProviderUserId() finds an OAuthUser given the Provider name and ID")
     void testFindOAuthUserByProviderAndProviderUserId() {
         assertTrue(oAuthUserRepository.findByProviderAndProviderUserId("github", "github12345").isPresent());
     }
 
     @Test
-    @DisplayName("OAuthUserRepository.deleteByUser() deletes an OAuthUser given a User")
+    @DisplayName("deleteByUser() deletes an OAuthUser given a User")
     void testDeleteOAuthUserByUser() {
         User githubUser = userRepository.findByEmail("githubuser@mail.com").get();
         oAuthUserRepository.deleteByUser(githubUser);

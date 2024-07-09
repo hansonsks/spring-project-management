@@ -16,7 +16,7 @@ public class RoleRepositoryTests {
     private RoleRepository roleRepository;
 
     @Test
-    @DisplayName("RoleRepository.findByName() finds Role by names")
+    @DisplayName("findByName() finds Role by names")
     void testFindByNameFound() {
         assertTrue(roleRepository.findByName("ADMIN").isPresent());
 
@@ -26,7 +26,7 @@ public class RoleRepositoryTests {
     }
 
     @Test
-    @DisplayName("RoleRepository.findByName() returns an empty Optional<Role> if Role not found")
+    @DisplayName("findByName() returns an empty Optional<Role> if Role not found")
     void testFindByNameNotFound() {
         assertFalse(roleRepository.findByName("INVALID ROLE").isPresent());
     }

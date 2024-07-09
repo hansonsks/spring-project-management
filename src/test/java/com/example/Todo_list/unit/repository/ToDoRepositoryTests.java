@@ -18,7 +18,7 @@ public class ToDoRepositoryTests {
     private ToDoRepository toDoRepository;
 
     @Test
-    @DisplayName("ToDoRepository.findToDoByOwnerId() returns a non-empty List<ToDo> given a valid User ID")
+    @DisplayName("findToDoByOwnerId() returns a non-empty List<ToDo> given a valid User ID")
     void testFindToDoByOwnerIdFound() {
         Long adminUserId = 1L;
         List<ToDo> todos = toDoRepository.findTodoByOwnerId(adminUserId);
@@ -36,7 +36,7 @@ public class ToDoRepositoryTests {
     }
 
     @Test
-    @DisplayName("ToDoRepository.findToDoByOwnerId() returns an empty List<ToDo> if the given User ID was invalid")
+    @DisplayName("findToDoByOwnerId() returns an empty List<ToDo> if the given User ID was invalid")
     void testFindToDoByOwnerIdNotFound() {
         assertTrue(toDoRepository.findTodoByOwnerId(999L).isEmpty());
     }
