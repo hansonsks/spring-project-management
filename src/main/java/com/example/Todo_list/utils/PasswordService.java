@@ -24,8 +24,8 @@ public class PasswordService extends BCryptPasswordEncoder {
     }
 
     public String generatePassword(int length) {
-        if (length < 4) {
-            length = 6;
+        if (length < 8) {
+            length = 8;
         }
 
         final char[] lowercase = "abcdefghijklmnopqrstuvwxyz".toCharArray();
