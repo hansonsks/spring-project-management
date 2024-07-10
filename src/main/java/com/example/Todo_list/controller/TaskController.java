@@ -78,7 +78,7 @@ public class TaskController {
         model.addAttribute("task", taskDTO);
         model.addAttribute("toDoId", taskDTO.getToDoId());
         model.addAttribute("priorities", Priority.values());
-        model.addAttribute("states", stateService.findAllState());
+        model.addAttribute("states", stateService.findAllStates());
         logger.info("TaskController.showTaskUpdateForm(): Displaying task update form");
         return "task-update";
     }
@@ -102,7 +102,7 @@ public class TaskController {
             model.addAttribute("task", oldTaskDTO);
             model.addAttribute("toDoId", oldTaskDTO.getToDoId());
             model.addAttribute("priorities", Priority.values());
-            model.addAttribute("states", stateService.findAllState());
+            model.addAttribute("states", stateService.findAllStates());
 
             return "task-update";
         }

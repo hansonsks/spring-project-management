@@ -52,7 +52,7 @@ public class UserController {
 
             if (result.hasFieldErrors("email")) {
                 logger.error("UserController.createUser(): Invalid Email");
-                result.reject("error.email");
+                result.rejectValue("email", "error.email", "Email is already in use.");
             }
 
             if (result.hasFieldErrors("password")) {
@@ -60,7 +60,7 @@ public class UserController {
                 result.reject("error.password");
             }
 
-            // logger.error("UserController.createUser(): Failed to create user using given information (Unknown Error)");
+            logger.error("UserController.createUser(): Failed to create user using given information");
             return "user-create";
         }
 
@@ -68,7 +68,8 @@ public class UserController {
             userService.findUserByEmail(user.getEmail());
             logger.info("UserController.createUser(): " +
                         "Pre-existing user with email=" + user.getEmail() + " was found, aborting account creation");
-            return "redirect:/users/create?badEmail=true";
+            result.rejectValue("email", "error.email", "Email is already in use.");
+            return "user-create";
         } catch (EntityNotFoundException e) {
             logger.info("UserController.createUser(): " +
                         "No user with email=" + user.getEmail() + " was found, continuing account creation");

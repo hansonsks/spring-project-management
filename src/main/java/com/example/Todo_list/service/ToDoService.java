@@ -12,7 +12,7 @@ public interface ToDoService {
 
     void deleteToDoById(Long id);
 
-    List<ToDo> findAllToDo();
+    List<ToDo> findAllToDos();
 
     List<ToDo> findAllToDoOfUserId(Long userId);
 

@@ -58,7 +58,7 @@ public class ToDoServiceImpl implements ToDoService {
     }
 
     @Override
-    public List<ToDo> findAllToDo() {
+    public List<ToDo> findAllToDos() {
         logger.info("ToDoService.findAllToDo(): Finding all ToDos");
         return toDoRepository.findAll();
     }

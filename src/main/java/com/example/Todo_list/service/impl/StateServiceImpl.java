@@ -57,7 +57,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public List<State> findAllState() {
+    public List<State> findAllStates() {
         logger.info("StateService.findAllState(): Finding all states");
         return stateRepository.findAll();
     }

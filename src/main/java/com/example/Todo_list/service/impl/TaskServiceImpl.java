@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findAllTaskOfToDo(Long todoId) {
+    public List<Task> findAllTasksOfToDo(Long todoId) {
         logger.info("TaskService.findAllTaskOfToDo(): Finding all tasks by todoId" + todoId);
         return taskRepository.findByTodoId(todoId);
     }
