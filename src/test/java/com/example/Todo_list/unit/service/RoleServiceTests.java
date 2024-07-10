@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,7 @@ public class RoleServiceTests {
     @Test
     @DisplayName("testFindAllRoles() returns the list of all Role when it is empty")
     void testFindAllRolesEmpty() {
-        List<Role> expected = List.of();
+        List<Role> expected = Collections.emptyList();
         when(roleRepository.findAll()).thenReturn(expected);
 
         List<Role> actual = roleService.findAllRoles();
@@ -75,7 +76,7 @@ public class RoleServiceTests {
     @Test
     @DisplayName("testFindAllRoles() returns the list of all Role when it is non-empty")
     void testFindAllRolesNonEmpty() {
-        List<Role> expected = List.of(role);
+        List<Role> expected = Collections.singletonList(role);
         when(roleRepository.findAll()).thenReturn(expected);
 
         List<Role> actual = roleService.findAllRoles();

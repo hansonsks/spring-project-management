@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -210,7 +211,7 @@ public class UserServiceTests {
     @Test
     @DisplayName("findAllUser() returns the list of all User when it is empty")
     void testFindAllUsersEmpty() {
-        List<User> expected = List.of();
+        List<User> expected = Collections.emptyList();
         when(userRepository.findAll()).thenReturn(expected);
 
         List<User> actual = userService.findAllUsers();
