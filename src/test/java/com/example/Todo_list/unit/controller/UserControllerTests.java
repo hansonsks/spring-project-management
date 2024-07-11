@@ -28,6 +28,8 @@ import org.springframework.util.MultiValueMap;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createRole;
+import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createUser;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -51,27 +53,17 @@ public class UserControllerTests {
     @MockBean
     private PasswordService passwordService;
 
-    private User user;
-    private Role role;
+    private final User user = createUser();
+    private final Role role = createRole();
     private Role otherRole;
 
     @BeforeEach
     public void beforeEach() {
-        role = new Role();
-        role.setId(1L);
-        role.setName("Admin");
-
         otherRole = new Role();
         otherRole.setId(2L);
         otherRole.setName("User");
 
-        user = new User();
-        user.setId(1L);
         user.setRole(role);
-        user.setFirstName("Test");
-        user.setLastName("Doe");
-        user.setEmail("test@mail.com");
-        user.setPassword("StrongPassword12345?");   // Not encoded for testing purposes
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 new WebSecurityUserDetails(user),
