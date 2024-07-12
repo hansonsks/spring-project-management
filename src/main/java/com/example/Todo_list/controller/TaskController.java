@@ -133,7 +133,7 @@ public class TaskController {
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/{task_id}/delete/todos/{todo_id}")
     public String deleteTask(@PathVariable("task_id") Long taskId, @PathVariable("todo_id") Long todoId) {
-        logger.info("TaskController.deleteTask(): Deleting task with taskId" + taskId + " of todo with todoId=" + todoId);
+        logger.info("TaskController.deleteTask(): Deleting task with taskId=" + taskId + " of todo with todoId=" + todoId);
         taskService.deleteTaskById(taskId);
         return String.format("redirect:/todos/%d/tasks", todoId);
     }

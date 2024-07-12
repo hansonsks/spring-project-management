@@ -99,6 +99,7 @@ public class UserController {
         return "user-update";
     }
 
+    // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     @PostMapping("/{id}/update")
     public String updateUser(
@@ -173,6 +174,7 @@ public class UserController {
         return "oauth-user-update";
     }
 
+    // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     @PostMapping("/{id}/oauth-update")
     public String updateOAuthUser(

@@ -149,6 +149,7 @@ public class ToDoController {
         logger.info("ToDoController.addCollaborator(): " +
                     "Adding " + toDoService.findToDoById(todoId) + " to" + userService.findUserById(userId));
         toDoService.addCollaborator(todoId, userId);
+        logger.info("ToDoController.addCollaborator(): Updated ToDo=" + toDoService.findToDoById(todoId));
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
@@ -158,6 +159,7 @@ public class ToDoController {
         logger.info("ToDoController.removeCollaborator(): " +
                     "Removing " + toDoService.findToDoById(todoId) + " from " + userService.findUserById(userId));
         toDoService.removeCollaborator(todoId, userId);
+        logger.info("ToDoController.addCollaborator(): Updated ToDo=" + toDoService.findToDoById(todoId));
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
