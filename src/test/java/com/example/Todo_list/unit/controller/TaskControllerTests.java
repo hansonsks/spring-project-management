@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// TODO: Add tests for Comments and CommentService
 @WebMvcTest(TaskController.class)
 public class TaskControllerTests {
 
@@ -50,6 +51,9 @@ public class TaskControllerTests {
 
     @MockBean
     private StateServiceImpl stateService;
+
+    @MockBean
+    private CommentServiceImpl commentService;
 
     @MockBean
     private UserServiceImpl userService;
