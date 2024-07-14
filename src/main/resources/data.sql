@@ -1,3 +1,26 @@
+SET CONSTRAINTS ALL DEFERRED;
+
+-- Truncate tables
+TRUNCATE TABLE oauth_users CASCADE;
+TRUNCATE TABLE roles CASCADE;
+TRUNCATE TABLE states CASCADE;
+TRUNCATE TABLE tasks CASCADE;
+TRUNCATE TABLE todos CASCADE;
+TRUNCATE TABLE todos_collaborators CASCADE;
+TRUNCATE TABLE users CASCADE;
+
+-- Reset sequence values (PostgreSQL equivalent of AUTO_INCREMENT)
+ALTER SEQUENCE roles_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE states_id_seq RESTART WITH 1;
+ALTER SEQUENCE tasks_id_seq RESTART WITH 1;
+ALTER SEQUENCE todos_id_seq RESTART WITH 1;
+ALTER SEQUENCE todos_collaborators_id_seq RESTART WITH 1;
+ALTER SEQUENCE oauth_users_id_seq RESTART WITH 1;
+
+-- Re-enable foreign key checks
+SET CONSTRAINTS ALL IMMEDIATE;
+
 INSERT INTO roles (name) VALUES ('ADMIN');
 INSERT INTO roles (name) VALUES ('USER');
 
@@ -68,3 +91,5 @@ VALUES
 INSERT INTO oauth_users (provider, provider_user_id, user_id)
 VALUES
     ('github', 'github12345', 6);
+
+-- TODO: Add sample comments to sample tasks
