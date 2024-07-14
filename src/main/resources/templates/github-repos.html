@@ -14,7 +14,11 @@
         <div class="col-md-12">
             <ul class="list-group">
                 <li th:each="repo : ${repos}" class="list-group-item">
-                    <h5 class="mb-2"><span th:text="${repo.name}"></span></h5>
+                    <h5 class="mb-2">
+                        <h5 class="mb-2">
+                            <a th:href="@{https://github.com/{owner}/{repoName}(owner=${repo.owner.login},repoName=${repo.name})}" th:text="${repo.name}" target="_blank"></a>
+                        </h5>
+                    </h5>
                     <div class="d-flex justify-content-end">
                         <a th:href="@{|/github/repos/${repo.owner.login}/${repo.name}/issues|}" class="btn btn-primary btn-sm mr-2">Issues</a> <span class="mr-2"></span>
                         <a th:href="@{|/github/repos/${repo.owner.login}/${repo.name}/pulls|}" class="btn btn-secondary btn-sm">Pull Requests</a>

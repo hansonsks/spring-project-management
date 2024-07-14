@@ -11,6 +11,7 @@
 <div class="container mt-4">
     <h2 class="mb-3">Update Existing User</h2>
     <form class="form-horizontal" method="post" th:action="@{|/users/${user.id}/oauth-update|}" th:object="${user}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="id">ID:</label>
             <div class="col-sm-8">
@@ -22,7 +23,7 @@
             <div class="col-sm-8">
                 <input class="form-control" id="first-name" th:field="*{firstName}" type="text"/>
                 <div th:if="${param.badFirstName}" class="text-danger">
-                    Your first name must contain letters only and have minimum of 3 characters and a maximum of 255 characters.
+                    Your first name must have minimum of 3 characters and a maximum of 255 characters.
                 </div>
             </div>
         </div>

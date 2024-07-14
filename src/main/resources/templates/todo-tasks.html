@@ -77,11 +77,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="task, iStat: ${tasks}"
-                    th:class="${task.priority.name().toLowerCase()}">
+                <tr th:each="task, iStat: ${tasks}" th:class="${task.priority.name().toLowerCase()}">
                     <td th:text="${iStat.index + 1}"/>
                     <td th:text="${task.id}"/>
-                    <td th:text="${task.name}" th:href="@{|/tasks/${task.id}/read|}"/>
+                    <td>
+                        <a th:href="@{|/tasks/${task.id}/read|}" th:text="${task.name}"></a>
+                    </td>
                     <td th:text="${task.priority.name().substring(0, 1) + task.priority.name().substring(1).toLowerCase()}"/>
                     <td th:class="${#strings.replace(task.state.name, ' ', '-').toLowerCase()}" th:text="${task.state.name}"/>
                     <td>

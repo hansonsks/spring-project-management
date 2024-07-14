@@ -76,6 +76,7 @@
 <div class="login-form">
   <h2>Login</h2>
   <form class="form-horizontal" method="POST" id="login-form" th:action="@{/login-form}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <div class="form-group">
       <label for="username">Username:</label>
       <input type="text" class="form-control" id="username" name="username" required>
@@ -88,6 +89,7 @@
       <button type="submit" class="btn btn-primary btn-block">Login</button>
     </div>
     <div th:if="${param.signUpSuccess}" class="signup-message text-success text-center">Your account has been created. Please log in.</div>
+    <div th:if="${param.updateSuccess}" class="signup-message text-success text-center">Your account has been updated. Please log in.</div>
     <div th:if="${param.logout}" class="logout-message text-success text-center">You have been logged out</div>
     <div th:if="${param.error}" class="error-message text-center">Invalid username or password</div>
     <div class="text-center mt-3">
