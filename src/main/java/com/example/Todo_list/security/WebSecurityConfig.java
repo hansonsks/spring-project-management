@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -55,6 +56,7 @@ public class WebSecurityConfig {
                 )
                 .logout(logout -> logout
                         // .logoutSuccessUrl("/login-form?logout=true")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                         .deleteCookies("JSESSIONID")
                         .permitAll()
