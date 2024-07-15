@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Comments by User</title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{header}"></div>
+<div class="container mt-4">
+    <h1>Comments by User</h1>
+    <div th:if="${comments.isEmpty()}">
+        <p>No comments found for this user.</p>
+    </div>
+    <div th:unless="${comments.isEmpty()}">
+        <ul class="list-group">
+            <li th:each="comment : ${comments}" class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong th:text="${comment.user.firstName}"></strong>
+                        <span class="text-muted" th:text="${#temporals.format(comment.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                        <span th:if="${comment.isEdited}" class="text-muted" style="opacity: 0.5;">[Edited]</span>
+                    </div>
+                    <div th:if="${#authentication.principal.authorities.contains('ROLE_ADMIN')}" class="comment-buttons d-flex">
+                        <form th:action="@{|/comments/${comment.id}/delete|}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <button type="submit" class="btn btn-sm btn-danger mx-2">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                <p th:text="${comment.content}"></p>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
