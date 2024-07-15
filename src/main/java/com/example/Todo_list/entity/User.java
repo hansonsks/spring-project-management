@@ -72,6 +72,10 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<ToDo> todoList = new ArrayList<>();
 
+    // TODO: Give this a better name
     @ManyToMany(mappedBy = "collaborators", fetch = FetchType.LAZY)
     private List<ToDo> collaborators = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 }

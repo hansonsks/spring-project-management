@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @ToString(exclude = {"todo"})
@@ -46,4 +49,7 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private ToDo todo;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 }
