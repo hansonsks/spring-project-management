@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Comparator;
 import java.util.List;
 
-// TODO: Change some mappings to be POST instead of GET!
 @Controller
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
@@ -143,7 +142,7 @@ public class TaskController {
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
-    @GetMapping("/{task_id}/delete/todos/{todo_id}")
+    @PostMapping("/{task_id}/delete/todos/{todo_id}")
     public String deleteTask(@PathVariable("task_id") Long taskId, @PathVariable("todo_id") Long todoId) {
         logger.info("TaskController.deleteTask(): Deleting task with taskId=" + taskId + " of todo with todoId=" + todoId);
         taskService.deleteTaskById(taskId);

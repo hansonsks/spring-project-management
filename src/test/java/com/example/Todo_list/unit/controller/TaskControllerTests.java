@@ -5,6 +5,7 @@ import com.example.Todo_list.entity.*;
 import com.example.Todo_list.security.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.*;
 import com.example.Todo_list.utils.PasswordService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,23 +21,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.*;
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createPriority;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// TODO: Add tests for Comments and CommentService
 @WebMvcTest(TaskController.class)
 public class TaskControllerTests {
 
@@ -70,6 +67,7 @@ public class TaskControllerTests {
     private final ToDo toDo = createToDo();
     private final State state = createState();
     private final Priority priority = createPriority();
+    private final Comment comment = createComment();
 
     @BeforeEach
     public void beforeEach() {
@@ -82,6 +80,8 @@ public class TaskControllerTests {
 
         task.setTodo(toDo);
         toDo.setTasks(Collections.singletonList(task));
+
+        comment.setUser(user);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 new WebSecurityUserDetails(user),
@@ -222,6 +222,7 @@ public class TaskControllerTests {
         mockMvc.perform(get("/tasks/1/read"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("task-info"))
+                .andExpect(model().attributeExists("task", "comments"))
                 .andExpect(model().attribute("task", hasProperty("id",          is(1L))))
                 .andExpect(model().attribute("task", hasProperty("name",        is("Task Name"))))
                 .andExpect(model().attribute("task", hasProperty("description", is("Task Description"))))
@@ -232,7 +233,8 @@ public class TaskControllerTests {
     @Test
     @DisplayName("Test")
     void testDeleteTask() throws Exception {
-        mockMvc.perform(get("/tasks/1/delete/todos/1"))
+        mockMvc.perform(post("/tasks/1/delete/todos/1")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/1/tasks"));
 
@@ -242,8 +244,140 @@ public class TaskControllerTests {
     @Test
     @DisplayName("Test")
     void testDeleteInvalidTask() throws Exception {
-        mockMvc.perform(get("/tasks/999/delete/todos/1"))
+        mockMvc.perform(post("/tasks/999/delete/todos/1")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/1/tasks"));
+    }
+
+    // Tests for Task Comments
+    @Test
+    @DisplayName("Test")
+    void testCreateComment() throws Exception {
+        when(taskService.findTaskById(any(long.class))).thenReturn(task);
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("id",      "1");
+        formData.add("comment", "Test Comment");
+        formData.add("user",    user.toString());
+
+        mockMvc.perform(post("/tasks/1/comments/create")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(formData)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/read"));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testCreateInvalidComment() throws Exception {
+        when(taskService.findTaskById(any(long.class))).thenReturn(task);
+
+        char[] veryLongComment = new char[1000];
+        Arrays.fill(veryLongComment, 'a');
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("id",      "1");
+        formData.add("comment", Arrays.toString(veryLongComment));
+        formData.add("user",    user.toString());
+
+        mockMvc.perform(post("/tasks/1/comments/create")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(formData)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/read?invalidComment=true"));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testCreateCommentForInvalidTask() throws Exception {
+        doThrow(EntityNotFoundException.class).when(taskService).findTaskById(any(long.class));
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("id",      "1");
+        formData.add("comment", "Test Comment");
+        formData.add("user",    user.toString());
+
+        mockMvc.perform(post("/tasks/999/comments/create")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(formData)
+                .with(csrf()))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(containsString("404")))
+                .andExpect(content().string(containsString("Not Found")));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testUpdateComment() throws Exception {
+        when(commentService.findCommentById(any(long.class))).thenReturn(comment);
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("id",      "1");
+        formData.add("comment", "Updated Test Comment");
+        formData.add("user",    user.toString());
+
+        mockMvc.perform(post("/tasks/1/comments/1/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(formData)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/read"));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testUpdateInvalidComment() throws Exception {
+        when(commentService.findCommentById(any(long.class))).thenReturn(comment);
+
+        char[] veryLongComment = new char[1000];
+        Arrays.fill(veryLongComment, 'a');
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("id",      "1");
+        formData.add("comment", Arrays.toString(veryLongComment));
+        formData.add("user",    user.toString());
+
+        mockMvc.perform(post("/tasks/1/comments/1/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(formData)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/read?invalidComment=true"));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testDeleteComment() throws Exception {
+        mockMvc.perform(post("/tasks/1/comments/1/delete")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/read"));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testDeleteInvalidComment() throws Exception {
+        doThrow(EntityNotFoundException.class).when(commentService).deleteCommentById(any(long.class));
+
+        mockMvc.perform(post("/tasks/1/comments/999/delete")
+                .with(csrf()))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(containsString("404")))
+                .andExpect(content().string(containsString("Not Found")));
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testDeleteCommentForInvalidTask() throws Exception {
+        doThrow(EntityNotFoundException.class).when(taskService).findTaskById(any(long.class));
+
+        mockMvc.perform(post("/tasks/999/comments/1/delete")
+                .with(csrf()))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(containsString("404")))
+                .andExpect(content().string(containsString("Not Found")));
     }
 }

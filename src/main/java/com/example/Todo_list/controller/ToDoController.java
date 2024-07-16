@@ -33,9 +33,9 @@ public class ToDoController {
 
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @GetMapping("/create/users/{owner_id}")
-    public String showToDoCreationForm(@PathVariable("owner_id") Long id, Model model) {
+    public String showToDoCreationForm(@PathVariable("owner_id") Long ownerId, Model model) {
         model.addAttribute("todo", new ToDo());
-        model.addAttribute("ownerId", id);
+        model.addAttribute("ownerId", ownerId);
         logger.info("ToDoController.showToDoCreationForm(): Displaying ToDo creation form");
         return "todo-create";
     }
@@ -43,11 +43,11 @@ public class ToDoController {
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @PostMapping("/create/users/{owner_id}")
     public String createToDo(
-            @PathVariable("owner_id") Long id,
+            @PathVariable("owner_id") Long ownerId,
             @Valid @ModelAttribute("todo") ToDo toDo,
             BindingResult result
     ) {
-        logger.info("ToDoController.createToDo(): Attempting to create a ToDo item for user with userId=" + id);
+        logger.info("ToDoController.createToDo(): Attempting to create a ToDo item for user with userId=" + ownerId);
 
         if (result.hasErrors()) {
             logger.info("ToDoController.createToDo(): Error found in data received, aborting ToDo creation");
@@ -55,20 +55,20 @@ public class ToDoController {
         }
 
         toDo.setCreatedAt(LocalDateTime.now());
-        toDo.setOwner(userService.findUserById(id));
+        toDo.setOwner(userService.findUserById(ownerId));
 
         logger.info("ToDoController.createToDo(): Saving " + toDo);
         toDoService.save(toDo);
-        return String.format("redirect:/todos/all/users/%d", id);
+        return String.format("redirect:/todos/all/users/%d", ownerId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or " +
-            "principal.id == @toDoServiceImpl.findToDoById(#id).owner.id or " +
-            "@toDoServiceImpl.findToDoById(#id).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
-    @GetMapping("/{id}/tasks")
-    public String displayToDo(@PathVariable("id") Long id, Model model) {
-        ToDo todo = toDoService.findToDoById(id);
-        List<Task> tasks = taskService.findAllTasksOfToDo(id);
+            "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
+            "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+    @GetMapping("/{todo_id}/tasks")
+    public String displayToDo(@PathVariable("todo_id") Long todoId, Model model) {
+        ToDo todo = toDoService.findToDoById(todoId);
+        List<Task> tasks = taskService.findAllTasksOfToDo(todoId);
         List<User> users = userService.findAllUsers()
                                         .stream()
                                         .filter(user -> !Objects.equals(user.getId(), todo.getOwner().getId()))
@@ -79,7 +79,7 @@ public class ToDoController {
         model.addAttribute("tasks", sortedTasks);
         model.addAttribute("users", users);
 
-        logger.info("ToDoController.displayToDo(): Displaying ToDo with toDoId=" + id);
+        logger.info("ToDoController.displayToDo(): Displaying ToDo with toDoId=" + todoId);
 
         return "todo-tasks";
     }
@@ -96,6 +96,9 @@ public class ToDoController {
         return "todo-update";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or " +
+                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
+                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/{todo_id}/update/users/{owner_id}")
     public String updateToDo(
             @PathVariable("todo_id") Long todoId,
@@ -120,7 +123,10 @@ public class ToDoController {
         return String.format("redirect:/todos/all/users/%d", ownerId);
     }
 
-    @GetMapping("/{todo_id}/delete/users/{owner_id}")
+    @PreAuthorize("hasAuthority('ADMIN') or " +
+                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
+                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+    @PostMapping("/{todo_id}/delete/users/{owner_id}")
     public String deleteToDo(@PathVariable("todo_id") Long todoId, @PathVariable("owner_id") Long ownerId) {
         logger.info("ToDoController.deleteToDo(): Deleting ToDo with toDoId=" + todoId);
         toDoService.deleteToDoById(todoId);
@@ -139,7 +145,7 @@ public class ToDoController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
-    @GetMapping("/{todoId}/add")
+    @PostMapping("/{todoId}/add")
     public String addCollaborator(@PathVariable Long todoId, @RequestParam("user_id") Long userId) {
         if (userId == -1) {
             logger.info("ToDoController.addCollaborator(): userId is invalid: " + userId);
@@ -154,7 +160,7 @@ public class ToDoController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
-    @GetMapping("/{todoId}/remove")
+    @PostMapping("/{todoId}/remove")
     public String removeCollaborator(@PathVariable Long todoId, @RequestParam("user_id") Long userId) {
         logger.info("ToDoController.removeCollaborator(): " +
                     "Removing " + toDoService.findToDoById(todoId) + " from " + userService.findUserById(userId));

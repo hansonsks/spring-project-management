@@ -50,4 +50,11 @@ public class ControllerTestUtils {
         task.setDescription("Task Description");
         return task;
     }
+
+    public static Comment createComment() {
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setContent("Test Comment");
+        return comment;
+    }
 }

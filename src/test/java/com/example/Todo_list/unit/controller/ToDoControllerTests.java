@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -188,7 +187,8 @@ public class ToDoControllerTests {
     void testDeleteToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
-        mockMvc.perform(get("/todos/1/delete/users/1"))
+        mockMvc.perform(post("/todos/1/delete/users/1")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/all/users/1"));
     }
@@ -198,7 +198,8 @@ public class ToDoControllerTests {
     void testDeleteInvalidToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenThrow(EntityNotFoundException.class);
 
-        mockMvc.perform(get("/todos/1/delete/users/1"))
+        mockMvc.perform(post("/todos/1/delete/users/1")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/all/users/1"));
     }
@@ -225,7 +226,8 @@ public class ToDoControllerTests {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
         when(userService.findUserById(any(long.class))).thenReturn(otherUser);
 
-        mockMvc.perform(get("/todos/1/add?user_id=2"))
+        mockMvc.perform(post("/todos/1/add?user_id=2")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/1/tasks"));
     }
@@ -237,7 +239,8 @@ public class ToDoControllerTests {
         when(userService.findUserById(any(long.class))).thenReturn(user);
         doThrow(UserIsToDoOwnerException.class).when(toDoService).addCollaborator(toDo.getId(), user.getId());
 
-        mockMvc.perform(get("/todos/1/add?user_id=1"))
+        mockMvc.perform(post("/todos/1/add?user_id=1")
+                .with(csrf()))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("406")))
                 .andExpect(content().string(containsString("Not Acceptable")));
@@ -256,7 +259,8 @@ public class ToDoControllerTests {
         when(userService.findUserById(any(long.class))).thenReturn(user);
         doThrow(UserIsToDoOwnerException.class).when(toDoService).removeCollaborator(toDo.getId(), user.getId());
 
-        mockMvc.perform(get("/todos/1/remove?user_id=2"))
+        mockMvc.perform(post("/todos/1/remove?user_id=2")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/todos/1/tasks"));
     }
@@ -268,7 +272,8 @@ public class ToDoControllerTests {
         when(userService.findUserById(any(long.class))).thenReturn(user);
         doThrow(UserIsToDoOwnerException.class).when(toDoService).removeCollaborator(toDo.getId(), user.getId());
 
-        mockMvc.perform(get("/todos/1/remove?user_id=1"))
+        mockMvc.perform(post("/todos/1/remove?user_id=1")
+                .with(csrf()))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("406")))
                 .andExpect(content().string(containsString("Not Acceptable")));

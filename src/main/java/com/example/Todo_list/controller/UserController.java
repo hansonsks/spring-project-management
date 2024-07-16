@@ -215,7 +215,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') and #userId != authentication.principal.id")
-    @GetMapping("/{user_id}/delete")
+    @PostMapping("/{user_id}/delete")
     public String deleteUser(@PathVariable("user_id") Long userId) {
         if (userService.findUserById(userId).getCollaborators().isEmpty()) {
             logger.info("UserController.deleteUser(): Deleting user with userId=" + userId);

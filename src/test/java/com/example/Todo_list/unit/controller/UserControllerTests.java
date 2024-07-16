@@ -227,7 +227,8 @@ public class UserControllerTests {
         user.setCollaborators(Collections.emptyList());
         when(userService.findUserById(any(long.class))).thenReturn(user);
 
-        mockMvc.perform(get("/users/1/delete"))
+        mockMvc.perform(post("/users/1/delete")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users/all"));
     }
@@ -238,7 +239,8 @@ public class UserControllerTests {
         user.setCollaborators(List.of(new ToDo(), new ToDo(), new ToDo()));
         when(userService.findUserById(any(long.class))).thenReturn(user);
 
-        mockMvc.perform(get("/users/1/delete"))
+        mockMvc.perform(post("/users/1/delete")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/users/all?badDeleteUserId=1"));
     }
