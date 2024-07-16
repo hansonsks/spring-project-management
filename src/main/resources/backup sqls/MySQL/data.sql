@@ -93,3 +93,9 @@ VALUES
 INSERT INTO oauth_users (provider, provider_user_id, user_id)
 VALUES
     ('github', 'github12345', 6);
+
+-- TODO: Add sample comments to sample tasks
+
+INSERT INTO comments (comment, user_id, task_id, created_at, is_edited)
+VALUES
+    ('Sample Comment', 1, 1, NOW(), FALSE);

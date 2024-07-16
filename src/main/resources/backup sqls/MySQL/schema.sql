@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS todos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
-    title VARCHAR(255) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     owner_id BIGINT,
     FOREIGN KEY (owner_id) REFERENCES users(id)
@@ -52,5 +52,16 @@ CREATE TABLE IF NOT EXISTS oauth_users (
     provider VARCHAR(255) NOT NULL,
     provider_user_id VARCHAR(255) NOT NULL UNIQUE,
     user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL,
+    comment VARCHAR(255) NOT NULL,
+    is_edited BOOLEAN,
+    task_id BIGINT,
+    user_id BIGINT,
+    FOREIGN KEY (task_id) REFERENCES tasks(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
