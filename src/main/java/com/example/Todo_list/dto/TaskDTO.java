@@ -1,9 +1,12 @@
 package com.example.Todo_list.dto;
 
+import com.example.Todo_list.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,4 +34,6 @@ public class TaskDTO {
     private Long toDoId;
 
     private String state;
+
+    private List<User> assignedUsers;
 }

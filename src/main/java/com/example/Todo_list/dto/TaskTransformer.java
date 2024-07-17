@@ -18,6 +18,7 @@ public class TaskTransformer {
         task.setPriority(Priority.valueOf(dto.getPriority()));
         task.setTodo(todo);
         task.setState(state);
+        task.setAssignedUsers(dto.getAssignedUsers());
 
         return task;
     }
@@ -30,6 +31,7 @@ public class TaskTransformer {
         dto.setPriority(task.getPriority().toString());
         dto.setToDoId(task.getTodo().getId());
         dto.setState(task.getState().toString());
+        dto.setAssignedUsers(task.getAssignedUsers());
 
         return dto;
     }

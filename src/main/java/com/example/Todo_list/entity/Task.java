@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"todo"})
+@ToString(exclude = {"todo", "assignedUsers"})
 @EqualsAndHashCode(of = "id")
 @Table(name = "tasks")
 public class Task {
@@ -52,4 +52,12 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tasks_collaborators",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "collaborator_id")
+    )
+    private List<User> assignedUsers = new ArrayList<>();
 }

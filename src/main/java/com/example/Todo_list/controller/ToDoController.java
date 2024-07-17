@@ -145,8 +145,8 @@ public class ToDoController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
-    @PostMapping("/{todoId}/add")
-    public String addCollaborator(@PathVariable Long todoId, @RequestParam("user_id") Long userId) {
+    @PostMapping("/{todo_id}/add")
+    public String addCollaborator(@PathVariable("todo_id") Long todoId, @RequestParam("user_id") Long userId) {
         if (userId == -1) {
             logger.info("ToDoController.addCollaborator(): userId is invalid: " + userId);
             return String.format("redirect:/todos/%d/tasks", todoId);
@@ -160,8 +160,8 @@ public class ToDoController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
-    @PostMapping("/{todoId}/remove")
-    public String removeCollaborator(@PathVariable Long todoId, @RequestParam("user_id") Long userId) {
+    @PostMapping("/{todo_id}/remove")
+    public String removeCollaborator(@PathVariable("todo_id") Long todoId, @RequestParam("user_id") Long userId) {
         logger.info("ToDoController.removeCollaborator(): " +
                     "Removing " + toDoService.findToDoById(todoId) + " from " + userService.findUserById(userId));
         toDoService.removeCollaborator(todoId, userId);

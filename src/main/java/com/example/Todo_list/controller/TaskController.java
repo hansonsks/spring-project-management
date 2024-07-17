@@ -5,10 +5,8 @@ import com.example.Todo_list.dto.TaskTransformer;
 import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.entity.Priority;
 import com.example.Todo_list.entity.Task;
-import com.example.Todo_list.service.CommentService;
-import com.example.Todo_list.service.StateService;
-import com.example.Todo_list.service.TaskService;
-import com.example.Todo_list.service.ToDoService;
+import com.example.Todo_list.entity.User;
+import com.example.Todo_list.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -31,15 +29,16 @@ public class TaskController {
     private final TaskService taskService;
     private final ToDoService toDoService;
     private final StateService stateService;
+    private final UserService userService;
     private final CommentService commentService;
 
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/create/todos/{todo_id}")
-    public String showTaskCreationForm(@PathVariable("todo_id") Long id, Model model) {
+    public String showTaskCreationForm(@PathVariable("todo_id") Long todoId, Model model) {
         model.addAttribute("task", new TaskDTO());
-        model.addAttribute("todo", toDoService.findToDoById(id));
+        model.addAttribute("todo", toDoService.findToDoById(todoId));
         model.addAttribute("priorities", Priority.values());
         logger.info("TaskController.showTaskCreationForm(): Displaying task creation form");
         return "task-create";
@@ -50,16 +49,16 @@ public class TaskController {
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/create/todos/{todo_id}")
     public String createTask(
-            @PathVariable("todo_id") Long id,
+            @PathVariable("todo_id") Long todoId,
             Model model,
             @Valid @ModelAttribute("task") TaskDTO taskDTO,
             BindingResult result
     ) {
-        logger.info("TaskController.createTask(): Attempting to create task for todoId=" + id);
+        logger.info("TaskController.createTask(): Attempting to create task for todoId=" + todoId);
 
         if (result.hasErrors()) {
             logger.error("TaskController.createTask(): Error found in data received, aborting task creation");
-            model.addAttribute("todo", toDoService.findToDoById(id));
+            model.addAttribute("todo", toDoService.findToDoById(todoId));
             model.addAttribute("priorities", Priority.values());
             return "task-create";
         }
@@ -72,48 +71,38 @@ public class TaskController {
 
         logger.info("TaskController.createTask(): Saving " + task);
         taskService.save(task);
-        return String.format("redirect:/todos/%d/tasks", id);
+        return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
-                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+                "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
+                "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/{task_id}/update")
-    public String showTaskUpdateForm(@PathVariable("task_id") Long id, Model model) {
-        TaskDTO taskDTO = TaskTransformer.convertEntityToDTO(taskService.findTaskById(id));
-        model.addAttribute("task", taskDTO);
-        model.addAttribute("toDoId", taskDTO.getToDoId());
-        model.addAttribute("priorities", Priority.values());
-        model.addAttribute("states", stateService.findAllStates());
+    public String showTaskUpdateForm(@PathVariable("task_id") Long taskId, Model model) {
         logger.info("TaskController.showTaskUpdateForm(): Displaying task update form");
+        prepareModelForTaskUpdate(taskId, model);
         return "task-update";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
-                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+                "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
+                "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/{task_id}/update")
     public String updateTask(
-            @PathVariable("task_id") Long id,
+            @PathVariable("task_id") Long taskId,
             Model model,
             @Valid @ModelAttribute TaskDTO taskDTO,
             BindingResult result
     ) {
-        logger.info("TaskController.updateTask(): Attempting to update task with taskId=" + id);
+        logger.info("TaskController.updateTask(): Attempting to update task with taskId=" + taskId);
 
         if (result.hasErrors()) {
             logger.error("TaskController.updateTask(): Error found in data received, aborting task update");
-
-            TaskDTO oldTaskDTO = TaskTransformer.convertEntityToDTO(taskService.findTaskById(id));
-            model.addAttribute("task", oldTaskDTO);
-            model.addAttribute("toDoId", oldTaskDTO.getToDoId());
-            model.addAttribute("priorities", Priority.values());
-            model.addAttribute("states", stateService.findAllStates());
-
+            prepareModelForTaskUpdate(taskId, model);
             return "task-update";
         }
 
-        taskDTO.setId(id);
+        taskDTO.setId(taskId);
         Task task = TaskTransformer.convertDTOToEntity(
                 taskDTO,
                 toDoService.findToDoById(taskDTO.getToDoId()),
@@ -125,10 +114,26 @@ public class TaskController {
         return String.format("redirect:/todos/%d/tasks", task.getTodo().getId());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#id).todo.owner.id")
+    private void prepareModelForTaskUpdate(Long id, Model model) {
+        TaskDTO taskDTO = TaskTransformer.convertEntityToDTO(taskService.findTaskById(id));
+        model.addAttribute("task", taskDTO);
+        model.addAttribute("toDoId", taskDTO.getToDoId());
+        model.addAttribute("priorities", Priority.values());
+        model.addAttribute("states", stateService.findAllStates());
+        model.addAttribute("assignedUsers", taskDTO.getAssignedUsers());
+
+        List<User> allUsers = userService.findAllUsers();
+        List<User> assignedUsers = taskService.findTaskById(id).getAssignedUsers();
+        List<User> availableUsers = allUsers.stream().filter(user -> !assignedUsers.contains(user)).toList();
+        model.addAttribute("availableUsers", availableUsers);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or " +
+                "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
+                "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/{task_id}/read")
-    public String displayTask(@PathVariable("task_id") Long id, Model model) {
-        Task task = taskService.findTaskById(id);
+    public String displayTask(@PathVariable("task_id") Long taskId, Model model) {
+        Task task = taskService.findTaskById(taskId);
         List<Comment> comments = task.getComments().stream()
                                                     .sorted(Comparator.comparing(Comment::getCreatedAt).reversed())
                                                     .toList();
@@ -149,9 +154,30 @@ public class TaskController {
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
+    @PostMapping("/{task_id}/update/add-user")
+    public String addAssignedUser(@PathVariable("task_id") Long taskId, @RequestParam("user_id") Long userId) {
+        if (userId == -1) {
+            logger.error("TaskController.addAssignedUser(): userId is invalid: " + userId);
+            return String.format("redirect:/tasks/%d/update", taskId);
+        }
+
+        logger.info("TaskController.addAssignedUser(): Adding user with userId=" + userId + " to task with taskId=" + taskId);
+        taskService.assignTaskToUser(taskId, userId);
+        return String.format("redirect:/tasks/%d/update", taskId);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
+    @PostMapping("/{task_id}/update/remove-user")
+    public String removeAssignedUser(@PathVariable("task_id") Long taskId, @RequestParam("user_id") Long userId) {
+        logger.info("TaskController.removeAssignedUser(): Removing user with userId=" + userId + " from task with taskId=" + taskId);
+        taskService.removeTaskFromUser(taskId, userId);
+        return String.format("redirect:/tasks/%d/update", taskId);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
-                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+                "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
+                "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/{task_id}/comments/create")
     public String createComment(@PathVariable("task_id") Long taskId, @RequestParam("comment") String content) {
         if (content == null || content.isEmpty() || content.length() > 255) {
@@ -173,9 +199,7 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/read", taskId);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
-                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+    @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/update")
     public String updateComment(@PathVariable("task_id") Long taskId,
                                 @PathVariable("comment_id") Long commentId,
@@ -198,9 +222,7 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/read", taskId);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
-                "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+    @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/delete")
     public String deleteComment(@PathVariable("task_id") Long taskId, @PathVariable("comment_id") Long commentId) {
         logger.info("TaskController.deleteComment(): " +

@@ -40,4 +40,6 @@ public class Comment {
 
     @Column(name = "is_edited", nullable = false)
     private Boolean isEdited = false;
+
+    // TODO: Optional: Add a field to store the last time the comment was edited
 }

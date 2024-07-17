@@ -1,5 +1,6 @@
 package com.example.Todo_list.controller;
 
+import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.service.CommentService;
 import com.example.Todo_list.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,11 @@ public class TaskCommentController {
     @GetMapping("/all")
     public String showAllComments(Model model) {
         logger.info("TaskCommentController.showAllComments(): Displaying all comments ...");
+        for (Comment comment : commentService.findAllComments()) {
+            System.out.println(comment);
+            System.out.println(comment.getTask());
+            System.out.println(comment.getTask().getId());
+        }
         model.addAttribute("comments", commentService.findAllComments());
         return "comments-all";
     }

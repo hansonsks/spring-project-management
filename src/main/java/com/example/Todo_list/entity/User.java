@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"todoList", "collaborators"})
+@ToString(exclude = {"todoList", "collaborators", "assignedTasks"})
 @EqualsAndHashCode(of = "id")
 @Table(name = "users")
 public class User {
@@ -78,4 +78,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)
+    private List<Task> assignedTasks = new ArrayList<>();
 }
