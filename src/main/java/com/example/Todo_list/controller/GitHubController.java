@@ -6,6 +6,7 @@ import com.example.Todo_list.entity.github.Repo;
 import com.example.Todo_list.service.impl.GitHubService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-// TODO: Add Preauthorization
 
 @Controller
 @RequestMapping("/github")
@@ -24,41 +24,44 @@ public class GitHubController {
 
     private final GitHubService gitHubService;
 
+    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos")
     public String listRepos(Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout";
+            return "redirect:/logout?logout=true";
         }
 
         List<Repo> repos = gitHubService.getUserRepos(client);
         model.addAttribute("repos", repos);
-        return "repos";
+        return "github-repos";
     }
 
+    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/issues")
     public String listIssues(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout";
+            return "redirect:/logout?logout=true";
         }
 
         List<Issue> issues = gitHubService.getRepoIssues(client, owner, repo);
         model.addAttribute("issues", issues);
         model.addAttribute("repoName", repo);
-        return "issues";
+        return "github-issues";
     }
 
+    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/pulls")
     public String listPullRequests(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout";
+            return "redirect:/logout?logout=true";
         }
 
         List<PullRequest> pulls = gitHubService.getRepoPullRequests(client, owner, repo);
         model.addAttribute("pulls", pulls);
         model.addAttribute("repoName", repo);
-        return "pull-requests";
+        return "github-pull-requests";
     }
 }
