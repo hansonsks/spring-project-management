@@ -34,8 +34,10 @@ CREATE TABLE IF NOT EXISTS tasks (
     priority VARCHAR(255),
     state_id BIGINT,
     todo_id BIGINT,
+    assigned_user_id BIGINT,
     FOREIGN KEY (todo_id) REFERENCES todos(id),
-    FOREIGN KEY (state_id) REFERENCES states(id)
+    FOREIGN KEY (state_id) REFERENCES states(id),
+    FOREIGN KEY (assigned_user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS todos_collaborators (

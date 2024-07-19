@@ -93,6 +93,7 @@ public class ToDoServiceImpl implements ToDoService {
         logger.info("ToDoService.removeCollaborator(): " +
                 "Deleting User with userId=" + collaboratorId + " from ToDo collaborators with toDoId=" + toDoId);
 
+        todo.getTasks().forEach(task -> task.getAssignedUsers().remove(user));
         todo.getCollaborators().remove(user);
         user.getCollaborators().remove(todo);
         toDoRepository.save(todo);
