@@ -198,7 +198,7 @@ public class UserServiceTests {
         userService.deleteUserById(userWithOAuth.getId());
         verify(userRepository).findById(any(long.class));
         verify(userRepository, times(1)).delete(any(User.class));
-        verify(oAuthUserRepository, times(1)).deleteByUser(any(User.class));
+        verify(oAuthUserRepository, times(1)).deleteOAuthUserByUser(any(User.class));
     }
 
     @Test

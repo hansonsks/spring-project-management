@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Long id) {
         User user = this.findUserById(id);
         logger.info("UserService.deleteUserById(): Deleting " + user);
-        oAuthUserRepository.deleteByUser(user);
+        oAuthUserRepository.deleteOAuthUserByUser(user);
         userRepository.delete(user);
     }
 

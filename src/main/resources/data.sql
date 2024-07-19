@@ -37,7 +37,7 @@ VALUES
     ('User Three', 'Doe', 'user3@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
 
     -- GitHubUser Password: GitHubUser123?
-    ('GitHubUser', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1);
+    ('GitHub User', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1);
 
 INSERT INTO states (name) VALUES
                               ('New'),
@@ -100,7 +100,7 @@ VALUES
 
 INSERT INTO oauth_users (provider, provider_user_id, user_id)
 VALUES
-    ('github', 'github12345', 6);
+    ('github', 'github12345', 7);
 
 -- TODO: Add sample comments to sample tasks
 

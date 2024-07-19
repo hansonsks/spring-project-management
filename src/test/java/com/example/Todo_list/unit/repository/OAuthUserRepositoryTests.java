@@ -25,9 +25,9 @@ public class OAuthUserRepositoryTests {
     @DisplayName("findByUser() finds an OAuthUser given a User")
     void testFindOAuthUserByUser() {
         User githubUser = userRepository.findByEmail("githubuser@mail.com").get();
-        assertTrue(oAuthUserRepository.findByUser(githubUser).isPresent());
+        assertTrue(oAuthUserRepository.findOAuthUserByUser(githubUser).isPresent());
 
-        OAuthUser oAuthGithubUser = oAuthUserRepository.findByUser(githubUser).get();
+        OAuthUser oAuthGithubUser = oAuthUserRepository.findOAuthUserByUser(githubUser).get();
         assertEquals("github", oAuthGithubUser.getProvider());
         assertEquals("github12345", oAuthGithubUser.getProviderUserId());
     }
@@ -42,7 +42,7 @@ public class OAuthUserRepositoryTests {
     @DisplayName("deleteByUser() deletes an OAuthUser given a User")
     void testDeleteOAuthUserByUser() {
         User githubUser = userRepository.findByEmail("githubuser@mail.com").get();
-        oAuthUserRepository.deleteByUser(githubUser);
-        assertTrue(oAuthUserRepository.findByUser(githubUser).isEmpty());
+        oAuthUserRepository.deleteOAuthUserByUser(githubUser);
+        assertTrue(oAuthUserRepository.findOAuthUserByUser(githubUser).isEmpty());
     }
 }
