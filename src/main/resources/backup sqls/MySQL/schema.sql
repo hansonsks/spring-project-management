@@ -49,6 +49,14 @@ CREATE TABLE IF NOT EXISTS todos_collaborators (
     ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS tasks_collaborators (
+    task_id BIGINT NOT NULL,
+    collaborator_id BIGINT NOT NULL,
+    PRIMARY KEY (task_id, collaborator_id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id),
+    FOREIGN KEY (collaborator_id) REFERENCES users(id)
+);
+
 CREATE TABLE IF NOT EXISTS oauth_users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     provider VARCHAR(255) NOT NULL,

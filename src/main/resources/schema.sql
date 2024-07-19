@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     priority VARCHAR(255),
     state_id BIGINT,
     todo_id BIGINT,
-    assigned_user_id BIGINT,
+    assigned_user_id BIGINT NULL,
     FOREIGN KEY (todo_id) REFERENCES todos(id),
     FOREIGN KEY (state_id) REFERENCES states(id),
     FOREIGN KEY (assigned_user_id) REFERENCES users(id)
@@ -47,6 +47,14 @@ CREATE TABLE IF NOT EXISTS todos_collaborators (
     FOREIGN KEY (todo_id) REFERENCES todos(id),
     FOREIGN KEY (collaborator_id) REFERENCES users(id)
     ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS tasks_collaborators (
+    task_id BIGINT NOT NULL,
+    collaborator_id BIGINT NOT NULL,
+    PRIMARY KEY (task_id, collaborator_id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id),
+    FOREIGN KEY (collaborator_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS oauth_users (
