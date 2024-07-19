@@ -13,4 +13,10 @@ public interface TaskService {
     void deleteTaskById(Long id);
 
     List<Task> findAllTasksOfToDo(Long todoId);
+
+    List<Task> findAssignedTasksByUserId(Long userId);
+
+    void assignTaskToUser(Long taskId, Long userId);
+
+    void removeTaskFromUser(Long taskId, Long userId);
 }

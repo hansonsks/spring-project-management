@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom styles for left sidebar */
+        .left-sidebar {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .left-sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            display: block;
+        }
+
+        .left-sidebar a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .left-sidebar.minimized {
+            width: 60px;
+        }
+
+        .left-sidebar.minimized a {
+            font-size: 0;
+        }
+
+        .left-sidebar.minimized a:before {
+            font-size: 18px;
+        }
+
+        .left-sidebar.minimized .sidebar-heading,
+        .left-sidebar.minimized .navbar-text {
+            display: none;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 10px;
+            right: -20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .toggle-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .sidebar-separator {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+        }
+
+        .sidebar-heading {
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            padding: 5px;
+            transition: opacity 0.3s;
+        }
+
+        .no-transition {
+            transition: none !important;
+        }
+
+        /* Custom styles for right sidebar */
+        .right-sidebar {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            transition: right 0.3s, width 0.3s;
+        }
+
+        .right-sidebar.hidden {
+            font-size: 0;
+            right: -230px;
+        }
+
+        .right-sidebar.minimized {
+            width: 60px;
+            right: 0;
+        }
+
+        .right-sidebar .notification {
+            padding: 20px 15px;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .right-sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            display: block;
+        }
+
+        .right-sidebar a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .right-sidebar.minimized .notification,
+        .right-sidebar.minimized .right-sidebar-heading {
+            display: none;
+        }
+
+        .right-toggle-btn {
+            position: fixed;
+            top: 10px;
+            right: 285px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: right 0.3s;
+        }
+
+        .right-toggle-btn.button-hidden {
+            font-size: 16px;
+            right: 55px;
+        }
+
+        .right-sidebar.hidden .notification,
+        .right-sidebar.hidden .right-sidebar-heading {
+            display: none; /* Hide notifications when sidebar is hidden */
+        }
+
+        .right-sidebar.minimized .notification,
+        .right-sidebar.minimized .right-sidebar-heading {
+            display: none; /* Hide notifications when sidebar is minimized */
+        }
+    </style>
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("minimized");
+            localStorage.setItem('sidebarState', sidebar.classList.contains('minimized') ? 'minimized' : 'expanded');
+        }
+
+        function loadSidebarState() {
+            let sidebar = document.getElementById("sidebar");
+            let sidebarState = localStorage.getItem('sidebarState');
+            if (sidebarState === 'minimized') {
+                sidebar.classList.add('minimized');
+            }
+            // Remove the no-transition class after applying the initial state
+            setTimeout(function() {
+                sidebar.classList.remove('no-transition');
+            }, 0);
+
+            let rightSidebar = document.getElementById("rightSidebar");
+            let rightToggleBtn = document.getElementById("rightToggleBtn");
+            let rightSidebarState = localStorage.getItem('rightSidebarState');
+            if (rightSidebarState === 'expanded') {
+                rightSidebar.classList.remove('hidden');
+                rightToggleBtn.classList.remove('button-hidden');
+            }
+            setTimeout(function() {
+                rightSidebar.classList.remove('no-transition');
+                rightToggleBtn.classList.remove('no-transition');
+            }, 0);
+        }
+
+        function toggleRightSidebar() {
+            let rightSidebar = document.getElementById("rightSidebar");
+            let rightToggleBtn = document.getElementById("rightToggleBtn");
+            rightSidebar.classList.toggle("hidden");
+            rightToggleBtn.classList.toggle("button-hidden");
+            localStorage.setItem('rightSidebarState', rightSidebar.classList.contains('hidden') ? 'hidden' : 'expanded');
+        }
+    </script>
+    <title>Home Page</title>
+</head>
+<body onload="loadSidebarState()">
+<div class="left-sidebar no-transition" id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
+    <span class="navbar-text mr-2" style="padding: 15px">
+            <span style="font-size: 18px;">Hello,</span>
+            <a class="nav-link d-inline" th:href="@{|/users/${#authentication.principal.id}/read|}" style="padding: 5px">
+                <span sec:authentication="principal.firstName"></span>
+            </a>
+        </span>
+
+    <div class="sidebar-separator"></div> <!-- Separator -->
+
+    <h6 class="sidebar-heading">General Functions</h6>
+    <a th:href="@{/}"><i class="fas fa-home"></i> Home</a>
+    <a th:href="@{/todos/all/users/{userId}(userId=${#authentication.principal.id})}"><i class="fas fa-list-ul"></i> Projects</a>
+    <a th:href="@{/tasks/all/users/{userId}(userId=${#authentication.principal.id})}"><i class="fas fa-tasks"></i> Tasks</a>
+    <a th:href="@{/users/{userId}/read(userId=${#authentication.principal.id})}"><i class="fas fa-user"></i> Profile</a>
+
+    <div sec:authorize="isAuthenticated() and hasAuthority('ADMIN')">
+        <div class="sidebar-separator"></div> <!-- Separator -->
+        <h6 class="sidebar-heading">Admin Functions</h6>
+        <a th:href="@{/users/all}"><i class="fas fa-users"></i> All Users</a>
+        <a th:href="@{/comments/all}"><i class="fas fa-comment-alt"></i> All Comments</a>
+    </div>
+
+    <div sec:authorize="isAuthenticated() and #authentication.principal.isGitHubConnected()">
+        <div class="sidebar-separator"></div> <!-- Separator -->
+        <h6 class="sidebar-heading">GitHub Functions</h6>
+        <a th:href="@{/github/repos}"><i class="fab fa-github"></i> GitHub Repos</a>
+    </div>
+
+    <div sec:authorize="isAuthenticated() and #authentication.principal.isGoogleConnected()">
+        <div class="sidebar-separator"></div> <!-- Separator -->
+        <h6 class="sidebar-heading">Google Functions</h6>
+        <a th:href="/">TODO: Add Google user functions</a>
+    </div>
+
+    <div class="sidebar-separator"></div> <!-- Separator -->
+
+    <h6 class="sidebar-heading">Logout</h6>
+    <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+    <div class="sidebar-separator"></div> <!-- Separator -->
+</div>
+
+<!-- TODO: Add notifications from model -->
+<!-- TODO: Add red circle to indicate number of notifications -->
+<!-- TODO: Add ability to mark notifications as read (Mark as read button) -->
+<!-- TODO: Add deadlines to Tasks so they send notifications once the deadline is up + Warning with 1 hour remaining / different times -->
+<div class="right-sidebar hidden no-transition" id="rightSidebar">
+    <button class="right-toggle-btn button-hidden no-transition" id="rightToggleBtn" onclick="toggleRightSidebar()">&#9776;</button>
+    <h6 class="right-sidebar-heading text-center" style="font-size: 18px"><i class="fas fa-bell"></i> Notifications</h6>
+    <div class="notification">Notification 1</div>
+    <div class="notification">Notification 2</div>
+    <div class="notification">Notification 3</div>
+    <div class="notification">Notification 4</div>
+</div>
+</body>
+</html>

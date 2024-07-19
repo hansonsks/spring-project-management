@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/tasks")
@@ -115,7 +116,9 @@ public class TaskController {
     }
 
     private void prepareModelForTaskUpdate(Long id, Model model) {
-        TaskDTO taskDTO = TaskTransformer.convertEntityToDTO(taskService.findTaskById(id));
+        Task task = taskService.findTaskById(id);
+        User owner = task.getTodo().getOwner();
+        TaskDTO taskDTO = TaskTransformer.convertEntityToDTO(task);
         model.addAttribute("task", taskDTO);
         model.addAttribute("toDoId", taskDTO.getToDoId());
         model.addAttribute("priorities", Priority.values());
@@ -124,7 +127,10 @@ public class TaskController {
 
         List<User> allUsers = userService.findAllUsers();
         List<User> assignedUsers = taskService.findTaskById(id).getAssignedUsers();
-        List<User> availableUsers = allUsers.stream().filter(user -> !assignedUsers.contains(user)).toList();
+        List<User> availableUsers = allUsers.stream().filter(
+                user -> Objects.equals(user.getId(), owner.getId()) ||
+                        (!assignedUsers.contains(user) && toDoService.findToDoById(taskDTO.getToDoId()).getCollaborators().contains(user))
+        ).toList();
         model.addAttribute("availableUsers", availableUsers);
     }
 
@@ -170,6 +176,11 @@ public class TaskController {
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/remove-user")
     public String removeAssignedUser(@PathVariable("task_id") Long taskId, @RequestParam("user_id") Long userId) {
+        if (userId == -1) {
+            logger.error("TaskController.removeAssignedUser(): userId is invalid: " + userId);
+            return String.format("redirect:/tasks/%d/update", taskId);
+        }
+
         logger.info("TaskController.removeAssignedUser(): Removing user with userId=" + userId + " from task with taskId=" + taskId);
         taskService.removeTaskFromUser(taskId, userId);
         return String.format("redirect:/tasks/%d/update", taskId);
@@ -230,5 +241,13 @@ public class TaskController {
         taskService.findTaskById(taskId); // Check if task exists (will throw exception if not
         commentService.deleteCommentById(commentId);
         return String.format("redirect:/tasks/%d/read", taskId);
+    }
+
+    @GetMapping("/all/users/{user_id}")
+    public String displayAllTasksOfUser(@PathVariable("user_id") Long userId, Model model) {
+        List<Task> tasks = taskService.findAssignedTasksByUserId(userId);
+        model.addAttribute("user", userService.findUserById(userId));
+        model.addAttribute("tasks", tasks);
+        return "user-tasks";
     }
 }

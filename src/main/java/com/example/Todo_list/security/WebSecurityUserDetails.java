@@ -34,6 +34,10 @@ public class WebSecurityUserDetails implements UserDetails {
         return false;
     }
 
+    public boolean isGoogleConnected() {
+        return false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
