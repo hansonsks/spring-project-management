@@ -38,6 +38,10 @@ public class WebSecurityUserDetails implements UserDetails {
         return false;
     }
 
+    public boolean isFacebookConnected() {
+        return false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

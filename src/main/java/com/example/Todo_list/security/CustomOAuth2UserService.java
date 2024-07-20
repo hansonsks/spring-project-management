@@ -10,14 +10,13 @@ import com.example.Todo_list.utils.SampleTodoInitializer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,76 +30,85 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final PasswordService passwordService;
     private final SampleTodoInitializer todoInitializer;
 
+    // TODO: This could be refactored to a consolidated attribute class instead of multiple maps
+    private final Map<OAuth2Provider, String> providerToUniqueId = Map.of(
+            OAuth2Provider.GITHUB, "id",
+            OAuth2Provider.GOOGLE, "sub",
+            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+    );
+
+    private final Map<OAuth2Provider, String> providerToFirstName = Map.of(
+            OAuth2Provider.GITHUB, "login",
+            OAuth2Provider.GOOGLE, "given_name",
+            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+    );
+
+    private final Map<OAuth2Provider, String> providerToLastName = Map.of(
+            OAuth2Provider.GITHUB, "",
+            OAuth2Provider.GOOGLE, "family_name",
+            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+    );
+
+    private final Map<OAuth2Provider, String> providerToEmail = Map.of(
+            OAuth2Provider.GITHUB, "email",
+            OAuth2Provider.GOOGLE, "email",
+            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+    );
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2Provider provider;
+        try {
+            provider = OAuth2Provider.valueOf(userRequest.getClientRegistration().getClientName().toUpperCase());
+            logger.info("CustomOAuth2UserService.loadUser(): OAuth2 login found Provider: " + provider);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Unexpected provider: " + userRequest.getClientRegistration().getClientName());
+        }
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
+        logger.info(String.format("CustomOAuth2UserService.loadUser(): %s loaded successfully", oAuth2User));
 
-        // TODO: Transition hard-coding values to using CommonOAuth2Provider values or an Enum class
-        System.out.println(Arrays.toString(CommonOAuth2Provider.values()));
-
-        // Hard-coded GitHub only, should have switch-cases for Facebook, Google, etc.
-        String provider = "github";
-        String uniqueId = oAuth2User.getAttribute("id").toString();
-
+        String uniqueId = oAuth2User.getAttribute(providerToUniqueId.get(provider)).toString();
         Optional<OAuthUser> oAuthUser = oAuthUserRepository.findByProviderAndProviderUserId(provider, uniqueId);
         if (oAuthUser.isPresent()) {
+            logger.info("CustomOAuth2UserService.loadUser(): User found in database: " + oAuthUser.get().getUser());
             return new CustomOAuth2UserDetails(oAuthUser.get().getUser(), oAuth2User, provider);
         } else {
-            return new CustomOAuth2UserDetails(createGitHubUser(provider, oAuth2User), oAuth2User, provider);
+            logger.info("CustomOAuth2UserService.loadUser(): User not found in database. Creating new user...");
+            return new CustomOAuth2UserDetails(createUser(oAuth2User, provider, uniqueId), oAuth2User, provider);
         }
     }
 
-    private User createGitHubUser(String provider, OAuth2User oAuth2User) {
-        User user;
-        String email = oAuth2User.getAttribute("email");
+    private User createUser(OAuth2User oAuth2User, OAuth2Provider provider, String uniqueId) {
+        User user = new User();
 
-        /*
-            If an email was found in the database, create an OAuthUser and link it to the old account
-            One major flaw in this approach is email verification must be needed when signing up
-            Otherwise, you can steal another user's information by possessing the OAuth2 provider account with the
-            same email if you did not previously register in the system.
-         */
-        if (email != null && userRepository.findByEmail(email).isPresent()) {
-            logger.info("CustomOAuth2UserService.createGitHubUser(): User with existing email + " + email + " found");
-            user = userRepository.findByEmail(email).get();
-        } else {
-            user = new User();
-            user.setFirstName(oAuth2User.getAttribute("login"));
-            user.setLastName("");
-            user.setEmail(oAuth2User.getAttribute("email"));
-            if (user.getEmail() == null || user.getEmail().isEmpty()) {
-                user.setEmail(user.getFirstName() + "@placeholder.email");
-            }
-            user.setPassword(passwordService.generateEncodedPassword(32));
-            user.setRole(roleRepository.findByName("ADMIN").get());
+        String firstName = oAuth2User.getAttribute(providerToFirstName.get(provider));
+        user.setFirstName(firstName == null ? String.format("%s User (%s)", provider.name(), uniqueId) : firstName);
 
-            logger.info("CustomOAuth2UserService.createGitHubUser(): Saving " + user);
-            userRepository.save(user);
+        String lastName = oAuth2User.getAttribute(providerToLastName.get(provider));
+        user.setLastName(lastName == null ? "" : lastName);
 
-            logger.info("CustomOAuth2UserService.createGitHubUser(): Initializing user's todo list...");
-            todoInitializer.initUserToDo(user);
-        }
+        String email = oAuth2User.getAttribute(providerToEmail.get(provider));
+        user.setEmail(email == null ? user.getFirstName() + "@placeholder.email" : email);
+
+        // Bad practice: Generate an "uncrackable" password for users who log in with OAuth
+        user.setPassword(passwordService.generateEncodedPassword(64));
+        user.setRole(roleRepository.findByName("ADMIN").get());
+
+        logger.info("CustomOAuth2UserService.createUser(): Saving " + user);
+        userRepository.save(user);
+
+        logger.info("CustomOAuth2UserService.createUser(): Initializing user's todo list...");
+        todoInitializer.initUserToDo(user);
 
         OAuthUser oAuthUser = new OAuthUser();
         oAuthUser.setProvider(provider);
-        oAuthUser.setProviderUserId(oAuth2User.getAttribute("id").toString());
+        oAuthUser.setProviderUserId(oAuth2User.getAttribute(providerToUniqueId.get(provider)).toString());
         oAuthUser.setUser(user);
 
         logger.info("CustomOAuth2UserService.createGitHubUser(): Saving OAuthUser: " + oAuthUser);
         oAuthUserRepository.save(oAuthUser);
 
         return user;
-    }
-
-    private User createGoogleUser() {
-        return null;    // TODO: Implement this if needed
-    }
-
-    private User createFacebookUser() {
-        return null;    // TODO: Implement this if needed
-    }
-
-    private User createOktaUser() {
-        return null;    // TODO: Implement this if needed
     }
 }

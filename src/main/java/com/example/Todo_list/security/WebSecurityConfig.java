@@ -44,7 +44,7 @@ public class WebSecurityConfig {
         http
                 // .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login-form", "/users/create", "/error").permitAll()
+                        .requestMatchers("/login-form", "/users/create", "/error", "/about").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -62,6 +62,10 @@ public class WebSecurityConfig {
                 )
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .key("uniqueAndSecret")
+                        .tokenValiditySeconds(86400)    // Token is valid for 24 hours
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login-form")

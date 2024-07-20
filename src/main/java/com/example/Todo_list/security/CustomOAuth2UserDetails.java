@@ -13,11 +13,11 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2UserDetails extends User implements OAuth2User {
 
-    private final String provider;
+    private final OAuth2Provider provider;
     private final List<GrantedAuthority> authorities;
     private final Map<String, Object> attributes;
 
-    public CustomOAuth2UserDetails(User user, OAuth2User oAuth2User, String provider) {
+    public CustomOAuth2UserDetails(User user, OAuth2User oAuth2User, OAuth2Provider provider) {
         this.setId(user.getId());
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
@@ -48,11 +48,14 @@ public class CustomOAuth2UserDetails extends User implements OAuth2User {
     }
 
     public boolean isGitHubConnected() {
-        return this.getProvider().equals("github");
+        return this.getProvider().name().equals("GITHUB");
     }
 
     public boolean isGoogleConnected() {
-        return this.getProvider().equals("google");
+        return this.getProvider().name().equals("GOOGLE");
     }
 
+    public boolean isFacebookConnected() {
+        return this.getProvider().name().equals("FACEBOOK");
+    }
 }
