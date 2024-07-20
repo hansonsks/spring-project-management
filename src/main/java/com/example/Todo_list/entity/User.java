@@ -30,7 +30,7 @@ public class User {
 //    )
     @Column(name = "first_name", nullable = false)
     @Size(
-            min = 3,
+            // min = 3,     // Commented out to allow for names like "Al"
             max = 255,
             message = "Your first name must have a minimum of 3 characters and a maximum of 255 characters."
     )
@@ -76,7 +76,7 @@ public class User {
     @ManyToMany(mappedBy = "collaborators", fetch = FetchType.LAZY)
     private List<ToDo> collaborators = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)

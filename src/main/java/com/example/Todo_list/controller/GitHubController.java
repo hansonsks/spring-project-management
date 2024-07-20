@@ -3,7 +3,7 @@ package com.example.Todo_list.controller;
 import com.example.Todo_list.entity.github.Issue;
 import com.example.Todo_list.entity.github.PullRequest;
 import com.example.Todo_list.entity.github.Repo;
-import com.example.Todo_list.service.impl.GitHubService;
+import com.example.Todo_list.service.github.GitHubService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

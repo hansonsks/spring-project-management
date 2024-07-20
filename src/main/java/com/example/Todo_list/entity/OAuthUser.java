@@ -1,7 +1,9 @@
 package com.example.Todo_list.entity;
 
+import com.example.Todo_list.security.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,12 +19,12 @@ public class OAuthUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false)
-    private String provider;
+    private OAuth2Provider provider;
 
     @NotBlank
-    @Column(name = "provider_user_id", nullable = false, unique = true)
+    @Column(name = "provider_user_id", nullable = false, unique = true) // TODO: Should this be unique?
     private String providerUserId;
 
     @ManyToOne

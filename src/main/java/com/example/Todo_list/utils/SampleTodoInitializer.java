@@ -1,9 +1,7 @@
 package com.example.Todo_list.utils;
 
-import com.example.Todo_list.entity.Priority;
-import com.example.Todo_list.entity.Task;
-import com.example.Todo_list.entity.ToDo;
-import com.example.Todo_list.entity.User;
+import com.example.Todo_list.entity.*;
+import com.example.Todo_list.repository.CommentRepository;
 import com.example.Todo_list.repository.StateRepository;
 import com.example.Todo_list.repository.TaskRepository;
 import com.example.Todo_list.repository.ToDoRepository;
@@ -19,6 +17,7 @@ public class SampleTodoInitializer {
     private final StateRepository stateRepository;
     private final ToDoRepository toDoRepository;
     private final TaskRepository taskRepository;
+    private final CommentRepository commentRepository;
 
     public void initUserToDo(User user) {
         List<ToDo> todos = user.getTodoList();
@@ -40,6 +39,11 @@ public class SampleTodoInitializer {
         todo3.setTitle("Sample Todo #3");
         todo3.setDescription("This is a sample todo created by the system.");
         toDoRepository.save(todo3);
+
+        Comment comment = new Comment();
+        comment.setUser(user);
+        comment.setContent("Sample Comment");
+        commentRepository.save(comment);
 
         Task task1 = new Task();
         task1.setName("Sample Task #1");
@@ -80,6 +84,11 @@ public class SampleTodoInitializer {
         task5.setState(stateRepository.findByName("Under Review").get());
         task5.setPriority(Priority.URGENT);
         taskRepository.save(task5);
+
+        task1.setComments(List.of(comment));
+        comment.setTask(task1);
+        commentRepository.save(comment);
+        taskRepository.save(task1);
 
         todo1.setTasks(List.of(task1, task2, task3, task4, task5));
 

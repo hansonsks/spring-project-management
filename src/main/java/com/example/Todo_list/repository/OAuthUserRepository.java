@@ -2,6 +2,7 @@ package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.User;
+import com.example.Todo_list.security.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ public interface OAuthUserRepository extends JpaRepository<OAuthUser, Long> {
 
     void deleteOAuthUserByUser(User user);
 
-    Optional<OAuthUser> findByProviderAndProviderUserId(String provider, String providerUserId);
+    Optional<OAuthUser> findByProviderAndProviderUserId(OAuth2Provider provider, String providerUserId);
 }

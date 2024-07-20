@@ -1,4 +1,4 @@
-package com.example.Todo_list.service.impl;
+package com.example.Todo_list.service.github;
 
 import com.example.Todo_list.entity.github.Issue;
 import com.example.Todo_list.entity.github.PullRequest;

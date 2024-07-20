@@ -102,7 +102,7 @@ VALUES
 
 INSERT INTO oauth_users (provider, provider_user_id, user_id)
 VALUES
-    ('github', 'github12345', 6);
+    ('GITHUB', 'github12345', 7);
 
 -- TODO: Add sample comments to sample tasks
 
