@@ -1,7 +1,8 @@
-package com.example.Todo_list.security;
+package com.example.Todo_list.security.local;
 
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.repository.UserRepository;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

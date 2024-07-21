@@ -2,7 +2,7 @@ package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.security.OAuth2Provider;
+import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS todos (
     id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     owner_id BIGINT,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS oauth_users (
 CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
     comment VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     is_edited BOOLEAN NOT NULL,
     task_id BIGINT,
     user_id BIGINT,

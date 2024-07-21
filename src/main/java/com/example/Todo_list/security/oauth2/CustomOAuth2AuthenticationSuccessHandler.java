@@ -1,4 +1,4 @@
-package com.example.Todo_list.security;
+package com.example.Todo_list.security.oauth2;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

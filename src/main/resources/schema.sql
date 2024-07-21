@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS todos (
     id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     owner_id BIGINT,
@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     state_id BIGINT,
     todo_id BIGINT,
     assigned_user_id BIGINT NULL,
+    deadline TIMESTAMP WITH TIME ZONE,
     FOREIGN KEY (todo_id) REFERENCES todos(id),
     FOREIGN KEY (state_id) REFERENCES states(id),
     FOREIGN KEY (assigned_user_id) REFERENCES users(id)
@@ -68,10 +69,19 @@ CREATE TABLE IF NOT EXISTS oauth_users (
 CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
     comment VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     is_edited BOOLEAN NOT NULL,
     task_id BIGINT,
     user_id BIGINT,
     FOREIGN KEY (task_id) REFERENCES tasks(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    message VARCHAR(255) NOT NULL,
+    user_id BIGINT,
+    created_at TIMESTAMP WITH TIME ZONE,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

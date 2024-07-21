@@ -81,4 +81,7 @@ public class User {
 
     @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)
     private List<Task> assignedTasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Notification> notifications;
 }

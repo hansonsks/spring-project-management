@@ -1,12 +1,16 @@
 package com.example.Todo_list.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,11 +57,15 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tasks_collaborators",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "collaborator_id")
     )
     private List<User> assignedUsers = new ArrayList<>();
+
+    @FutureOrPresent(message = "Your task's deadline must be in the future or present")
+    @Column(name = "deadline")
+    private ZonedDateTime deadline = null; // Can be null
 }

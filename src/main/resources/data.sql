@@ -57,41 +57,41 @@ VALUES
     ('Guest Todo #2', 'Demo Description', NOW(), 3),
     ('Guest Todo #3', 'Demo Description', NOW(), 3);
 
-INSERT INTO tasks (name, description, priority, todo_id, state_id, assigned_user_id)
+INSERT INTO tasks (name, description, priority, todo_id, state_id, assigned_user_id, deadline)
 VALUES
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  1, 4, NULL),
-    ('Low Priority Task',      'Demo Description', 'LOW',      1, 1, NULL),
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   1, 2, NULL),
-    ('High Priority Task',     'Demo Description', 'HIGH',     1, 2, NULL),
-    ('Urgent Task',            'Demo Description', 'URGENT',   1, 3, NULL),
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  1, 4, NULL, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      1, 1, NULL, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   1, 2, NULL, NULL),
+    ('High Priority Task',     'Demo Description', 'HIGH',     1, 2, NULL, NULL),
+    ('Urgent Task',            'Demo Description', 'URGENT',   1, 3, NULL, NULL),
 
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL),
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL),
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL),
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL, NULL),
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL, NULL),
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  2, 1, NULL, NULL),
 
-    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL),
-    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL),
-    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      3, 1, NULL, NULL),
 
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  4, 2, NULL),
-    ('Low Priority Task',      'Demo Description', 'LOW',      4, 4, NULL),
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   4, 3, NULL),
-    ('High Priority Task',     'Demo Description', 'HIGH',     4, 3, NULL),
-    ('Urgent Task',            'Demo Description', 'URGENT',   4, 2, NULL),
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  4, 2, NULL, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      4, 4, NULL, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   4, 3, NULL, NULL),
+    ('High Priority Task',     'Demo Description', 'HIGH',     4, 3, NULL, NULL),
+    ('Urgent Task',            'Demo Description', 'URGENT',   4, 2, NULL, NULL),
 
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 1, NULL),
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 2, NULL),
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 3, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 1, NULL, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 2, NULL, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   5, 3, NULL, NULL),
 
-    ('High Priority Task',     'Demo Description', 'HIGH',     6, 3, NULL),
-    ('High Priority Task',     'Demo Description', 'HIGH',     6, 2, NULL),
-    ('Urgent Priority Task',   'Demo Description', 'URGENT',   6, 3, NULL),
+    ('High Priority Task',     'Demo Description', 'HIGH',     6, 3, NULL, NULL),
+    ('High Priority Task',     'Demo Description', 'HIGH',     6, 2, NULL, NULL),
+    ('Urgent Priority Task',   'Demo Description', 'URGENT',   6, 3, NULL, NULL),
 
-    ('Trivial Task',           'Demo Description', 'TRIVIAL',  7, 4, NULL),
-    ('Low Priority Task',      'Demo Description', 'LOW',      7, 1, NULL),
-    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   7, 2, NULL),
-    ('High Priority Task',     'Demo Description', 'HIGH',     7, 2, NULL),
-    ('Urgent Task',            'Demo Description', 'URGENT',   7, 3, NULL);
+    ('Trivial Task',           'Demo Description', 'TRIVIAL',  7, 4, NULL, NULL),
+    ('Low Priority Task',      'Demo Description', 'LOW',      7, 1, NULL, NULL),
+    ('Medium Priority Task',   'Demo Description', 'MEDIUM',   7, 2, NULL, NULL),
+    ('High Priority Task',     'Demo Description', 'HIGH',     7, 2, NULL, NULL),
+    ('Urgent Task',            'Demo Description', 'URGENT',   7, 3, NULL, NULL);
 
 INSERT INTO todos_collaborators (todo_id, collaborator_id)
 VALUES
@@ -107,3 +107,9 @@ VALUES
 INSERT INTO comments (comment, user_id, task_id, created_at, is_edited)
 VALUES
     ('Sample Comment', 1, 1, NOW(), FALSE);
+
+INSERT INTO notifications (title, message, user_id, created_at)
+VALUES
+    ('Sample Notification', 'Sample Message', 1, NOW()),
+    ('Sample Notification', 'Sample Message', 1, NOW()),
+    ('Sample Notification', 'Sample Message', 1, NOW());

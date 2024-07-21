@@ -1,5 +1,8 @@
 package com.example.Todo_list.security;
 
+import com.example.Todo_list.security.local.WebSecurityUserDetailsService;
+import com.example.Todo_list.security.oauth2.CustomOAuth2AuthenticationSuccessHandler;
+import com.example.Todo_list.security.oauth2.CustomOAuth2UserService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +47,7 @@ public class WebSecurityConfig {
         http
                 // .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login-form", "/users/create", "/error", "/about").permitAll()
+                        .requestMatchers("/login-form", "/users/create", "/error", "/about", "/javadoc/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

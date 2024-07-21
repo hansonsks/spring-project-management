@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,7 @@ public class TaskController {
     private final StateService stateService;
     private final UserService userService;
     private final CommentService commentService;
+    private final NotificationService notificationService;  // TODO: Scan comments for @mentions and send notifications
 
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -85,6 +87,7 @@ public class TaskController {
         return "task-update";
     }
 
+    // TODO: Handle task update errors by rejecting them and displaying an error message
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -112,7 +115,7 @@ public class TaskController {
 
         logger.info("TaskController.updateTask(): Updating " + task);
         taskService.save(task);
-        return String.format("redirect:/todos/%d/tasks", task.getTodo().getId());
+        return String.format("redirect:/tasks/%d/update", task.getId());
     }
 
     private void prepareModelForTaskUpdate(Long id, Model model) {
@@ -127,11 +130,18 @@ public class TaskController {
 
         List<User> allUsers = userService.findAllUsers();
         List<User> assignedUsers = taskService.findTaskById(id).getAssignedUsers();
-        List<User> availableUsers = allUsers.stream().filter(
-                user -> Objects.equals(user.getId(), owner.getId()) ||
-                        (!assignedUsers.contains(user) && toDoService.findToDoById(taskDTO.getToDoId()).getCollaborators().contains(user))
-        ).toList();
+        List<User> availableUsers = new ArrayList<>(allUsers.stream().filter(
+                user -> !assignedUsers.contains(user) && toDoService.findToDoById(taskDTO.getToDoId()).getCollaborators().contains(user)
+        ).toList());
+
+        if (!assignedUsers.contains(owner)) {
+            availableUsers.add(owner);
+        }
+
         model.addAttribute("availableUsers", availableUsers);
+
+        logger.error("TaskController.prepareModelForTaskUpdate(): Prepared model for task update {}", task);
+        logger.error("TaskController.prepareModelForTaskUpdate(): Prepared model for task update {}", taskDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or " +

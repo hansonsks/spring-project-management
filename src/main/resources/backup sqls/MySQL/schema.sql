@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS todos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     owner_id BIGINT,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS oauth_users (
 
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     comment VARCHAR(255) NOT NULL,
     is_edited BOOLEAN,
     task_id BIGINT,
