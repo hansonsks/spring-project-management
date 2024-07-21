@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class ToDoController {
             return "todo-create";
         }
 
-        toDo.setCreatedAt(LocalDateTime.now());
+        toDo.setCreatedAt(ZonedDateTime.now());
         toDo.setOwner(userService.findUserById(ownerId));
 
         logger.info("ToDoController.createToDo(): Saving " + toDo);

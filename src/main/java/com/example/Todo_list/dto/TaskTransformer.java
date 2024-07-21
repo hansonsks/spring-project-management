@@ -7,6 +7,10 @@ import com.example.Todo_list.entity.ToDo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaskTransformer {
 
@@ -20,6 +24,12 @@ public class TaskTransformer {
         task.setState(state);
         task.setAssignedUsers(dto.getAssignedUsers());
 
+        // Convert LocalDateTime to ZonedDateTime
+        if (dto.getDeadline() != null) {
+            // TODO: Ideally, you should use the time zone of the user rather than where the system is based
+            task.setDeadline(dto.getDeadline().atZone(ZoneId.systemDefault()));
+        }
+
         return task;
     }
 
@@ -32,6 +42,11 @@ public class TaskTransformer {
         dto.setToDoId(task.getTodo().getId());
         dto.setState(task.getState().toString());
         dto.setAssignedUsers(task.getAssignedUsers());
+
+        // Convert ZonedDateTime to LocalDateTime
+        if (task.getDeadline() != null) {
+            dto.setDeadline(task.getDeadline().toLocalDateTime());
+        }
 
         return dto;
     }

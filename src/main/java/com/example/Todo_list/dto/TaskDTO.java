@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -36,4 +38,6 @@ public class TaskDTO {
     private String state;
 
     private List<User> assignedUsers;
+
+    private LocalDateTime deadline;
 }

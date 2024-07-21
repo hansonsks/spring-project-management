@@ -1,9 +1,8 @@
 package com.example.Todo_list.entity;
 
-import com.example.Todo_list.security.OAuth2Provider;
+import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
