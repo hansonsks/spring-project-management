@@ -14,6 +14,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller class for handling notifications
+ */
 @RestController
 @RequestMapping("/notifications")
 @RequiredArgsConstructor
@@ -23,6 +26,11 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
 
+    /**
+     * Fetches all notifications for a user
+     * @param userId
+     * @return
+     */
     @GetMapping("/user/{userId}")
     public List<NotificationDTO> getUserNotifications(@PathVariable Long userId) {
         logger.info("Fetching notifications for user with ID: {}", userId);
@@ -33,6 +41,11 @@ public class NotificationController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Marks a notification as read
+     * @param notificationId
+     * @param userId
+     */
     @PostMapping("/user/{user_id}/delete/{notification_id}")
     public void markNotificationsAsRead(@PathVariable("notification_id") Long notificationId,
                                         @PathVariable("user_id") Long userId) {

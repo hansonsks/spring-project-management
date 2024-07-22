@@ -22,4 +22,9 @@ public class LoginController {
     public String about() {
         return "about";
     }
+
+    @GetMapping("/javadoc")
+    public String javadoc() {
+        return "forward:/javadoc/index.html";
+    }
 }

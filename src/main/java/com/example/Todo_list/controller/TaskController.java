@@ -20,6 +20,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Controller class for handling Task-related operations
+
+ */
 @Controller
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
@@ -33,6 +37,12 @@ public class TaskController {
     private final CommentService commentService;
     private final NotificationService notificationService;  // TODO: Scan comments for @mentions and send notifications
 
+    /**
+     * Display all tasks of a specific ToDo
+     * @param todoId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -45,6 +55,14 @@ public class TaskController {
         return "task-create";
     }
 
+    /**
+     * Create a new task
+     * @param todoId
+     * @param model
+     * @param taskDTO
+     * @param result
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -84,6 +102,12 @@ public class TaskController {
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
+    /**
+     * Display the task update form
+     * @param taskId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -94,6 +118,14 @@ public class TaskController {
         return "task-update";
     }
 
+    /**
+     * Update a task
+     * @param taskId
+     * @param model
+     * @param taskDTO
+     * @param result
+     * @return
+     */
     // TODO: Handle task update errors by rejecting them and displaying an error <div>
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
@@ -132,6 +164,11 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/update", task.getId());
     }
 
+    /**
+     * Prepare the model for task update
+     * @param id
+     * @param model
+     */
     private void prepareModelForTaskUpdate(Long id, Model model) {
         Task task = taskService.findTaskById(id);
         User owner = task.getTodo().getOwner();
@@ -158,6 +195,12 @@ public class TaskController {
         logger.error("TaskController.prepareModelForTaskUpdate(): Prepared model for task update {}", taskDTO);
     }
 
+    /**
+     * Display a task
+     * @param taskId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -174,6 +217,12 @@ public class TaskController {
         return "task-info";
     }
 
+    /**
+     * Delete a task
+     * @param taskId
+     * @param todoId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -184,6 +233,12 @@ public class TaskController {
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
+    /**
+     * Add a user to a task
+     * @param taskId
+     * @param userId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/add-user")
     public String addAssignedUser(@PathVariable("task_id") Long taskId, @RequestParam("user_id") Long userId) {
@@ -204,6 +259,12 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/update", taskId);
     }
 
+    /**
+     * Remove a user from a task
+     * @param taskId
+     * @param userId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/remove-user")
     public String removeAssignedUser(@PathVariable("task_id") Long taskId, @RequestParam("user_id") Long userId) {
@@ -225,6 +286,13 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/update", taskId);
     }
 
+    /**
+     * Create a comment
+     * @param taskId
+     * @param content
+     * @param userId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -254,6 +322,13 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/read", taskId);
     }
 
+    /**
+     * Update a comment
+     * @param taskId
+     * @param commentId
+     * @param content
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/update")
     public String updateComment(@PathVariable("task_id") Long taskId,
@@ -279,6 +354,11 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/read", taskId);
     }
 
+    /**
+     * Check for tagged users in a comment
+     * @param comment
+     * @param taskId
+     */
     private void checkTaggedUsers(Comment comment, Long taskId) {
         logger.info("TaskController.checkTaggedUsers(): Checking for tagged users in comment");
 
@@ -293,6 +373,12 @@ public class TaskController {
         });
     }
 
+    /**
+     * Delete a comment
+     * @param taskId
+     * @param commentId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/delete")
     public String deleteComment(@PathVariable("task_id") Long taskId, @PathVariable("comment_id") Long commentId) {
@@ -303,6 +389,12 @@ public class TaskController {
         return String.format("redirect:/tasks/%d/read", taskId);
     }
 
+    /**
+     * Display all tasks of a specific user
+     * @param userId
+     * @param model
+     * @return
+     */
     @GetMapping("/all/users/{user_id}")
     public String displayAllTasksOfUser(@PathVariable("user_id") Long userId, Model model) {
         List<Task> tasks = taskService.findAssignedTasksByUserId(userId);

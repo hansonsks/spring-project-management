@@ -23,6 +23,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Controller class for handling ToDo related operations
+
+ */
 @Controller
 @RequestMapping("/todos")
 @RequiredArgsConstructor
@@ -34,6 +38,12 @@ public class ToDoController {
     private final UserService userService;
     private final NotificationService notificationService;
 
+    /**
+     * Display the form for creating a new ToDo item
+     * @param ownerId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @GetMapping("/create/users/{owner_id}")
     public String showToDoCreationForm(@PathVariable("owner_id") Long ownerId, Model model) {
@@ -43,6 +53,13 @@ public class ToDoController {
         return "todo-create";
     }
 
+    /**
+     * Create a new ToDo item
+     * @param ownerId
+     * @param toDo
+     * @param result
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @PostMapping("/create/users/{owner_id}")
     public String createToDo(
@@ -65,6 +82,12 @@ public class ToDoController {
         return String.format("redirect:/todos/all/users/%d", ownerId);
     }
 
+    /**
+     * Display the form for creating a new Task item
+     * @param todoId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
             "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
             "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -87,6 +110,13 @@ public class ToDoController {
         return "todo-tasks";
     }
 
+    /**
+     * Create a new Task item
+     * @param todoId
+     * @param ownerId
+     * @param model
+     * @return
+     */
     @GetMapping("/{todo_id}/update/users/{owner_id}")
     public String showToDoUpdateForm(
             @PathVariable("todo_id") Long todoId,
@@ -126,6 +156,12 @@ public class ToDoController {
         return String.format("redirect:/todos/all/users/%d", ownerId);
     }
 
+    /**
+     * Delete a ToDo item
+     * @param todoId
+     * @param ownerId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -136,6 +172,12 @@ public class ToDoController {
         return String.format("redirect:/todos/all/users/%d", ownerId);
     }
 
+    /**
+     * Display all ToDo items of a user
+     * @param userId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/all/users/{user_id}")
     public String displayAllToDosOfUser(@PathVariable("user_id") Long userId, Model model) {
@@ -147,6 +189,12 @@ public class ToDoController {
         return "todos-user";
     }
 
+    /**
+     * Display all ToDo items
+     * @param userId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public String displayAllToDos(@RequestParam("user_id") Long userId, Model model) {
@@ -158,6 +206,12 @@ public class ToDoController {
         return "todos-all";
     }
 
+    /**
+     * Add a collaborator to a ToDo item
+     * @param todoId
+     * @param userId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
     @PostMapping("/{todo_id}/add")
     public String addCollaborator(@PathVariable("todo_id") Long todoId, @RequestParam("user_id") Long userId) {
@@ -181,6 +235,12 @@ public class ToDoController {
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
+    /**
+     * Remove a collaborator from a ToDo item
+     * @param todoId
+     * @param userId
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
     @PostMapping("/{todo_id}/remove")
     public String removeCollaborator(@PathVariable("todo_id") Long todoId, @RequestParam("user_id") Long userId) {

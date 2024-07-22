@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-
+/**
+ * Controller for GitHub API
+ */
 @Controller
 @RequestMapping("/github")
 @RequiredArgsConstructor
@@ -24,6 +26,12 @@ public class GitHubController {
 
     private final GitHubService gitHubService;
 
+    /**
+     * List all repositories of the authenticated user
+     * @param model
+     * @param request
+     * @return
+     */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos")
     public String listRepos(Model model, HttpServletRequest request) {
@@ -37,6 +45,14 @@ public class GitHubController {
         return "github-repos";
     }
 
+    /**
+     * List all issues of a repository
+     * @param owner
+     * @param repo
+     * @param model
+     * @param request
+     * @return
+     */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/issues")
     public String listIssues(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
@@ -51,6 +67,14 @@ public class GitHubController {
         return "github-issues";
     }
 
+    /**
+     * List all pull requests of a repository
+     * @param owner
+     * @param repo
+     * @param model
+     * @param request
+     * @return
+     */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/pulls")
     public String listPullRequests(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {

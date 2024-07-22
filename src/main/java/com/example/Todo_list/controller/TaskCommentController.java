@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+/**
+ * Controller class for handling Task Comments
+ */
 @Controller
 @RequestMapping("/comments")
 @RequiredArgsConstructor
@@ -23,6 +26,11 @@ public class TaskCommentController {
     private final CommentService commentService;
     private final UserService userService;
 
+    /**
+     * Display all comments
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public String showAllComments(Model model) {
@@ -36,6 +44,12 @@ public class TaskCommentController {
         return "comments-all";
     }
 
+    /**
+     * Display all comments by task id
+     * @param userId
+     * @param model
+     * @return
+     */
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/all/users/{user_id}")
     public String showAllCommentsByUserId(@PathVariable("user_id") Long userId, Model model) {
