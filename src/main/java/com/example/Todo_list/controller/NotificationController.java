@@ -29,7 +29,7 @@ public class NotificationController {
     /**
      * Fetches all notifications for a user
      * @param userId
-     * @return
+     * @return List of notifications
      */
     @GetMapping("/user/{userId}")
     public List<NotificationDTO> getUserNotifications(@PathVariable Long userId) {

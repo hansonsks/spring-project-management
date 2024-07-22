@@ -22,7 +22,6 @@ import java.util.Objects;
 
 /**
  * Controller class for handling Task-related operations
-
  */
 @Controller
 @RequestMapping("/tasks")
@@ -41,7 +40,7 @@ public class TaskController {
      * Display all tasks of a specific ToDo
      * @param todoId
      * @param model
-     * @return
+     * @return task-create.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -61,7 +60,7 @@ public class TaskController {
      * @param model
      * @param taskDTO
      * @param result
-     * @return
+     * @return task-update.html if there are errors, else redirect to /todos/{todo_id}/tasks
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -81,7 +80,7 @@ public class TaskController {
             model.addAttribute("todo", toDoService.findToDoById(todoId));
             model.addAttribute("priorities", Priority.values());
             // TODO: Add error <div> for invalid deadline
-            return "task-update";
+            return "task-create";
         }
 
         if (result.hasErrors()) {
@@ -106,7 +105,7 @@ public class TaskController {
      * Display the task update form
      * @param taskId
      * @param model
-     * @return
+     * @return task-update.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
@@ -124,7 +123,7 @@ public class TaskController {
      * @param model
      * @param taskDTO
      * @param result
-     * @return
+     * @return task-update.html if there are errors, else redirect to /tasks/{task_id}/update
      */
     // TODO: Handle task update errors by rejecting them and displaying an error <div>
     @PreAuthorize("hasAuthority('ADMIN') or " +
@@ -199,7 +198,7 @@ public class TaskController {
      * Display a task
      * @param taskId
      * @param model
-     * @return
+     * @return task-info.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
@@ -221,7 +220,7 @@ public class TaskController {
      * Delete a task
      * @param taskId
      * @param todoId
-     * @return
+     * @return redirect to /todos/{todo_id}/tasks
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -237,7 +236,7 @@ public class TaskController {
      * Add a user to a task
      * @param taskId
      * @param userId
-     * @return
+     * @return redirect to /tasks/{task_id}/update
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/add-user")
@@ -263,7 +262,7 @@ public class TaskController {
      * Remove a user from a task
      * @param taskId
      * @param userId
-     * @return
+     * @return redirect to /tasks/{task_id}/update
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/remove-user")
@@ -291,7 +290,7 @@ public class TaskController {
      * @param taskId
      * @param content
      * @param userId
-     * @return
+     * @return redirect to /tasks/{task_id}/read
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
@@ -327,7 +326,7 @@ public class TaskController {
      * @param taskId
      * @param commentId
      * @param content
-     * @return
+     * @return redirect to /tasks/{task_id}/read
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/update")
@@ -377,7 +376,7 @@ public class TaskController {
      * Delete a comment
      * @param taskId
      * @param commentId
-     * @return
+     * @return redirect to /tasks/{task_id}/read
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/delete")
@@ -393,7 +392,7 @@ public class TaskController {
      * Display all tasks of a specific user
      * @param userId
      * @param model
-     * @return
+     * @return user-tasks.html
      */
     @GetMapping("/all/users/{user_id}")
     public String displayAllTasksOfUser(@PathVariable("user_id") Long userId, Model model) {

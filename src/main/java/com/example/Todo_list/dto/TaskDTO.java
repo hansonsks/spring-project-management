@@ -10,12 +10,21 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * A DTO class for the Task entity
+ */
 @Data
 @NoArgsConstructor
 public class TaskDTO {
 
+    /**
+     * The task's id
+     */
     private Long id;
 
+    /**
+     * The task's name
+     */
     @NotBlank(message = "Your task's name must not be empty")
     @Size(
             min = 3,
@@ -24,6 +33,9 @@ public class TaskDTO {
     )
     private String name;
 
+    /**
+     * The task's description
+     */
     @NotBlank(message = "Your task's description must not be empty")
     @Size(
             max = 255,
@@ -31,15 +43,34 @@ public class TaskDTO {
     )
     private String description;
 
+    /**
+     * The task's priority
+     */
     private String priority;
 
+    /**
+     * The task's state
+
+     */
     private Long toDoId;
 
+    /**
+     * The task's owner's unique identifier
+     */
     private Long ownerId;
 
+    /**
+     * The task's state
+     */
     private String state;
 
+    /**
+     * The task's assigned users
+     */
     private List<User> assignedUsers;
 
+    /**
+     * The task's deadline
+     */
     private LocalDateTime deadline;
 }

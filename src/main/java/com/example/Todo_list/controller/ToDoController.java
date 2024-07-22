@@ -25,7 +25,6 @@ import java.util.Objects;
 
 /**
  * Controller class for handling ToDo related operations
-
  */
 @Controller
 @RequestMapping("/todos")
@@ -42,7 +41,7 @@ public class ToDoController {
      * Display the form for creating a new ToDo item
      * @param ownerId
      * @param model
-     * @return
+     * @return todo-create.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @GetMapping("/create/users/{owner_id}")
@@ -58,7 +57,7 @@ public class ToDoController {
      * @param ownerId
      * @param toDo
      * @param result
-     * @return
+     * @return redirect to all ToDos of the user
      */
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @PostMapping("/create/users/{owner_id}")
@@ -86,7 +85,7 @@ public class ToDoController {
      * Display the form for creating a new Task item
      * @param todoId
      * @param model
-     * @return
+     * @return task-create.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
             "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -115,7 +114,7 @@ public class ToDoController {
      * @param todoId
      * @param ownerId
      * @param model
-     * @return
+     * @return redirect to the ToDo item
      */
     @GetMapping("/{todo_id}/update/users/{owner_id}")
     public String showToDoUpdateForm(
@@ -129,6 +128,14 @@ public class ToDoController {
         return "todo-update";
     }
 
+    /**
+     * Update a ToDo item
+     * @param todoId
+     * @param ownerId
+     * @param todo
+     * @param result
+     * @return redirect to all ToDos of the user
+     */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
                 "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -160,7 +167,7 @@ public class ToDoController {
      * Delete a ToDo item
      * @param todoId
      * @param ownerId
-     * @return
+     * @return redirect to all ToDos of the user
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -176,7 +183,7 @@ public class ToDoController {
      * Display all ToDo items of a user
      * @param userId
      * @param model
-     * @return
+     * @return todos-user.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/all/users/{user_id}")
@@ -193,7 +200,7 @@ public class ToDoController {
      * Display all ToDo items
      * @param userId
      * @param model
-     * @return
+     * @return todos-all.html
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
@@ -210,7 +217,7 @@ public class ToDoController {
      * Add a collaborator to a ToDo item
      * @param todoId
      * @param userId
-     * @return
+     * @return redirect to the ToDo item
      */
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
     @PostMapping("/{todo_id}/add")
@@ -239,7 +246,7 @@ public class ToDoController {
      * Remove a collaborator from a ToDo item
      * @param todoId
      * @param userId
-     * @return
+     * @return redirect to the ToDo item
      */
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
     @PostMapping("/{todo_id}/remove")

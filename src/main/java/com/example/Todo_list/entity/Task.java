@@ -14,6 +14,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a task in the system.
+ */
 @Entity
 @Data
 @ToString(exclude = {"todo", "assignedUsers"})
@@ -21,10 +24,16 @@ import java.util.List;
 @Table(name = "tasks")
 public class Task {
 
+    /**
+     * The unique identifier of the task.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the task.
+     */
     @NotBlank(message = "Your task's name must not be empty")
     @Column(name = "name", nullable = false)
     @Size(
@@ -34,6 +43,9 @@ public class Task {
     )
     private String name;
 
+    /**
+     *  The description of the task.
+     */
     @NotBlank(message = "Your task's description must not be empty")
     @Column(name = "description")
     @Size(
@@ -42,21 +54,36 @@ public class Task {
     )
     private String description;
 
+    /**
+     * The priority of the task.
+     */
     @Column(name = "priority")
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
+    /**
+     * The state of the task.
+     */
     @ManyToOne
     @JoinColumn(name = "state_id")
     private State state;
 
+    /**
+     * The todo that the task belongs to.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private ToDo todo;
 
+    /**
+     * The comments of the task.
+     */
     @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
+    /**
+     * The users assigned to the task.
+     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tasks_collaborators",
@@ -65,6 +92,9 @@ public class Task {
     )
     private List<User> assignedUsers = new ArrayList<>();
 
+    /**
+     * The deadline of the task.
+     */
     @FutureOrPresent(message = "Your task's deadline must be in the future or present")
     @Column(name = "deadline")
     private ZonedDateTime deadline = null; // Can be null

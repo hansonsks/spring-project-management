@@ -30,7 +30,7 @@ public class GitHubController {
      * List all repositories of the authenticated user
      * @param model
      * @param request
-     * @return
+     * @return github-repos.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos")
@@ -51,7 +51,7 @@ public class GitHubController {
      * @param repo
      * @param model
      * @param request
-     * @return
+     * @return github-issues.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/issues")
@@ -73,7 +73,7 @@ public class GitHubController {
      * @param repo
      * @param model
      * @param request
-     * @return
+     * @return github-pull-requests.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/pulls")

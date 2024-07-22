@@ -12,6 +12,9 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a user in the system.
+ */
 @Entity
 @Data
 @ToString(exclude = {"todoList", "collaborators", "assignedTasks"})
@@ -19,10 +22,16 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
+    /**
+     * The unique identifier of the user.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The first name of the user.
+     */
     @NotBlank(message = "Your first name must not be empty.")
 //    @Pattern(
 //            regexp = "[a-zA-Z]+",
@@ -36,6 +45,9 @@ public class User {
     )
     private String firstName;
 
+    /**
+     * The last name of the user.
+     */
 //    @Pattern(
 //            regexp = "[a-zA-Z]*",
 //            message = "Your last name must contain letters only"
@@ -47,11 +59,17 @@ public class User {
     )
     private String lastName;
 
+    /**
+     * The email of the user.
+     */
     @Email(message = "Your email must be valid.")
     @Column(name = "email", unique = true)
     @Size(max = 255, message = "Your email must not exceed 255 characters.")
     private String email;
 
+    /**
+     * The password of the user.
+     */
     @NotBlank(message = "Your password must not be empty.")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
@@ -65,23 +83,41 @@ public class User {
     )
     private String password;
 
+    /**
+     * The role of the user.
+     */
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
+    /**
+     * The list of to-dos owned by the user.
+     */
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<ToDo> todoList = new ArrayList<>();
 
+    /**
+     * The list of to-dos the user is collaborating on.
+     */
     // TODO: Give this a better name
     @ManyToMany(mappedBy = "collaborators", fetch = FetchType.LAZY)
     private List<ToDo> collaborators = new ArrayList<>();
 
+    /**
+     * The list of comments made by the user.
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
+    /**
+     * The list of tasks assigned to the user.
+     */
     @ManyToMany(mappedBy = "assignedUsers", fetch = FetchType.LAZY)
     private List<Task> assignedTasks = new ArrayList<>();
 
+    /**
+     * The list of notifications sent to the user.
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Notification> notifications;
 }

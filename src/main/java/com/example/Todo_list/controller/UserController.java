@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller class for handling user-related operations
-
  */
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class UserController {
     /**
      * Displays the user registration form
      * @param model
-     * @return
+     * @return user-create.html
      */
     @GetMapping("/create")
     public String showUserRegistrationForm(Model model) {
@@ -45,7 +44,7 @@ public class UserController {
      * Creates a new user
      * @param user
      * @param result
-     * @return
+     * @return user-create.html
      */
     @PostMapping("/create")
     public String createUser(
@@ -99,7 +98,7 @@ public class UserController {
      * Displays user information
      * @param id
      * @param model
-     * @return
+     * @return user-info.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     @GetMapping("/{id}/read")
@@ -114,7 +113,7 @@ public class UserController {
      * Displays the user update form
      * @param id
      * @param model
-     * @return
+     * @return user-update.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     @GetMapping("/{id}/update")
@@ -134,7 +133,7 @@ public class UserController {
      * @param model
      * @param newUser
      * @param result
-     * @return
+     * @return user-update.html
      */
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -205,7 +204,7 @@ public class UserController {
      * Displays the OAuth user update form
      * @param id
      * @param model
-     * @return
+     * @return oauth-user-update.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     @GetMapping("/{id}/oauth-update")
@@ -224,7 +223,7 @@ public class UserController {
      * @param model
      * @param newUser
      * @param result
-     * @return
+     * @return oauth-user-update.html
      */
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -269,7 +268,7 @@ public class UserController {
     /**
      * Deletes a user
      * @param userId
-     * @return
+     * @return user-list.html
      */
     @PreAuthorize("hasAuthority('ADMIN') and #userId != authentication.principal.id")
     @PostMapping("/{user_id}/delete")
@@ -288,7 +287,7 @@ public class UserController {
      * Displays all users
      * @param model
      * @param badDeleteUserId
-     * @return
+     * @return user-list.html
      */
     @GetMapping("/all")
     public String showUserList(Model model,

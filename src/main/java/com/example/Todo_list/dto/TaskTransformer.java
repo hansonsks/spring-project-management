@@ -11,9 +11,20 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+/**
+ * This class is responsible for converting Task DTOs to entities and vice versa.
+
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaskTransformer {
 
+    /**
+     * Converts a Task DTO to a Task entity.
+     * @param dto
+     * @param todo
+     * @param state
+     * @return Task entity
+     */
     public static Task convertDTOToEntity(TaskDTO dto, ToDo todo, State state) {
         Task task = new Task();
         task.setId(dto.getId());
@@ -33,6 +44,11 @@ public class TaskTransformer {
         return task;
     }
 
+    /**
+     * Converts a Task entity to a Task DTO.
+     * @param task
+     * @return Task DTO
+     */
     public static TaskDTO convertEntityToDTO(Task task) {
         TaskDTO dto = new TaskDTO();
         dto.setId(task.getId());

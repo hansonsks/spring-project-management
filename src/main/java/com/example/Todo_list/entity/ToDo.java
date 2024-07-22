@@ -13,6 +13,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single TODO item.
+ */
 @Entity
 @Data
 @ToString(exclude = {"tasks", "collaborators"})
@@ -20,10 +23,16 @@ import java.util.List;
 @Table(name = "todos")
 public class ToDo {
 
+    /**
+     * The unique identifier of the TODO item.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The title of the TODO item.
+     */
     @NotBlank(message = "Your TODO title must not be empty")
     @Column(name = "title", nullable = false)
     @Size(
@@ -33,6 +42,9 @@ public class ToDo {
     )
     private String title;
 
+    /**
+     * The description of the TODO item.
+     */
     @NotBlank(message = "Your TODO description must not be empty")
     @Column(name = "description", nullable = false)
     @Size(
@@ -41,17 +53,29 @@ public class ToDo {
     )
     private String description;
 
+    /**
+     * The owner of the TODO item.
+     */
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    /**
+     * The date and time when the TODO item was created.
+     */
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private ZonedDateTime createdAt;
 
+    /**
+     * The list of tasks associated with the TODO item.
+     */
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
     private List<Task> tasks = new ArrayList<>();
 
+    /**
+     * The list of collaborators associated with the TODO item.
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "todos_collaborators",
