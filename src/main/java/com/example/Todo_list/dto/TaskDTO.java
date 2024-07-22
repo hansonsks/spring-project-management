@@ -35,6 +35,8 @@ public class TaskDTO {
 
     private Long toDoId;
 
+    private Long ownerId;
+
     private String state;
 
     private List<User> assignedUsers;

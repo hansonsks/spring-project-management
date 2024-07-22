@@ -40,6 +40,7 @@ public class TaskTransformer {
         dto.setDescription(task.getDescription());
         dto.setPriority(task.getPriority().toString());
         dto.setToDoId(task.getTodo().getId());
+        dto.setOwnerId(task.getTodo().getOwner().getId());
         dto.setState(task.getState().toString());
         dto.setAssignedUsers(task.getAssignedUsers());
 

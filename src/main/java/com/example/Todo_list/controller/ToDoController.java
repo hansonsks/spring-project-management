@@ -3,6 +3,7 @@ package com.example.Todo_list.controller;
 import com.example.Todo_list.entity.Task;
 import com.example.Todo_list.entity.ToDo;
 import com.example.Todo_list.entity.User;
+import com.example.Todo_list.service.NotificationService;
 import com.example.Todo_list.service.TaskService;
 import com.example.Todo_list.service.ToDoService;
 import com.example.Todo_list.service.UserService;
@@ -31,6 +32,7 @@ public class ToDoController {
     private final ToDoService toDoService;
     private final TaskService taskService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @PreAuthorize("hasAuthority('ADMIN') or #ownerId == authentication.principal.id")
     @GetMapping("/create/users/{owner_id}")
@@ -136,13 +138,24 @@ public class ToDoController {
 
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/all/users/{user_id}")
-    public String displayAllToDo(@PathVariable("user_id") Long userId, Model model) {
+    public String displayAllToDosOfUser(@PathVariable("user_id") Long userId, Model model) {
         List<ToDo> todos = toDoService.findAllToDoOfUserId(userId);
         List<ToDo> sortedTodos = todos.stream().sorted(Comparator.comparingLong(ToDo::getId)).toList();
         model.addAttribute("todos", sortedTodos);
         model.addAttribute("user", userService.findUserById(userId));
         logger.info("ToDoController.displayAllToDo(): Displaying all ToDos of user with userId=" + userId);
         return "todos-user";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/all")
+    public String displayAllToDos(@RequestParam("user_id") Long userId, Model model) {
+        List<ToDo> todos = toDoService.findAllToDos();
+        List<ToDo> sortedTodos = todos.stream().sorted(Comparator.comparingLong(ToDo::getId)).toList();
+        model.addAttribute("todos", sortedTodos);
+        model.addAttribute("user", userService.findUserById(userId));
+        logger.info("ToDoController.displayAllToDo(): Displaying all ToDos");
+        return "todos-all";
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
@@ -153,18 +166,34 @@ public class ToDoController {
             return String.format("redirect:/todos/%d/tasks", todoId);
         }
 
+        ToDo todo = toDoService.findToDoById(todoId);
         logger.info("ToDoController.addCollaborator(): " +
-                    "Adding " + toDoService.findToDoById(todoId) + " to" + userService.findUserById(userId));
+                "Adding " + todo + " to" + userService.findUserById(userId));
+
+        notificationService.sendNotificationToUserId(
+                userId,
+                "Removed from Project",
+                String.format("You have been removed from a Project [%s]", todo.getTitle())
+        );
+
         toDoService.addCollaborator(todoId, userId);
-        logger.info("ToDoController.addCollaborator(): Updated ToDo=" + toDoService.findToDoById(todoId));
+        logger.info("ToDoController.addCollaborator(): Updated ToDo=" + todo);
         return String.format("redirect:/todos/%d/tasks", todoId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or authentication.principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id")
     @PostMapping("/{todo_id}/remove")
     public String removeCollaborator(@PathVariable("todo_id") Long todoId, @RequestParam("user_id") Long userId) {
+        ToDo todo = toDoService.findToDoById(todoId);
         logger.info("ToDoController.removeCollaborator(): " +
-                    "Removing " + toDoService.findToDoById(todoId) + " from " + userService.findUserById(userId));
+                    "Removing " + todo + " from " + userService.findUserById(userId));
+
+        notificationService.sendNotificationToUserId(
+                userId,
+                "Removed from Project",
+                String.format("You have been removed from a Project [%s]", todo.getTitle())
+        );
+
         toDoService.removeCollaborator(todoId, userId);
         logger.info("ToDoController.addCollaborator(): Updated ToDo=" + toDoService.findToDoById(todoId));
         return String.format("redirect:/todos/%d/tasks", todoId);

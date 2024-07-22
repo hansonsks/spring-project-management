@@ -10,6 +10,8 @@ public interface NotificationService {
 
     void sendNotificationToUserId(Long userId, String title, String message);
 
+    void sendNotificationToUser(User user, String title, String message);
+
     void sendNotificationToAllUsers(String title, String message);
 
     Notification findNotificationById(Long id);

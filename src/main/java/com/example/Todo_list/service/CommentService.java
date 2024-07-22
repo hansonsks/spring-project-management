@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface CommentService {
 
+    List<User> findTaggedUserInComment(Comment comment);
+
     Comment save(Comment comment);
 
     Comment findCommentById(Long id);

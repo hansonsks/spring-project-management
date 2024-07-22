@@ -2,10 +2,7 @@ package com.example.Todo_list.controller;
 
 import com.example.Todo_list.dto.TaskDTO;
 import com.example.Todo_list.dto.TaskTransformer;
-import com.example.Todo_list.entity.Comment;
-import com.example.Todo_list.entity.Priority;
-import com.example.Todo_list.entity.Task;
-import com.example.Todo_list.entity.User;
+import com.example.Todo_list.entity.*;
 import com.example.Todo_list.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -59,6 +57,15 @@ public class TaskController {
     ) {
         logger.info("TaskController.createTask(): Attempting to create task for todoId=" + todoId);
 
+        // Check if the deadline is valid (not null and not before the current deadline)
+        if (taskDTO.getDeadline() == null || taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
+            logger.error("TaskController.createTask(): Deadline is invalid, aborting task creation");
+            model.addAttribute("todo", toDoService.findToDoById(todoId));
+            model.addAttribute("priorities", Priority.values());
+            // TODO: Add error <div> for invalid deadline
+            return "task-update";
+        }
+
         if (result.hasErrors()) {
             logger.error("TaskController.createTask(): Error found in data received, aborting task creation");
             model.addAttribute("todo", toDoService.findToDoById(todoId));
@@ -87,7 +94,7 @@ public class TaskController {
         return "task-update";
     }
 
-    // TODO: Handle task update errors by rejecting them and displaying an error message
+    // TODO: Handle task update errors by rejecting them and displaying an error <div>
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
@@ -99,6 +106,13 @@ public class TaskController {
             BindingResult result
     ) {
         logger.info("TaskController.updateTask(): Attempting to update task with taskId=" + taskId);
+
+        // Check if the deadline is valid (not null and not before the current deadline)
+        if (taskDTO.getDeadline() == null || taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
+            logger.error("TaskController.updateTask(): Deadline is invalid, aborting task update");
+            prepareModelForTaskUpdate(taskId, model);
+            return "task-update";
+        }
 
         if (result.hasErrors()) {
             logger.error("TaskController.updateTask(): Error found in data received, aborting task update");
@@ -178,6 +192,13 @@ public class TaskController {
             return String.format("redirect:/tasks/%d/update", taskId);
         }
 
+        notificationService.sendNotificationToUserId(
+                userId,
+                "You have been assigned to a Task",
+                String.format("You have been assigned to Task [%s] in Project [%s]",
+                        taskService.findTaskById(taskId).getName(), taskService.findTaskById(taskId).getTodo().getTitle())
+        );
+
         logger.info("TaskController.addAssignedUser(): Adding user with userId=" + userId + " to task with taskId=" + taskId);
         taskService.assignTaskToUser(taskId, userId);
         return String.format("redirect:/tasks/%d/update", taskId);
@@ -191,6 +212,14 @@ public class TaskController {
             return String.format("redirect:/tasks/%d/update", taskId);
         }
 
+        Task task = taskService.findTaskById(taskId);
+        notificationService.sendNotificationToUserId(
+                userId,
+                "You have been removed from a Task",
+                String.format("You have been removed from Task [%s] in Project [%s]",
+                        task.getName(), task.getTodo().getTitle())
+        );
+
         logger.info("TaskController.removeAssignedUser(): Removing user with userId=" + userId + " from task with taskId=" + taskId);
         taskService.removeTaskFromUser(taskId, userId);
         return String.format("redirect:/tasks/%d/update", taskId);
@@ -200,7 +229,10 @@ public class TaskController {
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
                 "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/{task_id}/comments/create")
-    public String createComment(@PathVariable("task_id") Long taskId, @RequestParam("comment") String content) {
+    public String createComment(@PathVariable("task_id") Long taskId,
+                                @RequestParam("comment") String content,
+                                @RequestParam("user_id") Long userId) {
+        // Check if comment is empty or too long
         if (content == null || content.isEmpty() || content.length() > 255) {
             logger.error("TaskController.createComment(): Comment content is empty or too long, aborting update");
             return String.format("redirect:/tasks/%d/read?invalidComment=true", taskId);
@@ -211,11 +243,13 @@ public class TaskController {
 
         Comment comment = new Comment();
         comment.setContent(content);
-        comment.setUser(task.getTodo().getOwner());
+        comment.setUser(userService.findUserById(userId));
         comment.setTask(task);
 
         commentService.updateComment(comment);
         logger.info("TaskController.createComment(): Saved " + comment + " for task with taskId=" + taskId);
+
+        checkTaggedUsers(comment, taskId);
 
         return String.format("redirect:/tasks/%d/read", taskId);
     }
@@ -240,7 +274,23 @@ public class TaskController {
         commentService.save(comment);
         logger.info("TaskController.updateComment(): Updated " + comment);
 
+        checkTaggedUsers(comment, taskId);
+
         return String.format("redirect:/tasks/%d/read", taskId);
+    }
+
+    private void checkTaggedUsers(Comment comment, Long taskId) {
+        logger.info("TaskController.checkTaggedUsers(): Checking for tagged users in comment");
+
+        Task task = taskService.findTaskById(taskId);
+        commentService.findTaggedUserInComment(comment).forEach(user -> {
+            notificationService.sendNotificationToUser(
+                    user,
+                    "You have been mentioned in a comment",
+                    String.format("You have been mentioned in a comment by [%s] in Task [%s] in Project [%s]",
+                            task.getTodo().getOwner().getFirstName(), task.getName(), task.getTodo().getTitle())
+            );
+        });
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")

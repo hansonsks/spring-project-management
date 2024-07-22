@@ -101,7 +101,7 @@
             right: 0;
         }
 
-        .right-sidebar .notification {
+        .right-sidebar{
             padding: 20px 15px;
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
@@ -151,8 +151,74 @@
         .right-sidebar.minimized .right-sidebar-heading {
             display: none; /* Hide notifications when sidebar is minimized */
         }
+
+        /* Notification Styles */
+        #notificationContainer {
+            height: 87vh;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+
+        .notification {
+            padding: 20px;
+            margin-left: -10px;
+            margin-right: -10px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .notification strong {
+            display: block;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .notification div {
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        /* Button Styles */
+        notification-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-bottom: -20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        notification-button:hover {
+            background-color: #218838;
+        }
+
+        /* Icon Styles */
+        notification-button i {
+            margin-right: 5px;
+        }
+
+        /* Alert Styles */
+        .alert {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
-    <script>
+    <script th:inline="javascript">
         function toggleSidebar() {
             let sidebar = document.getElementById("sidebar");
             sidebar.classList.toggle("minimized");
@@ -165,7 +231,6 @@
             if (sidebarState === 'minimized') {
                 sidebar.classList.add('minimized');
             }
-            // Remove the no-transition class after applying the initial state
             setTimeout(function() {
                 sidebar.classList.remove('no-transition');
             }, 0);
@@ -190,6 +255,63 @@
             rightToggleBtn.classList.toggle("button-hidden");
             localStorage.setItem('rightSidebarState', rightSidebar.classList.contains('hidden') ? 'hidden' : 'expanded');
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const userId = /*[[${#authentication.getPrincipal().getId()}]]*/ 0;
+            fetchNotifications(userId);
+        });
+
+        function fetchNotifications(userId) {
+            fetch(`/notifications/user/${userId}`)
+                .then(response => response.json())
+                .then(notifications => {
+                    const notificationContainer = document.getElementById("notificationContainer");
+                    const notificationCount = document.getElementById("notificationCount");
+                    notificationContainer.innerHTML = ''; // Clear current notifications
+                    const count = notifications.length; // Get notification count
+
+                    notificationCount.innerText = count; // Update notification count
+
+                    // Show or hide the badge based on the count
+                    notificationCount.style.display = count > 0 ? 'inline' : 'none';
+
+                    notifications.forEach(notification => {
+                        const notificationDiv = document.createElement("div");
+                        notificationDiv.classList.add("notification");
+                        notificationDiv.innerHTML = `
+                    <strong class="card-title">${notification.title}</strong>
+                    <div class="card-body text-center">${notification.message}</div>
+                    <notification-button onclick="deleteNotification(${notification.id}, ${userId})">
+                        <i class="fa-solid fa-check"></i> Mark as Read
+                    </notification-button>
+                    <hr/>
+                `;
+                        notificationContainer.appendChild(notificationDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching notifications:', error));
+        }
+
+        function deleteNotification(notificationId, userId) {
+            const csrfToken = /*[[${_csrf.token}]]*/ '';
+            fetch(`/notifications/user/${userId}/delete/${notificationId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        fetchNotifications(userId); // Refresh notifications after deletion
+                    } else {
+                        alert('Error marking notification as read.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
     <title>Home Page</title>
 </head>
@@ -197,58 +319,66 @@
 <div class="left-sidebar no-transition" id="sidebar">
     <button class="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
     <span class="navbar-text mr-2" style="padding: 15px">
-            <span style="font-size: 18px;">Hello,</span>
-            <a class="nav-link d-inline" th:href="@{|/users/${#authentication.principal.id}/read|}" style="padding: 5px">
-                <span sec:authentication="principal.firstName"></span>
-            </a>
-        </span>
+        <span style="font-size: 18px;">👋 Hello,</span>
+        <a class="nav-link d-inline" th:href="@{|/users/${#authentication.principal.id}/read|}" style="padding: 5px">
+            <span sec:authentication="principal.firstName"></span>
+        </a>
+    </span>
 
-    <div class="sidebar-separator"></div> <!-- Separator -->
+    <div class="sidebar-separator"></div>
 
     <h6 class="sidebar-heading">General Functions</h6>
     <a th:href="@{/}"><i class="fas fa-home"></i> Home</a>
     <a th:href="@{/todos/all/users/{userId}(userId=${#authentication.principal.id})}"><i class="fas fa-list-ul"></i> Projects</a>
     <a th:href="@{/tasks/all/users/{userId}(userId=${#authentication.principal.id})}"><i class="fas fa-tasks"></i> Tasks</a>
+    <a th:href="@{/comments/all/users/{userId}(userId=${#authentication.principal.id})}"><i class="fas fa-comment-alt"></i> Comments</a>
     <a th:href="@{/users/{userId}/read(userId=${#authentication.principal.id})}"><i class="fas fa-user"></i> Profile</a>
 
     <div sec:authorize="isAuthenticated() and hasAuthority('ADMIN')">
-        <div class="sidebar-separator"></div> <!-- Separator -->
+        <div class="sidebar-separator"></div>
         <h6 class="sidebar-heading">Admin Functions</h6>
         <a th:href="@{/users/all}"><i class="fas fa-users"></i> All Users</a>
-        <a th:href="@{/comments/all}"><i class="fas fa-comment-alt"></i> All Comments</a>
+        <a th:href="@{/comments/all}"><i class="fas fa-comments"></i> All Comments</a>
+        <a th:href="@{/todos/all(user_id=${#authentication.principal.id})}"><i class="fa-solid fa-folder-tree"></i> All Projects</a>
     </div>
 
     <div sec:authorize="isAuthenticated() and #authentication.principal.isGitHubConnected()">
-        <div class="sidebar-separator"></div> <!-- Separator -->
+        <div class="sidebar-separator"></div>
         <h6 class="sidebar-heading">GitHub Functions</h6>
         <a th:href="@{/github/repos}"><i class="fab fa-github"></i> GitHub Repos</a>
     </div>
 
     <div sec:authorize="isAuthenticated() and #authentication.principal.isGoogleConnected()">
-        <div class="sidebar-separator"></div> <!-- Separator -->
+        <div class="sidebar-separator"></div>
         <h6 class="sidebar-heading">Google Functions</h6>
-        <a th:href="/">TODO: Add Google user functions</a>
+        <a th:href="@{https://drive.google.com/drive/my-drive}" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-google-drive"></i> Google Drive
+        </a>
+        <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
+            <i class="fa-solid fa-calendar-day"></i> Google Calendar
+        </a>
     </div>
 
-    <div class="sidebar-separator"></div> <!-- Separator -->
+    <div class="sidebar-separator"></div>
 
     <h6 class="sidebar-heading">Logout</h6>
     <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
-    <div class="sidebar-separator"></div> <!-- Separator -->
+    <div class="sidebar-separator"></div>
 </div>
 
-<!-- TODO: Add notifications from model -->
-<!-- TODO: Add red circle to indicate number of notifications -->
-<!-- TODO: Add ability to mark notifications as read (Mark as read button) -->
-<!-- TODO: Add deadlines to Tasks so they send notifications once the deadline is up + Warning with 1 hour remaining / different times -->
 <div class="right-sidebar hidden no-transition" id="rightSidebar">
-    <button class="right-toggle-btn button-hidden no-transition" id="rightToggleBtn" onclick="toggleRightSidebar()">&#9776;</button>
+    <button class="right-toggle-btn button-hidden no-transition" id="rightToggleBtn" onclick="toggleRightSidebar()">
+        &#9776;
+        <span id="notificationCount" class="badge badge-danger" style="font-size: 12px; margin-left: 5px; display: none;">0</span>
+    </button>
+
     <h6 class="right-sidebar-heading text-center" style="font-size: 18px"><i class="fas fa-bell"></i> Notifications</h6>
-    <div class="notification">Notification 1</div>
-    <div class="notification">Notification 2</div>
-    <div class="notification">Notification 3</div>
-    <div class="notification">Notification 4</div>
+    <div class="sidebar-separator"></div>
+    <div id="notificationContainer" class="card-body">
+        <!-- Notifications will be dynamically inserted here -->
+    </div>
 </div>
+
 </body>
 </html>
