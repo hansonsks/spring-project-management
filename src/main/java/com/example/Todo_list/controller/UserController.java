@@ -16,7 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controller class for handling user-related operations
+ * Controller class for handling User operations
  */
 @Controller
 @RequiredArgsConstructor
@@ -29,8 +29,8 @@ public class UserController {
     private final PasswordService passwordService;
 
     /**
-     * Displays the user registration form
-     * @param model
+     * Display the user registration form
+     * @param model Model
      * @return user-create.html
      */
     @GetMapping("/create")
@@ -41,10 +41,10 @@ public class UserController {
     }
 
     /**
-     * Creates a new user
-     * @param user
-     * @param result
-     * @return user-create.html
+     * Create a new user
+     * @param user User
+     * @param result BindingResult
+     * @return user-create.html or redirect:/login-form?signUpSuccess=true
      */
     @PostMapping("/create")
     public String createUser(
@@ -95,9 +95,9 @@ public class UserController {
     }
 
     /**
-     * Displays user information
-     * @param id
-     * @param model
+     * Display user information
+     * @param id the user id
+     * @param model Model
      * @return user-info.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -110,9 +110,9 @@ public class UserController {
     }
 
     /**
-     * Displays the user update form
-     * @param id
-     * @param model
+     * Display user update page
+     * @param id the user id
+     * @param model Model
      * @return user-update.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -126,14 +126,14 @@ public class UserController {
     }
 
     /**
-     * Updates user information
-     * @param id
-     * @param roleId
-     * @param oldPassword
-     * @param model
-     * @param newUser
-     * @param result
-     * @return user-update.html
+     * Update user information
+     * @param id the user id
+     * @param roleId the role id
+     * @param oldPassword the old password
+     * @param model Model
+     * @param newUser the new user information
+     * @param result BindingResult
+     * @return user-update.html or redirect:/users/{id}/read
      */
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
@@ -201,41 +201,32 @@ public class UserController {
     }
 
     /**
-     * Displays the OAuth user update form
-     * @param id
-     * @param model
-     * @return oauth-user-update.html
+     * Delete a user
+     * @param userId the user id
+     * @return redirect:/users/all
      */
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
-    @GetMapping("/{id}/oauth-update")
-    public String showOAuthUserUpdatePage(@PathVariable Long id, Model model) {
-        User user = userService.findUserById(id);
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
+    @GetMapping("/{user_id}/oauth-update")
+    public String showOAuthUserUpdatePage(@PathVariable("user_id") Long userId, Model model) {
+        User user = userService.findUserById(userId);
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.findAllRoles());
         logger.info("UserController.showOAuthUserUpdatePage(): Displaying user update page with " + user);
         return "oauth-user-update";
     }
 
-    /**
-     * Updates OAuth user information
-     * @param id
-     * @param roleId
-     * @param model
-     * @param newUser
-     * @param result
-     * @return oauth-user-update.html
-     */
+
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
-    @PostMapping("/{id}/oauth-update")
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
+    @PostMapping("/{user_id}/oauth-update")
     public String updateOAuthUser(
-            @PathVariable Long id,
+            @PathVariable Long userId,
             @RequestParam("roleId") Long roleId,
             Model model,
             @Valid @ModelAttribute("user") User newUser,
             BindingResult result
     ) {
-        User oldUser = userService.findUserById(id);
+        User oldUser = userService.findUserById(userId);
 
         logger.info("UserController.updateOAuthUser(): Attempting to update " + oldUser);
 
@@ -246,12 +237,12 @@ public class UserController {
             if (result.hasFieldErrors("firstName")) {
                 logger.error("UserController.updateOAuthUser(): Your first name must have a minimum of 3 characters " +
                         "and a maximum of 255 characters");
-                return String.format("redirect:/users/%d/oauth-update?badFirstName=true", id);
+                return String.format("redirect:/users/%d/oauth-update?badFirstName=true", userId);
             }
 
             if (result.hasFieldErrors("email")) {
                 logger.error("UserController.updateOAuthUser(): Invalid email");
-                return String.format("redirect:/users/%d/oauth-update?badEmail=true", id);
+                return String.format("redirect:/users/%d/oauth-update?badEmail=true", userId);
             }
         }
 
@@ -266,9 +257,9 @@ public class UserController {
     }
 
     /**
-     * Deletes a user
-     * @param userId
-     * @return user-list.html
+     * Delete a user
+     * @param userId the user id
+     * @return redirect:/users/all
      */
     @PreAuthorize("hasAuthority('ADMIN') and #userId != authentication.principal.id")
     @PostMapping("/{user_id}/delete")
@@ -284,9 +275,9 @@ public class UserController {
     }
 
     /**
-     * Displays all users
-     * @param model
-     * @param badDeleteUserId
+     * Display all users
+     * @param model Model
+     * @param badDeleteUserId the user id
      * @return user-list.html
      */
     @GetMapping("/all")

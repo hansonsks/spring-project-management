@@ -28,7 +28,8 @@ public class TaskCommentController {
 
     /**
      * Display all comments
-     * @param model
+     *
+     * @param model Model object
      * @return comments-all.html
      */
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -45,10 +46,11 @@ public class TaskCommentController {
     }
 
     /**
-     * Display all comments by task id
-     * @param userId
-     * @param model
-     * @return comments-task.html
+     * Display all comments by user
+     *
+     * @param userId User ID
+     * @param model Model object
+     * @return comments-user.html
      */
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/all/users/{user_id}")

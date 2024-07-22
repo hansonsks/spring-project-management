@@ -21,6 +21,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+/**
+ * Web security configuration class.
+ */
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -30,7 +33,12 @@ public class WebSecurityConfig {
     private final WebSecurityUserDetailsService userDetailsService;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2AuthorizedClientService authorizedClientService;
-    
+
+    /**
+     * Access denied handler.
+     *
+     * @return AccessDeniedHandler
+     */
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
@@ -42,6 +50,13 @@ public class WebSecurityConfig {
         };
     }
 
+    /**
+     * Security filter chain.
+     *
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -79,11 +94,22 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configure global.
+     *
+     * @param auth AuthenticationManagerBuilder
+     * @throws Exception Exception
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
     }
 
+    /**
+     * Authentication entry point.
+     *
+     * @return AuthenticationEntryPoint
+     */
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {

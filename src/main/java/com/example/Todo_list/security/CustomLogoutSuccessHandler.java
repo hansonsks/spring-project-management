@@ -10,8 +10,19 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Custom logout success handler.
+ */
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
+    /**
+     * Redirects the user to the login page after a successful logout.
+     *
+     * @param request        the request
+     * @param response       the response
+     * @param authentication the authentication
+     * @throws IOException if an input or output exception occurs
+     */
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         Map<String, String> params = new HashMap<>();

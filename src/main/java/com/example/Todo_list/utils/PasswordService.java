@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * Service class for managing passwords.
+ */
 @Service
 @RequiredArgsConstructor
 public class PasswordService extends BCryptPasswordEncoder {
@@ -15,14 +18,29 @@ public class PasswordService extends BCryptPasswordEncoder {
         return super.matches(rawPassword, encodedPassword);
     }
 
+    /**
+     * Generates a random password with the given length
+     * @param length the length of the password
+     * @return the generated password
+     */
     public String generateEncodedPassword(int length) {
         return super.encode(generatePassword(length));
     }
 
+    /**
+     * Encodes the given password
+     * @param rawPassword the password to encode
+     * @return the encoded password
+     */
     public String encodePassword(String rawPassword) {
         return super.encode(rawPassword);
     }
 
+    /**
+     * Generates a random password with the given length
+     * @param length the length of the password
+     * @return the generated password
+     */
     public String generatePassword(int length) {
         if (length < 8) {
             length = 8;

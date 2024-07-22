@@ -15,14 +15,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-// TODO: Add the logging statements
-
+/**
+ * NotificationServiceImpl is a service class that implements NotificationService interface.
+ * It provides methods for sending notifications to users, finding notifications by user, finding all notifications,
+ * deleting notifications by id or by object, and checking due tasks.
+ */
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -32,6 +34,10 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
 
+    /**
+     * checkDueTasks() method is a scheduled method that runs every 1 minute to check for tasks that are past due.
+     * If a task is past due, a notification is sent to all users assigned to the task.
+     */
     @Scheduled(fixedRate = 60000)   // Check every 1 minute
     public void checkDueTasks() {
         for (Task task : taskRepository.findAll()) {
@@ -46,6 +52,14 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    /**
+     * sendNotificationToUserId() method sends a notification to a user with the given userId.
+     * If the user is not found, an EntityNotFoundException is thrown.
+     *
+     * @param userId  the id of the user to send the notification to
+     * @param title   the title of the notification
+     * @param message the message of the notification
+     */
     @Override
     public void sendNotificationToUserId(Long userId, String title, String message) {
         logger.info("NotificationService.sendNotificationToUserId(): Sending notification to userId={} with title={} and message={}", userId, title, message);
@@ -63,6 +77,14 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    /**
+     * sendNotificationToUser() method sends a notification to a user.
+     * If the user is null, a NullEntityException is thrown.
+     *
+     * @param user    the user to send the notification to
+     * @param title   the title of the notification
+     * @param message the message of the notification
+     */
     @Override
     public void sendNotificationToUser(User user, String title, String message) {
         if (user == null) {
@@ -79,6 +101,12 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
+    /**
+     * sendNotificationToAllUsers() method sends a notification to all users.
+     *
+     * @param title   the title of the notification
+     * @param message the message of the notification
+     */
     @Override
     public void sendNotificationToAllUsers(String title, String message) {
         logger.info("NotificationService.sendNotificationToAllUsers(): Sending notifications to all users with title={}, message={}", title, message);
@@ -92,6 +120,13 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    /**
+     * findNotificationById() method finds a notification by its id.
+     * If the notification is not found, an EntityNotFoundException is thrown.
+     *
+     * @param id the id of the notification to find
+     * @return the notification with the given id
+     */
     @Override
     public Notification findNotificationById(Long id) {
         logger.info("NotificationService.findNotificationById(): Finding notification with id={}", id);
@@ -104,18 +139,35 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    /**
+     * findNotificationsByUser() method finds all notifications by a user.
+     *
+     * @param user the user to find notifications by
+     * @return a list of notifications by the user
+     */
     @Override
     public List<Notification> findNotificationsByUser(User user) {
         logger.info("NotificationService.findNotificationsByUser(): Finding notifications by user={} ...", user);
         return notificationRepository.findByUser(user);
     }
 
+    /**
+     * findAllNotifications() method finds all notifications.
+     *
+     * @return a list of all notifications
+     */
     @Override
     public List<Notification> findAllNotifications() {
         logger.info("NotificationService.findAllNotifications(): Finding all notifications ...");
         return notificationRepository.findAll();
     }
 
+    /**
+     * deleteNotificationById() method deletes a notification by its id.
+     * If the notification is not found, an EntityNotFoundException is thrown.
+     *
+     * @param id the id of the notification to delete
+     */
     @Override
     public void deleteNotificationById(Long id) {
         logger.info("NotificationService.deleteNotificationById(): Deleting notification with id={}", id);
@@ -123,6 +175,11 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.delete(notification);
     }
 
+    /**
+     * deleteNotification() method deletes a notification by its object.
+     *
+     * @param notification the notification to delete
+     */
     @Override
     public void deleteNotification(Notification notification) {
         logger.info("NotificationService.deleteNotification(): Deleting notification={}", notification);

@@ -28,8 +28,9 @@ public class GitHubController {
 
     /**
      * List all repositories of the authenticated user
-     * @param model
-     * @param request
+     *
+     * @param model   Model
+     * @param request HttpServletRequest
      * @return github-repos.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
@@ -47,10 +48,11 @@ public class GitHubController {
 
     /**
      * List all issues of a repository
-     * @param owner
-     * @param repo
-     * @param model
-     * @param request
+     *
+     * @param owner   Owner of the repository
+     * @param repo    Repository name
+     * @param model   Model
+     * @param request HttpServletRequest
      * @return github-issues.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
@@ -69,10 +71,11 @@ public class GitHubController {
 
     /**
      * List all pull requests of a repository
-     * @param owner
-     * @param repo
-     * @param model
-     * @param request
+     *
+     * @param owner   Owner of the repository
+     * @param repo    Repository name
+     * @param model   Model
+     * @param request HttpServletRequest
      * @return github-pull-requests.html
      */
     @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")

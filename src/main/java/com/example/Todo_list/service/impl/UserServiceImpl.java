@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing User entities.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,6 +31,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordService passwordService;
     private final SampleTodoInitializer todoInitializer;
 
+    /**
+     * Saves a User entity to the database.
+     *
+     * @param user User entity to save
+     * @return the saved User entity
+     */
     @Override
     public User save(User user) {
         if (user == null) {
@@ -47,6 +56,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * Finds a User entity by its id.
+     *
+     * @param id the id of the User entity
+     * @return the found User entity
+     * @throws EntityNotFoundException if no User entity with the given id was found
+     */
     @Override
     public User findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -60,6 +76,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Finds a User entity by its email.
+     *
+     * @param email the email of the User entity
+     * @return the found User entity
+     * @throws EntityNotFoundException if no User entity with the given email was found
+     */
     @Override
     public User findUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
@@ -73,6 +96,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Updates a User entity in the database.
+     *
+     * @param user User entity to update
+     * @return the updated User entity
+     * @throws EntityNotFoundException if no User entity with the given id was found
+     */
     @Override
     public User updateUser(User user) {
         if (user == null) {
@@ -85,6 +115,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Deletes a User entity from the database.
+     *
+     * @param id the id of the User entity to delete
+     * @throws EntityNotFoundException if no User entity with the given id was found
+     */
     @Override
     public void deleteUserById(Long id) {
         User user = this.findUserById(id);
@@ -93,6 +129,11 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    /**
+     * Finds all User entities in the database.
+     *
+     * @return a list of all User entities
+     */
     @Override
     public List<User> findAllUsers() {
         logger.info("UserService.findAllUser(): Finding all users");

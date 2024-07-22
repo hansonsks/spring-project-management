@@ -19,6 +19,10 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * CustomOAuth2UserService is a service class that extends DefaultOAuth2UserService.
+ * It is responsible for handling OAuth2 login requests and creating new users if they do not exist in the database.
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -55,6 +59,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
     );
 
+    /**
+     * This method is called when a user logs in with OAuth2.
+     * It checks if the user exists in the database and creates a new user if they do not.
+     *
+     * @param userRequest OAuth2UserRequest object containing the user's information
+     * @return OAuth2User object containing the user's information
+     * @throws OAuth2AuthenticationException if the user's information is invalid
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2Provider provider;
@@ -79,6 +91,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+    /**
+     * This method creates a new user in the database.
+     *
+     * @param oAuth2User OAuth2User object containing the user's information
+     * @param provider   OAuth2Provider object containing the user's provider
+     * @param uniqueId   String containing the user's unique ID
+     * @return User object containing the user's information
+     */
     private User createUser(OAuth2User oAuth2User, OAuth2Provider provider, String uniqueId) {
         User user = new User();
 

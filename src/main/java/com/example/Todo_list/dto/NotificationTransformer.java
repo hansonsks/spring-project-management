@@ -13,8 +13,8 @@ public class NotificationTransformer {
 
     /**
      * Converts a Notification entity to a NotificationDTO.
-     * @param notification
-     * @return
+     * @param notification the Notification entity to convert
+     * @return the converted NotificationDTO
      */
     public static NotificationDTO convertEntityToDTO(Notification notification) {
         NotificationDTO dto = new NotificationDTO();
@@ -28,9 +28,9 @@ public class NotificationTransformer {
 
     /**
      * Converts a NotificationDTO to a Notification entity.
-     * @param dto
-     * @param user
-     * @return
+     * @param dto the NotificationDTO to convert
+     * @param user the User entity to associate with the Notification
+     * @return the converted Notification entity
      */
     public static Notification convertDTOToEntity(NotificationDTO dto, User user) {
         Notification notification = new Notification();

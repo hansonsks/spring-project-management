@@ -10,6 +10,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * CustomOAuth2UserDetails class is a custom implementation of the OAuth2User interface.
+ * It extends the User class and implements the OAuth2User interface.
+ * It is used to store the user details and attributes from the OAuth2 provider.
+ */
 @Getter
 public class CustomOAuth2UserDetails extends User implements OAuth2User {
 

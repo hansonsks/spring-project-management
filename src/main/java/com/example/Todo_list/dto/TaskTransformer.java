@@ -7,9 +7,7 @@ import com.example.Todo_list.entity.ToDo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 /**
  * This class is responsible for converting Task DTOs to entities and vice versa.
@@ -20,9 +18,9 @@ public class TaskTransformer {
 
     /**
      * Converts a Task DTO to a Task entity.
-     * @param dto
-     * @param todo
-     * @param state
+     * @param dto Task DTO
+     * @param todo ToDo entity
+     * @param state State entity
      * @return Task entity
      */
     public static Task convertDTOToEntity(TaskDTO dto, ToDo todo, State state) {
@@ -46,7 +44,7 @@ public class TaskTransformer {
 
     /**
      * Converts a Task entity to a Task DTO.
-     * @param task
+     * @param task Task entity
      * @return Task DTO
      */
     public static TaskDTO convertEntityToDTO(Task task) {

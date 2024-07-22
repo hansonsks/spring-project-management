@@ -7,8 +7,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for the {@link Comment} entity.
+ */
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+    /**
+     * Find all comments by user.
+     * @param user
+     * @return List of comments
+     */
     List<Comment> findByUser(User user);
 }

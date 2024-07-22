@@ -1,15 +1,16 @@
 package com.example.Todo_list.utils;
 
 import com.example.Todo_list.entity.*;
-import com.example.Todo_list.repository.CommentRepository;
-import com.example.Todo_list.repository.StateRepository;
-import com.example.Todo_list.repository.TaskRepository;
-import com.example.Todo_list.repository.ToDoRepository;
+import com.example.Todo_list.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * Class for initializing sample todos for a user.
+ */
 @Service
 @RequiredArgsConstructor
 public class SampleTodoInitializer {
@@ -18,7 +19,13 @@ public class SampleTodoInitializer {
     private final ToDoRepository toDoRepository;
     private final TaskRepository taskRepository;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
 
+    /**
+     * Initializes sample todos for a user.
+     *
+     * @param user the user for whom the sample todos are to be initialized
+     */
     public void initUserToDo(User user) {
         List<ToDo> todos = user.getTodoList();
 
@@ -93,5 +100,12 @@ public class SampleTodoInitializer {
         todo1.setTasks(List.of(task1, task2, task3, task4, task5));
 
         todos.addAll(List.of(todo1, todo2, todo3));
+
+        Notification notification = new Notification();
+        notification.setTitle("Sample Notification");
+        notification.setMessage("This is a sample notification created by the system.");
+        notification.setUser(user);
+        notification.setCreatedAt(ZonedDateTime.now());
+        notificationRepository.save(notification);
     }
 }

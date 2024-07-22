@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for ToDo
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,6 +29,12 @@ public class ToDoServiceImpl implements ToDoService {
     private final ToDoRepository toDoRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Saves a ToDo to the database
+     *
+     * @param toDo ToDo to be saved
+     * @return ToDo that was saved
+     */
     @Override
     public ToDo save(ToDo toDo) {
         if (toDo == null) {
@@ -37,6 +46,12 @@ public class ToDoServiceImpl implements ToDoService {
         return toDoRepository.save(toDo);
     }
 
+    /**
+     * Finds a ToDo by its id
+     *
+     * @param id Id of the ToDo to be found
+     * @return ToDo that was found
+     */
     @Override
     public ToDo findToDoById(Long id) {
         Optional<ToDo> todo = toDoRepository.findById(id);
@@ -50,6 +65,11 @@ public class ToDoServiceImpl implements ToDoService {
         }
     }
 
+    /**
+     * Deletes a ToDo by its id
+     *
+     * @param id Id of the ToDo to be deleted
+     */
     @Override
     public void deleteToDoById(Long id) {
         ToDo todo = this.findToDoById(id);
@@ -57,18 +77,35 @@ public class ToDoServiceImpl implements ToDoService {
         toDoRepository.delete(todo);
     }
 
+    /**
+     * Finds all ToDos
+     *
+     * @return List of all ToDos
+     */
     @Override
     public List<ToDo> findAllToDos() {
         logger.info("ToDoService.findAllToDo(): Finding all ToDos");
         return toDoRepository.findAll();
     }
 
+    /**
+     * Finds all ToDos of a user by its id
+     *
+     * @param userId Id of the user
+     * @return List of all ToDos of the user
+     */
     @Override
     public List<ToDo> findAllToDoOfUserId(Long userId) {
         logger.info("ToDoService.findAllToDoOfUserId(): Finding all ToDos of ownerId/userId=" + userId);
         return toDoRepository.findTodoByOwnerId(userId);
     }
 
+    /**
+     * Adds a collaborator to a ToDo
+     *
+     * @param toDoId         Id of the ToDo
+     * @param collaboratorId Id of the collaborator
+     */
     @Override
     public void addCollaborator(Long toDoId, Long collaboratorId) {
         ToDo todo = this.findToDoById(toDoId);
@@ -85,6 +122,12 @@ public class ToDoServiceImpl implements ToDoService {
         logger.info("Updated User: " + user);
     }
 
+    /**
+     * Removes a collaborator from a ToDo
+     *
+     * @param toDoId         Id of the ToDo
+     * @param collaboratorId Id of the collaborator
+     */
     @Override
     public void removeCollaborator(Long toDoId, Long collaboratorId) {
         ToDo todo = this.findToDoById(toDoId);
@@ -102,6 +145,13 @@ public class ToDoServiceImpl implements ToDoService {
         logger.info("Updated User: " + user);
     }
 
+    /**
+     * Finds a collaborator by its id
+     *
+     * @param toDo          ToDo to find collaborator in
+     * @param collaboratorId Id of the collaborator
+     * @return Collaborator that was found
+     */
     private User findCollaboratorById(ToDo toDo, Long collaboratorId) {
         Optional<User> collaborator = userRepository.findById(collaboratorId);
 
@@ -121,6 +171,13 @@ public class ToDoServiceImpl implements ToDoService {
         }
     }
 
+    /**
+     * Checks if a user is the owner of a ToDo
+     *
+     * @param toDo        ToDo to check
+     * @param collaborator User to check
+     * @return True if the user is the owner of the ToDo, false otherwise
+     */
     private boolean isOwnerOfToDo(ToDo toDo, User collaborator) {
         return collaborator.equals(toDo.getOwner());
     }

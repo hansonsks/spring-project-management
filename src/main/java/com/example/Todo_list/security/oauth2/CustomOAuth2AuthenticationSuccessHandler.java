@@ -12,6 +12,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
+/**
+ * Custom OAuth2 authentication success handler
+ */
 public class CustomOAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
@@ -19,6 +22,10 @@ public class CustomOAuth2AuthenticationSuccessHandler implements AuthenticationS
     public CustomOAuth2AuthenticationSuccessHandler(OAuth2AuthorizedClientService authorizedClientService) {
         this.authorizedClientService = authorizedClientService;
     }
+
+    /**
+     * Save the authorized client in the session and redirect to the home page
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (authentication instanceof OAuth2AuthenticationToken) {

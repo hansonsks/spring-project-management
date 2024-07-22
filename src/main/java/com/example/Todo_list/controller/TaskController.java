@@ -2,7 +2,10 @@ package com.example.Todo_list.controller;
 
 import com.example.Todo_list.dto.TaskDTO;
 import com.example.Todo_list.dto.TaskTransformer;
-import com.example.Todo_list.entity.*;
+import com.example.Todo_list.entity.Comment;
+import com.example.Todo_list.entity.Priority;
+import com.example.Todo_list.entity.Task;
+import com.example.Todo_list.entity.User;
 import com.example.Todo_list.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Controller class for handling Task-related operations
@@ -37,10 +39,11 @@ public class TaskController {
     private final NotificationService notificationService;  // TODO: Scan comments for @mentions and send notifications
 
     /**
-     * Display all tasks of a specific ToDo
-     * @param todoId
-     * @param model
-     * @return task-create.html
+     * Displays all tasks of a specific ToDo
+     *
+     * @param todoId The ID of the ToDo
+     * @param model  The model to be passed to the view
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -55,12 +58,13 @@ public class TaskController {
     }
 
     /**
-     * Create a new task
-     * @param todoId
-     * @param model
-     * @param taskDTO
-     * @param result
-     * @return task-update.html if there are errors, else redirect to /todos/{todo_id}/tasks
+     * Creates a new task
+     *
+     * @param todoId   The ID of the ToDo
+     * @param model    The model to be passed to the view
+     * @param taskDTO  The DTO of the task to be created
+     * @param result   The result of the binding
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -102,10 +106,11 @@ public class TaskController {
     }
 
     /**
-     * Display the task update form
-     * @param taskId
-     * @param model
-     * @return task-update.html
+     * Displays the form for updating a task
+     *
+     * @param taskId The ID of the task
+     * @param model  The model to be passed to the view
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
@@ -118,12 +123,13 @@ public class TaskController {
     }
 
     /**
-     * Update a task
-     * @param taskId
-     * @param model
-     * @param taskDTO
-     * @param result
-     * @return task-update.html if there are errors, else redirect to /tasks/{task_id}/update
+     * Updates a task
+     *
+     * @param taskId  The ID of the task
+     * @param model   The model to be passed to the view
+     * @param taskDTO The DTO of the task to be updated
+     * @param result  The result of the binding
+     * @return The view to be displayed
      */
     // TODO: Handle task update errors by rejecting them and displaying an error <div>
     @PreAuthorize("hasAuthority('ADMIN') or " +
@@ -164,9 +170,10 @@ public class TaskController {
     }
 
     /**
-     * Prepare the model for task update
-     * @param id
-     * @param model
+     * Prepares the model for updating a task
+     *
+     * @param id    The ID of the task
+     * @param model The model to be passed to the view
      */
     private void prepareModelForTaskUpdate(Long id, Model model) {
         Task task = taskService.findTaskById(id);
@@ -195,10 +202,11 @@ public class TaskController {
     }
 
     /**
-     * Display a task
-     * @param taskId
-     * @param model
-     * @return task-info.html
+     * Displays a task
+     *
+     * @param taskId The ID of the task
+     * @param model  The model to be passed to the view
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
@@ -217,10 +225,10 @@ public class TaskController {
     }
 
     /**
-     * Delete a task
-     * @param taskId
-     * @param todoId
-     * @return redirect to /todos/{todo_id}/tasks
+     * Deletes a task
+     *
+     * @param taskId The ID of the task
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @toDoServiceImpl.findToDoById(#todoId).owner.id or " +
@@ -233,10 +241,11 @@ public class TaskController {
     }
 
     /**
-     * Add a user to a task
-     * @param taskId
-     * @param userId
-     * @return redirect to /tasks/{task_id}/update
+     * Changes the state of a task
+     *
+     * @param taskId  The ID of the task
+     * @param stateId The ID of the state
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/add-user")
@@ -259,10 +268,11 @@ public class TaskController {
     }
 
     /**
-     * Remove a user from a task
-     * @param taskId
-     * @param userId
-     * @return redirect to /tasks/{task_id}/update
+     * Removes a user from a task
+     *
+     * @param taskId The ID of the task
+     * @param userId The ID of the user
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")
     @PostMapping("/{task_id}/update/remove-user")
@@ -286,11 +296,12 @@ public class TaskController {
     }
 
     /**
-     * Create a comment
-     * @param taskId
-     * @param content
-     * @param userId
-     * @return redirect to /tasks/{task_id}/read
+     * Creates a new comment
+     *
+     * @param taskId  The ID of the task
+     * @param content The content of the comment
+     * @param userId  The ID of the user
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
                 "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
@@ -322,11 +333,12 @@ public class TaskController {
     }
 
     /**
-     * Update a comment
-     * @param taskId
-     * @param commentId
-     * @param content
-     * @return redirect to /tasks/{task_id}/read
+     * Updates a comment
+     *
+     * @param taskId    The ID of the task
+     * @param commentId The ID of the comment
+     * @param content   The content of the comment
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/update")
@@ -354,9 +366,10 @@ public class TaskController {
     }
 
     /**
-     * Check for tagged users in a comment
-     * @param comment
-     * @param taskId
+     * Checks for tagged users in a comment and sends notifications
+     *
+     * @param comment The comment to be checked
+     * @param taskId  The ID of the task
      */
     private void checkTaggedUsers(Comment comment, Long taskId) {
         logger.info("TaskController.checkTaggedUsers(): Checking for tagged users in comment");
@@ -373,10 +386,11 @@ public class TaskController {
     }
 
     /**
-     * Delete a comment
-     * @param taskId
-     * @param commentId
-     * @return redirect to /tasks/{task_id}/read
+     * Deletes a comment
+     *
+     * @param taskId    The ID of the task
+     * @param commentId The ID of the comment
+     * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @commentServiceImpl.findCommentById(#commentId).user.id")
     @PostMapping("/{task_id}/comments/{comment_id}/delete")
@@ -389,10 +403,11 @@ public class TaskController {
     }
 
     /**
-     * Display all tasks of a specific user
-     * @param userId
-     * @param model
-     * @return user-tasks.html
+     * Displays all tasks of a specific user
+     *
+     * @param userId The ID of the user
+     * @param model  The model to be passed to the view
+     * @return The view to be displayed
      */
     @GetMapping("/all/users/{user_id}")
     public String displayAllTasksOfUser(@PathVariable("user_id") Long userId, Model model) {

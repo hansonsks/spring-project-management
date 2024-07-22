@@ -28,7 +28,8 @@ public class NotificationController {
 
     /**
      * Fetches all notifications for a user
-     * @param userId
+     *
+     * @param userId ID of the user
      * @return List of notifications
      */
     @GetMapping("/user/{userId}")
@@ -43,8 +44,9 @@ public class NotificationController {
 
     /**
      * Marks a notification as read
-     * @param notificationId
-     * @param userId
+     *
+     * @param notificationId ID of the notification
+     * @param userId         ID of the user
      */
     @PostMapping("/user/{user_id}/delete/{notification_id}")
     public void markNotificationsAsRead(@PathVariable("notification_id") Long notificationId,

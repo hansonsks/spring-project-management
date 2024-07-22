@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing Role entities.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,6 +24,11 @@ public class RoleServiceImpl implements RoleService {
     private static final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
     private final RoleRepository roleRepository;
 
+    /**
+     * Finds Role by id
+     * @param id - id of Role
+     * @return Role with given id
+     */
     @Override
     public Role findRoleById(Long id) {
         Optional<Role> role = roleRepository.findById(id);
@@ -34,6 +42,11 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    /**
+     * finds Role by name
+     * @param name - name of Role
+     * @return Role with given name
+     */
     @Override
     public Role findRoleByName(String name) {
         if (name == null || name.isEmpty()) {
@@ -51,6 +64,10 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    /**
+     * Deletes Role by a given name
+     * @param name - name of Role
+     */
     @Override
     public void deleteRoleByName(String name) {
         Role role = this.findRoleByName(name);
@@ -58,6 +75,10 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.delete(role);
     }
 
+    /**
+     * Finds all Roles
+     * @return list of Roles
+     */
     @Override
     public List<Role> findAllRoles() {
         logger.info("RoleService.findAllRoles(): Finding all Roles");

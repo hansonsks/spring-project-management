@@ -15,6 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+/**
+ * Service class for GitHub API
+ */
 @Service
 public class GitHubService {
 
@@ -25,6 +28,11 @@ public class GitHubService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    /**
+     * Get user's repositories
+     * @param authorizedClient OAuth2AuthorizedClient
+     * @return List of user's repositories
+     */
     public List<Repo> getUserRepos(OAuth2AuthorizedClient authorizedClient) {
         String url = gitHubApiUrl + "/user/repos";
         HttpHeaders headers = new HttpHeaders();
@@ -41,6 +49,13 @@ public class GitHubService {
         return response.getBody();
     }
 
+    /**
+     * Get repository's issues
+     * @param authorizedClient OAuth2AuthorizedClient
+     * @param owner Repository owner
+     * @param repo Repository name
+     * @return List of repository's issues
+     */
     public List<Issue> getRepoIssues(OAuth2AuthorizedClient authorizedClient, String owner, String repo) {
         String url = gitHubApiUrl + "/repos/" + owner + "/" + repo + "/issues";
         HttpHeaders headers = new HttpHeaders();
@@ -57,6 +72,13 @@ public class GitHubService {
         return response.getBody();
     }
 
+    /**
+     * Get repository's pull requests
+     * @param authorizedClient OAuth2AuthorizedClient
+     * @param owner Repository owner
+     * @param repo Repository name
+     * @return List of repository's pull requests
+     */
     public List<PullRequest> getRepoPullRequests(OAuth2AuthorizedClient authorizedClient, String owner, String repo) {
         String url = gitHubApiUrl + "/repos/" + owner + "/" + repo + "/pulls";
         HttpHeaders headers = new HttpHeaders();

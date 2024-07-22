@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * This class is used to store user details for authentication.
+ */
 @Getter
 public class WebSecurityUserDetails implements UserDetails {
 

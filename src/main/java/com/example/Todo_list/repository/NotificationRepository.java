@@ -7,8 +7,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for Notification entity
+ */
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
+    /**
+     * Find all notifications by user
+     * @param user user
+     * @return list of notifications
+     */
     List<Notification> findByUser(User user);
 }

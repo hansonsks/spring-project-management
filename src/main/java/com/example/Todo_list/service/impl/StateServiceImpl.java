@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing states
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -22,6 +25,12 @@ public class StateServiceImpl implements StateService {
     private static final Logger logger = LoggerFactory.getLogger(StateServiceImpl.class);
     private final StateRepository stateRepository;
 
+    /**
+     * Saves a state to the database
+     *
+     * @param state the state to be saved
+     * @return the saved state
+     */
     @Override
     public State save(State state) {
         if (state == null) {
@@ -33,6 +42,12 @@ public class StateServiceImpl implements StateService {
         return stateRepository.save(state);
     }
 
+    /**
+     * Finds a state by its name
+     *
+     * @param name the name of the state to be found
+     * @return the state with the given name
+     */
     @Override
     public State findStateByName(String name) {
         if (name == null || name.isEmpty()) {
@@ -49,6 +64,11 @@ public class StateServiceImpl implements StateService {
         }
     }
 
+    /**
+     * Deletes a state by its name
+     *
+     * @param name the name of the state to be deleted
+     */
     @Override
     public void deleteStateByName(String name) {
         State state = this.findStateByName(name);
@@ -56,6 +76,11 @@ public class StateServiceImpl implements StateService {
         stateRepository.delete(state);
     }
 
+    /**
+     * Finds all states
+     *
+     * @return a list of all states
+     */
     @Override
     public List<State> findAllStates() {
         logger.info("StateService.findAllState(): Finding all states");

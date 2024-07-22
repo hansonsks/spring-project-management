@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing comments.
+ */
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -25,6 +28,12 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Finds tagged users in a comment.
+     *
+     * @param comment the comment to search for tagged users
+     * @return a list of tagged users in the comment
+     */
     @Override
     public List<User> findTaggedUserInComment(Comment comment) {
         if (comment == null) {
@@ -51,6 +60,12 @@ public class CommentServiceImpl implements CommentService {
         return taggedUsers;
     }
 
+    /**
+     * Saves a comment.
+     *
+     * @param comment the comment to save
+     * @return the saved comment
+     */
     @Override
     public Comment save(Comment comment) {
         if (comment == null) {
@@ -62,6 +77,12 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.save(comment);
     }
 
+    /**
+     * Finds a comment by its ID.
+     *
+     * @param id the ID of the comment to find
+     * @return the found comment
+     */
     @Override
     public Comment findCommentById(Long id) {
         Optional<Comment> comment = commentRepository.findById(id);
@@ -75,6 +96,12 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
+    /**
+     * Finds comments by a user.
+     *
+     * @param user the user to search for comments
+     * @return a list of comments by the user
+     */
     @Override
     public List<Comment> findCommentByUser(User user) {
         if (user == null) {
@@ -86,6 +113,12 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findByUser(user);
     }
 
+    /**
+     * Updates a comment.
+     *
+     * @param comment the comment to update
+     * @return the updated comment
+     */
     @Override
     public Comment updateComment(Comment comment) {
         if (comment == null) {
@@ -97,6 +130,11 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.save(comment);
     }
 
+    /**
+     * Deletes a comment by its ID.
+     *
+     * @param id the ID of the comment to delete
+     */
     @Override
     public void deleteCommentById(Long id) {
         Comment comment = this.findCommentById(id);
@@ -104,6 +142,11 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    /**
+     * Deletes a comment.
+     *
+     * @param comment the comment to delete
+     */
     @Override
     public void deleteComment(Comment comment) {
         if (comment == null) {
@@ -115,6 +158,11 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    /**
+     * Finds all comments.
+     *
+     * @return a list of all comments
+     */
     @Override
     public List<Comment> findAllComments() {
         logger.info("CommentService.findAllComments(): Finding all comments ...");
