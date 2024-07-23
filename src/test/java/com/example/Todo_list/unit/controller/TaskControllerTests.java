@@ -2,7 +2,7 @@ package com.example.Todo_list.unit.controller;
 
 import com.example.Todo_list.controller.TaskController;
 import com.example.Todo_list.entity.*;
-import com.example.Todo_list.security.WebSecurityUserDetails;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.*;
 import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +61,9 @@ public class TaskControllerTests {
 
     @MockBean
     private PasswordService passwordService;
+
+    @MockBean
+    private NotificationServiceImpl notificationService;
 
     private final User user = createUser();
     private final Role role = createRole();
@@ -116,11 +120,12 @@ public class TaskControllerTests {
         when(stateService.findStateByName(any(String.class))).thenReturn(state);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("id", "1");
-        formData.add("name", "Task Name");
+        formData.add("id",          "1");
+        formData.add("name",        "Task Name");
         formData.add("description", "Task Description");
-        formData.add("priority", "TRIVIAL");
-        formData.add("state", "Test");
+        formData.add("priority",    "TRIVIAL");
+        formData.add("state",       "Test");
+        formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/create/todos/1")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -141,6 +146,7 @@ public class TaskControllerTests {
         formData.add("description", "");
         formData.add("priority",    "");
         formData.add("state",       "");
+        formData.add("deadline",    "");
 
         mockMvc.perform(post("/tasks/create/todos/1")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -180,13 +186,14 @@ public class TaskControllerTests {
         formData.add("priority",    "TRIVIAL");
         formData.add("toDoId",      "1");
         formData.add("state",       "Test");
+        formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/1/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(formData)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/todos/1/tasks"));
+                .andExpect(redirectedUrl("/tasks/1/update"));
     }
 
     @Test
@@ -259,7 +266,7 @@ public class TaskControllerTests {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("id",      "1");
         formData.add("comment", "Test Comment");
-        formData.add("user",    user.toString());
+        formData.add("user_id", String.valueOf(user.getId()));
 
         mockMvc.perform(post("/tasks/1/comments/create")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -280,7 +287,7 @@ public class TaskControllerTests {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("id",      "1");
         formData.add("comment", Arrays.toString(veryLongComment));
-        formData.add("user",    user.toString());
+        formData.add("user_id", String.valueOf(user.getId()));
 
         mockMvc.perform(post("/tasks/1/comments/create")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -298,7 +305,7 @@ public class TaskControllerTests {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("id",      "1");
         formData.add("comment", "Test Comment");
-        formData.add("user",    user.toString());
+        formData.add("user_id", String.valueOf(user.getId()));
 
         mockMvc.perform(post("/tasks/999/comments/create")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

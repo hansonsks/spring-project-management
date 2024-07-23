@@ -5,7 +5,7 @@ import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.Task;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.security.WebSecurityUserDetails;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.CommentServiceImpl;
 import com.example.Todo_list.service.impl.RoleServiceImpl;
 import com.example.Todo_list.service.impl.UserServiceImpl;

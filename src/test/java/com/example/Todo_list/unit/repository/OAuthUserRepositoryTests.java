@@ -4,6 +4,7 @@ import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.repository.OAuthUserRepository;
 import com.example.Todo_list.repository.UserRepository;
+import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,14 @@ public class OAuthUserRepositoryTests {
         assertTrue(oAuthUserRepository.findOAuthUserByUser(githubUser).isPresent());
 
         OAuthUser oAuthGithubUser = oAuthUserRepository.findOAuthUserByUser(githubUser).get();
-        assertEquals("github", oAuthGithubUser.getProvider());
+        assertEquals(OAuth2Provider.GITHUB, oAuthGithubUser.getProvider());
         assertEquals("github12345", oAuthGithubUser.getProviderUserId());
     }
 
     @Test
     @DisplayName("findByProviderAndProviderUserId() finds an OAuthUser given the Provider name and ID")
     void testFindOAuthUserByProviderAndProviderUserId() {
-        assertTrue(oAuthUserRepository.findByProviderAndProviderUserId("github", "github12345").isPresent());
+        assertTrue(oAuthUserRepository.findByProviderAndProviderUserId(OAuth2Provider.GITHUB, "github12345").isPresent());
     }
 
     @Test

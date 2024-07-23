@@ -5,7 +5,8 @@ import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.ToDo;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.security.WebSecurityUserDetails;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
+import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import com.example.Todo_list.service.impl.RoleServiceImpl;
 import com.example.Todo_list.service.impl.UserServiceImpl;
 import com.example.Todo_list.utils.PasswordService;
@@ -184,7 +185,7 @@ public class UserControllerTests {
     void testShowOAuthUserUpdatePage() throws Exception {
         OAuthUser oAuthUser = new OAuthUser();
         oAuthUser.setId(1L);
-        oAuthUser.setProvider("Provider");
+        oAuthUser.setProvider(OAuth2Provider.GITHUB);
         oAuthUser.setProviderUserId("1234567890");
         oAuthUser.setUser(user);
 
@@ -205,7 +206,7 @@ public class UserControllerTests {
     void testShowInvalidOAuthUserUpdatePage() throws Exception {
         OAuthUser oAuthUser = new OAuthUser();
         oAuthUser.setId(1L);
-        oAuthUser.setProvider("Provider");
+        oAuthUser.setProvider(OAuth2Provider.GITHUB);
         oAuthUser.setProviderUserId("1234567890");
         oAuthUser.setUser(user);
 

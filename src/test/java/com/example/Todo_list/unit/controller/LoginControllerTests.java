@@ -2,7 +2,7 @@ package com.example.Todo_list.unit.controller;
 
 import com.example.Todo_list.controller.LoginController;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.security.WebSecurityUserDetails;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class LoginControllerTests {
 
         String redirectedUrl = result.getResponse().getRedirectedUrl();
         assert redirectedUrl != null;
-        assertTrue(redirectedUrl.matches(".*/oauth2/authorization/github") || "/login-page".equals(redirectedUrl));
+        assertTrue(redirectedUrl.matches(".*/login*"));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class LoginControllerTests {
 
         String redirectedUrl = result.getResponse().getRedirectedUrl();
         assert redirectedUrl != null;
-        assertTrue(redirectedUrl.matches(".*/oauth2/authorization/github") || "/home".equals(redirectedUrl));
+        assertTrue(redirectedUrl.matches(".*/login*"));
     }
 
     @Test

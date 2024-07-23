@@ -6,6 +6,7 @@ import com.example.Todo_list.entity.User;
 import com.example.Todo_list.exception.NullEntityException;
 import com.example.Todo_list.repository.OAuthUserRepository;
 import com.example.Todo_list.repository.UserRepository;
+import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import com.example.Todo_list.service.impl.UserServiceImpl;
 import com.example.Todo_list.utils.PasswordService;
 import com.example.Todo_list.utils.SampleTodoInitializer;
@@ -75,7 +76,7 @@ public class UserServiceTests {
 
         oAuthUser = new OAuthUser();
         oAuthUser.setId(1L);
-        oAuthUser.setProvider("OAuth Provider");
+        oAuthUser.setProvider(OAuth2Provider.GITHUB);
         oAuthUser.setProviderUserId("OAuth User Id 123");
         oAuthUser.setUser(userWithOAuth);
     }

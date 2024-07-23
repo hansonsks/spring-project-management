@@ -3,11 +3,8 @@ package com.example.Todo_list.unit.controller;
 import com.example.Todo_list.controller.ToDoController;
 import com.example.Todo_list.entity.*;
 import com.example.Todo_list.exception.UserIsToDoOwnerException;
-import com.example.Todo_list.security.WebSecurityUserDetails;
-import com.example.Todo_list.service.impl.RoleServiceImpl;
-import com.example.Todo_list.service.impl.TaskServiceImpl;
-import com.example.Todo_list.service.impl.ToDoServiceImpl;
-import com.example.Todo_list.service.impl.UserServiceImpl;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
+import com.example.Todo_list.service.impl.*;
 import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,6 +56,9 @@ public class ToDoControllerTests {
 
     @MockBean
     private PasswordService passwordService;
+
+    @MockBean
+    private NotificationServiceImpl notificationService;
 
     private final User user = createUser();
     private final Role role = createRole();
@@ -284,7 +284,7 @@ public class ToDoControllerTests {
         formData.add("id",          "1");
         formData.add("title",       "ToDo Title");
         formData.add("description", "ToDo Description");
-        formData.add("createdAt",   LocalDateTime.now().toString());
+        formData.add("createdAt",   ZonedDateTime.now().toString());
         return formData;
     }
 
