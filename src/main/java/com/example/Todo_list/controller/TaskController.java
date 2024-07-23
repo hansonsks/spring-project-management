@@ -78,11 +78,12 @@ public class TaskController {
     ) {
         logger.info("TaskController.createTask(): Attempting to create task for todoId=" + todoId);
 
-        // Check if the deadline is valid (not null and not before the current deadline)
-        if (taskDTO.getDeadline() == null || taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
+        // Allow user to set an optional deadline, but if it is set, it must be in the future
+        if (taskDTO.getDeadline() != null && taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
             logger.error("TaskController.createTask(): Deadline is invalid, aborting task creation");
             model.addAttribute("todo", toDoService.findToDoById(todoId));
             model.addAttribute("priorities", Priority.values());
+            model.addAttribute("deadlineError", "Deadline must be in the future");
             // TODO: Add error <div> for invalid deadline
             return "task-create";
         }

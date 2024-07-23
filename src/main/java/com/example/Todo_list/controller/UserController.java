@@ -220,7 +220,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @PostMapping("/{user_id}/oauth-update")
     public String updateOAuthUser(
-            @PathVariable Long userId,
+            @PathVariable("user_id") Long userId,
             @RequestParam("roleId") Long roleId,
             Model model,
             @Valid @ModelAttribute("user") User newUser,
