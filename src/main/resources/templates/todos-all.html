@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>All ToDo lists of User</title>
+    <script>
+        function confirmDelete(event) {
+            if (!confirm("Are you sure you want to mark this ToDo item as complete?")) {
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+<div th:replace="~{sidebars}"></div>
+<div class="container mt-4">
+    <h2 th:text="${'All ToDo Lists'}"/>
+    <div class="row mb-3">
+        <div class="col-md-12 text-right">
+            <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.user.id"
+               th:href="@{|/todos/create/users/${user.id}|}" class="btn btn-primary btn-lg">Create ToDo Item</a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Created At</th>
+            <th>Owner</th>
+            <th colspan="2">Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="todo, iStat: ${todos}">
+            <td th:text="${iStat.index + 1}"/>
+            <td th:text="${todo.id}"/>
+            <td>
+                <a th:href="@{|/todos/${todo.id}/tasks|}" th:text="${todo.title}"/>
+            </td>
+            <td th:text="${#temporals.format(todo.createdAt, 'dd.MM.yyyy HH:mm')}"/>
+            <td th:text="${todo.getOwner().firstName + ' ' + todo.getOwner().lastName}"></td>
+            <td>
+                <a th:href="@{|/todos/${todo.id}/update/users/${todo.owner.id}|}" class="btn btn-warning btn-sm"
+                   sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.todo.getOwner().id">Edit</a>
+            </td>
+            <td>
+                <form th:action="@{|/todos/${todo.id}/delete/users/${todo.owner.id}|}"
+                      method="POST"
+                      sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.todo.getOwner().id"
+                      onsubmit="return confirmDelete(event)">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="todoId" th:value="${todo.id}">
+                    <input type="hidden" name="ownerId" th:value="${todo.owner.id}">
+                    <button type="submit" class="btn btn-success btn-sm">Mark as complete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:replace="~{footer}"></div>
+</body>
+</html>

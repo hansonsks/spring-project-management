@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>User Tasks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        function confirmDelete(event) {
+            if (!confirm("Are you sure you want to delete this task?")) {
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+<div th:replace="~{sidebars}"></div>
+<div class="container mt-4">
+    <h2 th:text="${'All Tasks Assigned to User ' + user.firstName + ' ' + user.lastName}"></h2>
+    <!-- TODO: Add colours for the tasks given priorities -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>State</th>
+                    <th>ToDo</th>
+                    <th colspan="2">Operations</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task, iStat: ${tasks}" th:class="${task.priority.name().toLowerCase()}">
+                    <td th:text="${iStat.index + 1}"/>
+                    <td th:text="${task.id}"/>
+                    <td>
+                        <a th:href="@{|/tasks/${task.id}/read|}" th:text="${task.name}"></a>
+                    </td>
+                    <td th:text="${task.priority.name().substring(0, 1) + task.priority.name().substring(1).toLowerCase()}"/>
+                    <td th:class="${#strings.replace(task.state.name, ' ', '-').toLowerCase()}" th:text="${task.state.name}"/>
+                    <td>
+                        <a th:href="@{|/todos/${task.todo.id}/read|}" th:text="${task.todo.title}"></a>
+                    </td>
+                    <td>
+                        <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
+                           th:href="@{|/todos/${task.todo.id}/tasks|}" class="btn btn-info">View TODO</a>
+                    </td>
+                    <td>
+                        <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
+                           th:href="@{|/tasks/${task.id}/update|}" class="btn btn-warning">Edit Task</a>
+                    </td>
+                    <td>
+                        <form sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
+                              th:action="@{|/tasks/${task.id}/delete/todos/${task.todo.id}|}" method="POST"
+                              onsubmit="return confirmDelete(event)">
+                            <input type="hidden" name="taskId" th:value="${task.id}">
+                            <input type="hidden" name="todoId" th:value="${task.todo.id}">
+                            <button type="submit" class="btn btn-danger">Remove Task</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{footer}"></div>
+</div>
+</body>
+</html>
