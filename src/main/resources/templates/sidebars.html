@@ -217,6 +217,63 @@
             color: red;
             margin-top: 10px;
         }
+
+        /* Icon Colors */
+        .left-sidebar a i {
+            color: #6c757d; /* Default calm gray */
+            transition: color 0.3s;
+        }
+
+        .left-sidebar a:hover i {
+            color: #ffffff; /* Change icon color to white on hover */
+        }
+
+        /* Specific calmer colors for different icons */
+        .left-sidebar a i.fa-home {
+            color: #4caf50; /* Soft green for Home */
+        }
+
+        .left-sidebar a i.fa-list-ul {
+            color: #ffc107; /* Soft amber for Projects */
+        }
+
+        .left-sidebar a i.fa-tasks {
+            color: #17a2b8; /* Soft cyan for Tasks */
+        }
+
+        .left-sidebar a i.fa-comment-alt {
+            color: #e63946; /* Soft red for Comments */
+        }
+
+        .left-sidebar a i.fa-user {
+            color: #6f42c1; /* Soft purple for Profile */
+        }
+
+        .left-sidebar a i.fa-users,
+        .left-sidebar a i.fa-comments,
+        .left-sidebar a i.fa-folder-tree {
+            color: #f77f00; /* Soft orange for Admin Functions */
+        }
+
+        .left-sidebar a i.fa-github {
+            color: #4a4a4a; /* Calm dark gray for GitHub */
+        }
+
+        .left-sidebar a i.fa-google-drive {
+            color: #db4437; /* Soft red for Google Drive */
+        }
+
+        .left-sidebar a i.fa-calendar-day {
+            color: #fbbc05; /* Soft yellow for Google Calendar */
+        }
+
+        .left-sidebar a i.fa-square-facebook {
+            color: #3b5998; /* Calm blue for Facebook */
+        }
+
+        .left-sidebar a i.fa-sign-out-alt {
+            color: #e63946; /* Soft red for Logout */
+        }
     </style>
     <script th:inline="javascript">
         function toggleSidebar() {
@@ -350,12 +407,23 @@
 
     <div sec:authorize="isAuthenticated() and #authentication.principal.isGoogleConnected()">
         <div class="sidebar-separator"></div>
-        <h6 class="sidebar-heading">Google Functions</h6>
+        <h6 class="sidebar-heading">Google Shortcuts</h6>
         <a th:href="@{https://drive.google.com/drive/my-drive}" target="_blank" rel="noopener noreferrer">
             <i class="fa-brands fa-google-drive"></i> Google Drive
         </a>
         <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
             <i class="fa-solid fa-calendar-day"></i> Google Calendar
+        </a>
+    </div>
+
+    <div sec:authorize="isAuthenticated() and #authentication.principal.isFacebookConnected()">
+        <div class="sidebar-separator"></div>
+        <h6 class="sidebar-heading">Facebook Shortcuts</h6>
+        <a th:href="@{https://www.facebook.com/home.php}" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-square-facebook"></i> Facebook Home
+        </a>
+        <a href="https://www.facebook.com/events" target="_blank" rel="noopener noreferrer">
+            <i class="fa-solid fa-calendar-day"></i> Facebook Events
         </a>
     </div>
 
