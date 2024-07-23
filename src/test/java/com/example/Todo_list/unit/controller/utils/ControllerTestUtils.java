@@ -2,7 +2,7 @@ package com.example.Todo_list.unit.controller.utils;
 
 import com.example.Todo_list.entity.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class ControllerTestUtils {
 
@@ -39,7 +39,7 @@ public class ControllerTestUtils {
         toDo.setId(1L);
         toDo.setTitle("ToDo Title");
         toDo.setDescription("ToDo Description");
-        toDo.setCreatedAt(LocalDateTime.now());
+        toDo.setCreatedAt(ZonedDateTime.now());
         return toDo;
     }
 
@@ -56,5 +56,14 @@ public class ControllerTestUtils {
         comment.setId(1L);
         comment.setContent("Test Comment");
         return comment;
+    }
+
+    public static Notification createNotification() {
+        Notification notification = new Notification();
+        notification.setId(1L);
+        notification.setTitle("Test Notification");
+        notification.setMessage("Test Notification Content");
+        notification.setCreatedAt(ZonedDateTime.now());
+        return notification;
     }
 }

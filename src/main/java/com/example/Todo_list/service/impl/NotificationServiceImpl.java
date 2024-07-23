@@ -147,6 +147,11 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public List<Notification> findNotificationsByUser(User user) {
+        if (user == null) {
+            logger.error("NotificationService.findNotificationsByUser(): User cannot be null");
+            throw new NullEntityException(this.getClass().getName(), "User cannot be null");
+        }
+
         logger.info("NotificationService.findNotificationsByUser(): Finding notifications by user={} ...", user);
         return notificationRepository.findByUser(user);
     }
@@ -182,6 +187,11 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public void deleteNotification(Notification notification) {
+        if (notification == null) {
+            logger.error("NotificationService.deleteNotification(): Notification cannot be null");
+            throw new NullEntityException(this.getClass().getName(), "Notification cannot be null");
+        }
+
         logger.info("NotificationService.deleteNotification(): Deleting notification={}", notification);
         notificationRepository.delete(notification);
     }
