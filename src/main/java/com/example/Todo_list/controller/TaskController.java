@@ -228,6 +228,7 @@ public class TaskController {
      * Deletes a task
      *
      * @param taskId The ID of the task
+     * @param todoId The ID of the ToDo
      * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
@@ -244,7 +245,7 @@ public class TaskController {
      * Changes the state of a task
      *
      * @param taskId  The ID of the task
-     * @param stateId The ID of the state
+     * @param userId  The ID of the user
      * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id")

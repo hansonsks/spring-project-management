@@ -38,25 +38,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final Map<OAuth2Provider, String> providerToUniqueId = Map.of(
             OAuth2Provider.GITHUB, "id",
             OAuth2Provider.GOOGLE, "sub",
-            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+            OAuth2Provider.FACEBOOK, "id"
     );
 
     private final Map<OAuth2Provider, String> providerToFirstName = Map.of(
             OAuth2Provider.GITHUB, "login",
             OAuth2Provider.GOOGLE, "given_name",
-            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+            OAuth2Provider.FACEBOOK, "name"
     );
 
     private final Map<OAuth2Provider, String> providerToLastName = Map.of(
             OAuth2Provider.GITHUB, "",
             OAuth2Provider.GOOGLE, "family_name",
-            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+            OAuth2Provider.FACEBOOK, ""
     );
 
     private final Map<OAuth2Provider, String> providerToEmail = Map.of(
             OAuth2Provider.GITHUB, "email",
             OAuth2Provider.GOOGLE, "email",
-            OAuth2Provider.FACEBOOK, "TODO: Please fill this in"
+            OAuth2Provider.FACEBOOK, "email"
     );
 
     /**
@@ -109,7 +109,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setLastName(lastName == null ? "" : lastName);
 
         String email = oAuth2User.getAttribute(providerToEmail.get(provider));
-        user.setEmail(email == null ? user.getFirstName() + "@placeholder.email" : email);
+        user.setEmail(email == null ? user.getFirstName().replaceAll("\\s+","") + "@placeholder.email" : email);
 
         // Bad practice: Generate an "uncrackable" password for users who log in with OAuth
         user.setPassword(passwordService.generateEncodedPassword(64));

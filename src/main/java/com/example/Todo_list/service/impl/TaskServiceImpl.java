@@ -65,10 +65,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * Finds all tasks in the database
-     *
-     * @param id Id of the task to be found
-     * @return List of all tasks
+     * Deletes a task given its id
+     * @param id the id of the task to be deleted
      */
     @Override
     public void deleteTaskById(Long id) {
@@ -78,9 +76,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * Finds all tasks in the database
+     * Finds all tasks of the todo
      * @param todoId Id of the todo
-     * @return
      */
     @Override
     public List<Task> findAllTasksOfToDo(Long todoId) {
@@ -90,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Finds all tasks in the database
-     * @param userId Id of the user
+     * @param userId ID of the user
      * @return List of all tasks
      */
     @Override
@@ -101,8 +98,8 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Finds all tasks in the database
+     * @param taskId Id of the task
      * @param userId Id of the user
-     * @return List of all tasks
      */
     @Override
     public void assignTaskToUser(Long taskId, Long userId) {
@@ -118,9 +115,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * Finds all tasks in the database
+     * Removes a task from a user
+     * @param taskId Id of the task
      * @param userId Id of the user
-     * @return List of all tasks
      */
     @Override
     public void removeTaskFromUser(Long taskId, Long userId) {

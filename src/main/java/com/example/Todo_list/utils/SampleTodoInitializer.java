@@ -92,6 +92,9 @@ public class SampleTodoInitializer {
         task5.setPriority(Priority.URGENT);
         taskRepository.save(task5);
 
+        task1.getAssignedUsers().add(user);
+        user.getAssignedTasks().add(task1);
+
         task1.setComments(List.of(comment));
         comment.setTask(task1);
         commentRepository.save(comment);
