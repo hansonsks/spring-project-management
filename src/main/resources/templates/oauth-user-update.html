@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<div th:replace="~{header}"></div>
+<div th:replace="~{sidebars}"></div>
 <div class="container mt-4">
     <h2 class="mb-3">Update Existing User</h2>
     <form class="form-horizontal" method="post" th:action="@{|/users/${user.id}/oauth-update|}" th:object="${user}">
@@ -70,6 +70,7 @@
         <div th:if="${param.error}" class="error-message text-danger">Failed to update user credentials. Please try again.</div>
         <input name="id" th:value="*{id}" type="hidden"/>
     </form>
+    <div th:replace="~{footer}"></div>
 </div>
 </body>
 </html>

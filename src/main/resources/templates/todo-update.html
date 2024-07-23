@@ -6,7 +6,7 @@
     <title>Update existing ToDo Item</title>
 </head>
 <body>
-<div th:replace="~{header}"></div>
+<div th:replace="~{sidebars}"></div>
 <div class="container mt-4">
     <h2 class="mb-3">Update existing ToDo Item</h2>
     <form class="form-horizontal" th:object="${todo}" method="post">
@@ -45,6 +45,7 @@
             <a th:href="@{|/todos/all/users/${todo.owner.id}|}" class="btn btn-outline-primary">Go to ToDo List</a>
         </div>
     </div>
+    <div th:replace="~{footer}"></div>
 </div>
 </body>
 </html>

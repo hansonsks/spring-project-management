@@ -6,7 +6,7 @@
     <title>Create New ToDo List</title>
 </head>
 <body>
-<div th:replace="~{header}"></div>
+<div th:replace="~{sidebars}"></div>
 <div class="container mt-4">
     <h2 class="mb-3">Create New ToDo Item</h2>
     <form class="form-horizontal" th:object="${todo}" method="post">
@@ -37,6 +37,7 @@
             <a th:href="@{|/todos/all/users/${ownerId}|}" class="btn btn-outline-primary">Return to ToDo List</a>
         </div>
     </div>
+    <div th:replace="~{footer}"></div>
 </div>
 </body>
 </html>
