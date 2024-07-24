@@ -1,6 +1,5 @@
 package com.example.Todo_list.controller;
 
-import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.service.CommentService;
 import com.example.Todo_list.service.UserService;
 import lombok.RequiredArgsConstructor;

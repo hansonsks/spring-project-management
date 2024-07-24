@@ -1,11 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Feature Overview</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 100px; /* Ensure space for the footer */
+        }
+
+        .feature-container {
+            display: flex;
+            max-width: 1600px;
+            margin: auto;
+        }
+
+        .feature-left {
+            flex: 1;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 20px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .feature-right {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            line-height: 1.1;
+        }
+
+        .feature-right img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #f8f9fa;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        /* Specific icon colors for footer */
+        .col-md-6 ul li i {
+            font-size: 1.2rem; /* Adjust icon size if needed */
+        }
+
+        .col-md-6 ul li {
+            margin: 0 4px;
+        }
+
+        .col-md-6 ul li .fab.fa-github {
+            color: #333; /* GitHub color */
+        }
+
+        .col-md-6 ul li .fas.fa-info-circle {
+            color: #007bff; /* Bootstrap primary color */
+        }
+
+        .col-md-6 ul li .fas.fa-book {
+            color: #28a745; /* Green for Javadocs */
+        }
+
+        hr {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
+<div class="feature-container">
+    <div class="feature-left">
+        <h1 class="text-center">Features Overview</h1>
+        <hr>
 
-<div th:replace="~{footer}"></div>
+        <h2>Login</h2>
+
+        <h4>Local Login</h4>
+        <p>Users may sign up with their first name, last name, email, and password.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h4>OAuth2 Login</h4>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h4>Guest Login</h4>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Projects</h2>
+        <p>Description of feature 2 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Tasks</h2>
+        <p>Description of feature 3 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h4>Deadlines</h4>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Comments</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h4>Tagging Users</h4>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Notifications</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>User Roles</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Security</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>Database</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+
+        <h2>OAuth2 User functions</h2>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <hr>
+    </div>
+
+    <div class="feature-right">
+        <img src="/images/notification-sidebar.png" alt="Feature 1 image">
+        <img src="/images/login.png" alt="Feature 2 image">
+        <img src="/images/login.png" alt="Feature 3 image">
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-left">
+                <div>
+                    <a class="mb-0" sec:authorize="isAuthenticated()" href="/home">
+                        <i class="fas fa-chevron-right"></i> Back to Home
+                    </a>
+                    <a class="mb-0" sec:authorize="!isAuthenticated()" href="/login-form">
+                        <i class="fas fa-chevron-right"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#" onclick="openSourceCode()"><i class="fab fa-github"></i> Source Code</a></li>
+                    <li class="list-inline-item"><a th:href="@{/about}"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li class="list-inline-item"><a href="#" onclick="openJavadocs()"><i class="fas fa-book"></i> Javadocs</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function openSourceCode() {
+        window.open("https://github.com/hansonsks/todo_list", "_blank");
+    }
+
+    function openJavadocs() {
+        const baseUrl = window.location.origin;
+        window.open(`${baseUrl}/javadoc/index.html`, "_blank");
+    }
+</script>
 </body>
 </html>

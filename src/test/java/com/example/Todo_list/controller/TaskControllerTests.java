@@ -12,8 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,8 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(TaskController.class)
 public class TaskControllerTests {
 
     @Autowired
@@ -129,7 +127,7 @@ public class TaskControllerTests {
         formData.add("name",        "Task Name");
         formData.add("description", "Task Description");
         formData.add("priority",    "TRIVIAL");
-        formData.add("state",       "1");
+        // formData.add("state",       "1");
         formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/create/todos/1")
@@ -190,7 +188,7 @@ public class TaskControllerTests {
         formData.add("description", "Task Description");
         formData.add("priority",    "TRIVIAL");
         formData.add("toDoId",      "1");
-        formData.add("state",       "1");
+        // formData.add("state",       "1");
         formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/1/update")
