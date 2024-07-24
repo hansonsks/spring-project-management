@@ -58,6 +58,24 @@ public class StateServiceTests {
     }
 
     @Test
+    @DisplayName("findById() should find a state by its ID")
+    void testFindStateById() {
+        when(stateRepository.findById(any(Long.class))).thenReturn(Optional.of(state));
+
+        State actual = stateService.findStateById(state.getId());
+
+        assertEquals(state, actual);
+        verify(stateRepository).findById(state.getId());
+    }
+
+    @Test
+    @DisplayName("findById() should throw NullEntityException when ID is null")
+    void testFindStateByInvalidId() {
+        assertThrows(NullEntityException.class, () -> stateService.findStateById(null));
+        verify(stateRepository, times(0)).findById(any(Long.class));
+    }
+
+    @Test
     @DisplayName("findStateByName() should find a state by its name")
     void testFindStateByName() {
         when(stateRepository.findByName(any(String.class))).thenReturn(Optional.of(state));

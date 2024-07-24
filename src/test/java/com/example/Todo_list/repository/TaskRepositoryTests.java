@@ -2,7 +2,6 @@ package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.Priority;
 import com.example.Todo_list.entity.Task;
-import com.example.Todo_list.repository.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

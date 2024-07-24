@@ -29,12 +29,11 @@ VALUES
     -- Admin Password: Admin123?
     ('Admin',  'Doe', 'admin@mail.com', '$2a$10$oSJ00.BgokS3L96e0x4VKOKtilabLz.lLgHsvz5tVgKbt5hrG/Mvu', 1),
 
-    -- All User Passwords: User123?
+    -- User Password: User123?
     ('User',   'Doe', 'user@mail.com',  '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
+
+    -- Guest Password: Guest123?
     ('Guest', 'Doe', 'guest@mail.com', '$2a$10$77co3ie.zQsgUVfDvswRF.ES3Nkv6fUzg9Gje7r83jnj6kO/nSRQK', 1),
-    ('User One', 'Doe', 'user1@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
-    ('User Two', 'Doe', 'user2@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
-    ('User Three', 'Doe', 'user3@mail.com', '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
 
     -- GitHubUser Password: GitHubUser123?
     ('GitHub User', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1);
@@ -47,15 +46,15 @@ INSERT INTO states (name) VALUES
 
 INSERT INTO todos (title, description, created_at, owner_id)
 VALUES
-    ('Admin Todo #1', 'Demo Description', NOW(), 1),
-    ('Admin Todo #2', 'Demo Description', NOW(), 1),
-    ('Admin Todo #3', 'Demo Description', NOW(), 1),
-    ('User Todo #1',  'Demo Description', NOW(), 2),
-    ('User Todo #2',  'Demo Description', NOW(), 2),
-    ('User Todo #3',  'Demo Description', NOW(), 2),
-    ('Guest Todo #1', 'Demo Description', NOW(), 3),
-    ('Guest Todo #2', 'Demo Description', NOW(), 3),
-    ('Guest Todo #3', 'Demo Description', NOW(), 3);
+    ('Admin Project #1', 'Demo Description', NOW(), 1),
+    ('Admin Project #2', 'Demo Description', NOW(), 1),
+    ('Admin Project #3', 'Demo Description', NOW(), 1),
+    ('User Project #1',  'Demo Description', NOW(), 2),
+    ('User Project #2',  'Demo Description', NOW(), 2),
+    ('User Project #3',  'Demo Description', NOW(), 2),
+    ('Guest Project #1', 'Demo Description', NOW(), 3),
+    ('Guest Project #2', 'Demo Description', NOW(), 3),
+    ('Guest Project #3', 'Demo Description', NOW(), 3);
 
 INSERT INTO tasks (name, description, priority, todo_id, state_id, assigned_user_id, deadline)
 VALUES
@@ -100,7 +99,7 @@ VALUES
 
 INSERT INTO oauth_users (provider, provider_user_id, user_id)
 VALUES
-    ('GITHUB', 'github12345', 7);
+    ('GITHUB', 'github12345', 4);
 
 -- TODO: Add sample comments to sample tasks
 
@@ -112,4 +111,16 @@ INSERT INTO notifications (title, message, user_id, created_at)
 VALUES
     ('Sample Notification', 'Sample Message', 1, NOW()),
     ('Sample Notification', 'Sample Message', 1, NOW()),
-    ('Sample Notification', 'Sample Message', 1, NOW());
+    ('Sample Notification', 'Sample Message', 1, NOW()),
+
+    ('Sample Notification', 'Sample Message', 2, NOW()),
+    ('Sample Notification', 'Sample Message', 2, NOW()),
+    ('Sample Notification', 'Sample Message', 2, NOW()),
+
+    ('Sample Notification', 'Sample Message', 3, NOW()),
+    ('Sample Notification', 'Sample Message', 3, NOW()),
+    ('Sample Notification', 'Sample Message', 3, NOW()),
+
+    ('Sample Notification', 'Sample Message', 4, NOW()),
+    ('Sample Notification', 'Sample Message', 4, NOW()),
+    ('Sample Notification', 'Sample Message', 4, NOW());

@@ -2,6 +2,7 @@ package com.example.Todo_list.controller;
 
 import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.*;
+import com.example.Todo_list.repository.StateRepository;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.*;
 import com.example.Todo_list.utils.PasswordService;
@@ -11,7 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +36,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TaskController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class TaskControllerTests {
 
     @Autowired
@@ -63,6 +66,9 @@ public class TaskControllerTests {
 
     @MockBean
     private NotificationServiceImpl notificationService;
+
+    @MockBean
+    private StateRepository stateRepository;
 
     private final User user = ControllerTestUtils.createUser();
     private final Role role = ControllerTestUtils.createRole();
@@ -123,7 +129,7 @@ public class TaskControllerTests {
         formData.add("name",        "Task Name");
         formData.add("description", "Task Description");
         formData.add("priority",    "TRIVIAL");
-        formData.add("state",       "Test");
+        formData.add("state",       "1");
         formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/create/todos/1")
@@ -184,7 +190,7 @@ public class TaskControllerTests {
         formData.add("description", "Task Description");
         formData.add("priority",    "TRIVIAL");
         formData.add("toDoId",      "1");
-        formData.add("state",       "Test");
+        formData.add("state",       "1");
         formData.add("deadline",    LocalDateTime.now().plusDays(1).toString());
 
         mockMvc.perform(post("/tasks/1/update")
@@ -233,7 +239,7 @@ public class TaskControllerTests {
                 .andExpect(model().attribute("task", hasProperty("name",        is("Task Name"))))
                 .andExpect(model().attribute("task", hasProperty("description", is("Task Description"))))
                 .andExpect(model().attribute("task", hasProperty("priority",    is(String.valueOf(Priority.TRIVIAL)))))
-                .andExpect(model().attribute("task", hasProperty("state",       is(state.toString()))));
+                .andExpect(model().attribute("task", hasProperty("state",       is(state))));
     }
 
     @Test

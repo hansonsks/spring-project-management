@@ -1,7 +1,6 @@
 package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

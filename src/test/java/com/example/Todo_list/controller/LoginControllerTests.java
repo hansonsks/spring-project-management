@@ -5,7 +5,8 @@ import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(LoginController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class LoginControllerTests {
 
     @Autowired
@@ -30,13 +32,9 @@ public class LoginControllerTests {
     @Test
     @DisplayName("Test")
     void testUnauthorizedUserLoginPageView() throws Exception {
-        MvcResult result = mockMvc.perform(get("/login-form"))
-                .andExpect(status().is3xxRedirection())
+        mockMvc.perform(get("/login-form"))
+                .andExpect(status().isOk())
                 .andReturn();
-
-        String redirectedUrl = result.getResponse().getRedirectedUrl();
-        assert redirectedUrl != null;
-        assertTrue(redirectedUrl.matches(".*/login*"));
     }
 
     @Test
@@ -48,7 +46,7 @@ public class LoginControllerTests {
 
         String redirectedUrl = result.getResponse().getRedirectedUrl();
         assert redirectedUrl != null;
-        assertTrue(redirectedUrl.matches(".*/login*"));
+        assertTrue(redirectedUrl.matches(".*/login-form"));
     }
 
     @Test

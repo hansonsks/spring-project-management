@@ -2,8 +2,6 @@ package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.repository.OAuthUserRepository;
-import com.example.Todo_list.repository.UserRepository;
 import com.example.Todo_list.security.oauth2.OAuth2Provider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

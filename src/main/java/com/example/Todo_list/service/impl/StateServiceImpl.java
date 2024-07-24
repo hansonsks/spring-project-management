@@ -42,6 +42,23 @@ public class StateServiceImpl implements StateService {
         return stateRepository.save(state);
     }
 
+    @Override
+    public State findStateById(Long id) {
+        if (id == null) {
+            logger.error("StateService.findStateById(): Cannot find State with null id");
+            throw new NullEntityException("Cannot find State with null id");
+        }
+
+        Optional<State> state = stateRepository.findById(id);
+        if (state.isPresent()) {
+            logger.info("StateService.findStateById(): " + state.get() + " was found");
+            return state.get();
+        } else {
+            logger.error("StateService.findStateById(): No state with id=" + id + " was found");
+            throw new EntityNotFoundException("No State with id=" + id + " was found");
+        }
+    }
+
     /**
      * Finds a state by its name
      *

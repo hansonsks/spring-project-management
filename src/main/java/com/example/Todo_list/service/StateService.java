@@ -18,6 +18,14 @@ public interface StateService {
     State save(State state);
 
     /**
+     * Get the state by id.
+     *
+     * @param id the id of the state.
+     * @return the state.
+     */
+    State findStateById(Long id);
+
+    /**
      * Get all the states.
      *
      * @return the list of states.

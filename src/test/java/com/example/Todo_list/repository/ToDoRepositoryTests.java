@@ -1,7 +1,6 @@
 package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.ToDo;
-import com.example.Todo_list.repository.ToDoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class ToDoRepositoryTests {
 
         ToDo todo = todos.get(0);
         assertEquals(1, todo.getId());
-        assertEquals("Admin Todo #1", todo.getTitle());
+        assertEquals("Admin Project #1", todo.getTitle());
         assertEquals("Demo Description", todo.getDescription());
         assertEquals(1, todo.getOwner().getId());
         assertFalse(todo.getTasks().isEmpty());

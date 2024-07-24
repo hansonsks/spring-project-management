@@ -163,7 +163,7 @@ public class TaskController {
         Task task = TaskTransformer.convertDTOToEntity(
                 taskDTO,
                 toDoService.findToDoById(taskDTO.getToDoId()),
-                stateService.findStateByName(taskDTO.getState().getName())
+                taskDTO.getState()
         );
 
         if (task.getDeadline() == null) {
