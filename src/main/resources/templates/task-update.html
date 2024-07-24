@@ -4,19 +4,37 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Update Task</title>
+    <style>
+        .task-user-form {
+            text-align: center;
+        }
+
+        .task-user-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .task-user-form select {
+            display: block;
+            margin: 0 auto 10px auto; /* Add space below the dropdown */
+            width: 635px;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{header}"></div>
+<div th:replace="~{sidebars}"></div>
 <div class="container mt-4">
     <h2 class="mb-3">Update Task</h2>
     <form class="form-horizontal" th:object="${task}" th:action="@{|/tasks/${task.id}/update|}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="id">Id:</label>
             <div class="col-sm-8">
                 <input class="form-control" type="text" th:field="*{id}" id="id" th:value="*{id}" disabled/>
             </div>
         </div>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="name">Name:</label>
             <div class="col-sm-8">
@@ -24,14 +42,15 @@
                 <small class="form-text text-muted" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
             </div>
         </div>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="description">Description:</label>
             <div class="col-sm-8">
                 <textarea class="form-control" th:field="*{description}" id="description"></textarea>
-                <small class="form-text text-muted" th:if="${#fields.hasErrors('description')}"
-                       th:errors="*{description}"></small>
+                <small class="form-text text-muted" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
             </div>
         </div>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="priority">Priority:</label>
             <div class="col-sm-8">
@@ -43,6 +62,7 @@
                 </select>
             </div>
         </div>
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="state">Status:</label>
             <div class="col-sm-8">
@@ -54,20 +74,82 @@
                 </select>
             </div>
         </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="current-deadline">Current Deadline:</label>
+            <div class="col-sm-8">
+                <input type="text" id="current-deadline"
+                       th:value="${task.getDeadline() == null ? 'No deadline has been set' : task.getDeadline()}"
+                       disabled class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="deadline">New Deadline:</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="datetime-local" th:field="*{deadline}" id="deadline" th:value="*{deadline}"/>
+                <small class="form-text text-muted" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="assignedUsers">Assigned Users:</label>
+            <div class="col-sm-8">
+                <select class="form-control" name="assignedUsers" id="assignedUsers" multiple>
+                    <option th:each="user : ${assignedUsers}"
+                            th:value="${user.id}"
+                            th:selected="${task.assignedUsers.contains(user)}"
+                            th:text="${user.firstName + ' ' + user.lastName}"/>
+                </select>
+            </div>
+        </div>
+
         <div class="form-group row">
             <div class="col-sm-10 offset-sm-2">
                 <button type="submit" class="btn btn-primary">Update</button>
                 <button type="reset" class="btn btn-secondary">Clear</button>
             </div>
         </div>
+
         <input type="hidden" name="id" th:value="*{id}">
         <input type="hidden" name="toDoId" th:value="${toDoId}">
     </form>
+
     <div class="row mt-3">
-        <div class="col-md-12 text-center">
-            <a th:href="@{|/todos/${toDoId}/tasks|}" class="btn btn-outline-primary">Go to Task List</a>
+        <div class="col-md-6 task-user-form">
+            <form class="form-inline" th:action="@{/tasks/{task_id}/update/add-user(task_id=${task.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <label for="availableUsers">Available Users:</label>
+                <select class="form-control" name="user_id" id="availableUsers" style="width: 635px">
+                    <option value="-1">Assign User...</option>
+                    <option th:each="user : ${availableUsers}" th:value="${user.id}"
+                            th:text="${user.firstName + ' ' + user.lastName}"></option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+
+        <div class="col-md-6 task-user-form">
+            <form class="form-inline" th:action="@{/tasks/{task_id}/update/remove-user(task_id=${task.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <label for="removeUsers">Remove Users:</label>
+                <select class="form-control" name="user_id" id="removeUsers" style="width: 635px">
+                    <option value="-1">Remove User...</option>
+                    <option th:each="user : ${assignedUsers}" th:value="${user.id}"
+                            th:text="${user.firstName + ' ' + user.lastName}"></option>
+                </select>
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
         </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12 text-center">
+            <a th:href="@{|/tasks/${task.id}/read|}" class="btn btn-outline-primary">Go to Task</a>
+        </div>
+    </div>
+
+    <div th:replace="~{footer}"></div>
 </div>
 </body>
 </html>
