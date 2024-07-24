@@ -1,6 +1,6 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.TaskController;
+import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.*;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.*;
@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -65,13 +64,13 @@ public class TaskControllerTests {
     @MockBean
     private NotificationServiceImpl notificationService;
 
-    private final User user = createUser();
-    private final Role role = createRole();
-    private final Task task = createTask();
-    private final ToDo toDo = createToDo();
-    private final State state = createState();
-    private final Priority priority = createPriority();
-    private final Comment comment = createComment();
+    private final User user = ControllerTestUtils.createUser();
+    private final Role role = ControllerTestUtils.createRole();
+    private final Task task = ControllerTestUtils.createTask();
+    private final ToDo toDo = ControllerTestUtils.createToDo();
+    private final State state = ControllerTestUtils.createState();
+    private final Priority priority = ControllerTestUtils.createPriority();
+    private final Comment comment = ControllerTestUtils.createComment();
 
     @BeforeEach
     public void beforeEach() {
@@ -101,7 +100,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showTaskCreationForm() should return task-create view with task and todo attributes")
     void testShowTaskCreationForm() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
@@ -114,7 +113,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createTask() should redirect to /todos/{todoId}/tasks after creating a task")
     void testCreateTask() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
         when(stateService.findStateByName(any(String.class))).thenReturn(state);
@@ -136,7 +135,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createTask() should return task-create view with task and todo attributes if task is invalid")
     void testCreateInvalidTask() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
@@ -159,7 +158,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showTaskUpdateForm() should return task-update view with task, todo, priorities and states attributes")
     void testShowTaskUpdateForm() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
 
@@ -173,7 +172,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateTask() should redirect to /tasks/{taskId}/update after updating a task")
     void testUpdateTask() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
@@ -197,7 +196,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateTask() should return task-update view with task, todo, priorities and states attributes if task is invalid")
     void testUpdateInvalidTask() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
 
@@ -222,7 +221,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayTask() should return task-info view with task and comments attributes")
     void testDisplayTask() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
 
@@ -238,7 +237,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayTask() should return task-info view with task and comments attributes if task is invalid")
     void testDeleteTask() throws Exception {
         mockMvc.perform(post("/tasks/1/delete/todos/1")
                 .with(csrf()))
@@ -249,7 +248,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteTask() should redirect to /todos/{todoId}/tasks after deleting a task")
     void testDeleteInvalidTask() throws Exception {
         mockMvc.perform(post("/tasks/999/delete/todos/1")
                 .with(csrf()))
@@ -259,7 +258,7 @@ public class TaskControllerTests {
 
     // Tests for Task Comments
     @Test
-    @DisplayName("Test")
+    @DisplayName("createComment() should redirect to /tasks/{taskId}/read after creating a comment")
     void testCreateComment() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
 
@@ -277,7 +276,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createComment() should return task-info view with task and comments attributes if comment is invalid")
     void testCreateInvalidComment() throws Exception {
         when(taskService.findTaskById(any(long.class))).thenReturn(task);
 
@@ -298,7 +297,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createComment() should return task-info view with task and comments attributes if task is invalid")
     void testCreateCommentForInvalidTask() throws Exception {
         doThrow(EntityNotFoundException.class).when(taskService).findTaskById(any(long.class));
 
@@ -317,7 +316,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateComment() should redirect to /tasks/{taskId}/read after updating a comment")
     void testUpdateComment() throws Exception {
         when(commentService.findCommentById(any(long.class))).thenReturn(comment);
 
@@ -335,7 +334,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateComment() should return task-info view with task and comments attributes if comment is invalid")
     void testUpdateInvalidComment() throws Exception {
         when(commentService.findCommentById(any(long.class))).thenReturn(comment);
 
@@ -356,7 +355,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteComment() should redirect to /tasks/{taskId}/read after deleting a comment")
     void testDeleteComment() throws Exception {
         mockMvc.perform(post("/tasks/1/comments/1/delete")
                 .with(csrf()))
@@ -365,7 +364,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteComment() should return task-info view with task and comments attributes if comment is invalid")
     void testDeleteInvalidComment() throws Exception {
         doThrow(EntityNotFoundException.class).when(commentService).deleteCommentById(any(long.class));
 
@@ -377,7 +376,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteComment() should return task-info view with task and comments attributes if task is invalid")
     void testDeleteCommentForInvalidTask() throws Exception {
         doThrow(EntityNotFoundException.class).when(taskService).findTaskById(any(long.class));
 

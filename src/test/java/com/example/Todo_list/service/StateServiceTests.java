@@ -1,4 +1,4 @@
-package com.example.Todo_list.unit.service;
+package com.example.Todo_list.service;
 
 import com.example.Todo_list.entity.State;
 import com.example.Todo_list.exception.NullEntityException;
@@ -40,7 +40,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should save a state and return it")
     void testSaveState() {
         when(stateRepository.save(any(State.class))).thenReturn(state);
 
@@ -51,14 +51,14 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should throw NullEntityException when state is null")
     void testSaveInvalidState() {
         assertThrows(NullEntityException.class, () -> stateService.save(null));
         verify(stateRepository, times(0)).save(any(State.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findStateByName() should find a state by its name")
     void testFindStateByName() {
         when(stateRepository.findByName(any(String.class))).thenReturn(Optional.of(state));
 
@@ -69,7 +69,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findStateByName() should throw IllegalArgumentException when name is null or empty")
     void testFindStateByInvalidName() {
         assertThrows(IllegalArgumentException.class, () -> stateService.findStateByName(null));
         assertThrows(IllegalArgumentException.class, () -> stateService.findStateByName(""));
@@ -77,7 +77,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteStateByName() should delete a state by its name")
     void testDeleteStateByName() {
         when(stateRepository.findByName(any(String.class))).thenReturn(Optional.of(state));
 
@@ -88,7 +88,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteStateByName() should throw IllegalArgumentException when name is null or empty")
     void testDeleteStateByInvalidName() {
         assertThrows(IllegalArgumentException.class, () -> stateService.deleteStateByName(null));
         assertThrows(IllegalArgumentException.class, () -> stateService.deleteStateByName(""));
@@ -97,7 +97,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllStates() should return an empty list when no states are found")
     void testFindAllStatesEmpty() {
         when(stateRepository.findAll()).thenReturn(Collections.emptyList());
 
@@ -107,7 +107,7 @@ public class StateServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllStates() should return a non-empty list of states when states are found")
     void testFindAllStatesNonEmpty() {
         when(stateRepository.findAll()).thenReturn(Collections.singletonList(state));
 

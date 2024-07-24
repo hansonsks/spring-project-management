@@ -1,6 +1,6 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.TaskCommentController;
+import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.Task;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,10 +45,10 @@ public class TaskCommentControllerTests {
     @MockBean
     private PasswordService passwordService;
 
-    private final User user = createUser();
-    private final Role role = createRole();
-    private final Task task = createTask();
-    private final Comment comment = createComment();
+    private final User user = ControllerTestUtils.createUser();
+    private final Role role = ControllerTestUtils.createRole();
+    private final Task task = ControllerTestUtils.createTask();
+    private final Comment comment = ControllerTestUtils.createComment();
 
     @BeforeEach
     public void beforeEach() {

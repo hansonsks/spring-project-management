@@ -1,4 +1,4 @@
-package com.example.Todo_list.unit.repository;
+package com.example.Todo_list.repository;
 
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.repository.UserRepository;

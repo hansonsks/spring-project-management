@@ -1,6 +1,6 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.ToDoController;
+import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.*;
 import com.example.Todo_list.exception.UserIsToDoOwnerException;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
@@ -26,7 +26,6 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -60,12 +59,12 @@ public class ToDoControllerTests {
     @MockBean
     private NotificationServiceImpl notificationService;
 
-    private final User user = createUser();
-    private final Role role = createRole();
-    private final Task task = createTask();
-    private final ToDo toDo = createToDo();
-    private final State state = createState();
-    private final Priority priority = createPriority();
+    private final User user = ControllerTestUtils.createUser();
+    private final Role role = ControllerTestUtils.createRole();
+    private final Task task = ControllerTestUtils.createTask();
+    private final ToDo toDo = ControllerTestUtils.createToDo();
+    private final State state = ControllerTestUtils.createState();
+    private final Priority priority = ControllerTestUtils.createPriority();
 
     @BeforeEach
     public void beforeEach() {
@@ -93,7 +92,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showToDoCreationForm() should return a form to create a new ToDo")
     void testShowToDoCreationForm() throws Exception {
         mockMvc.perform(get("/todos/create/users/1"))
                 .andExpect(status().isOk())
@@ -102,7 +101,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createToDo() should create a new ToDo and redirect to the ToDo list page")
     void testCreateToDo() throws Exception {
         when(userService.findUserById(any(long.class))).thenReturn(user);
 
@@ -117,7 +116,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createToDo() should return the ToDo creation form if the ToDo is invalid")
     void testCreateInvalidToDo() throws Exception {
         MultiValueMap<String, String> formData = getInvalidToDoMultiValueMap();
 
@@ -129,7 +128,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayToDo() should return the ToDo and its tasks")
     void testDisplayToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
         when(taskService.findAllTasksOfToDo(any(long.class))).thenReturn(List.of(task));
@@ -142,7 +141,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showToDoUpdateForm() should return the form to update a ToDo")
     void testShowToDoUpdateForm() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
@@ -153,7 +152,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateToDo() should update the ToDo and redirect to the ToDo list page")
     void testUpdateToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
@@ -168,7 +167,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateToDo() should return the ToDo update form if the ToDo is invalid")
     void testUpdateInvalidToDo() throws Exception {
         when(userService.findUserById(any(long.class))).thenReturn(user);
 
@@ -183,7 +182,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteToDo() should delete the ToDo and redirect to the ToDo list page")
     void testDeleteToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
 
@@ -194,7 +193,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteToDo() should redirect to the ToDo list page if the ToDo is invalid")
     void testDeleteInvalidToDo() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenThrow(EntityNotFoundException.class);
 
@@ -205,7 +204,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayAllToDo() should return all the ToDos of a user")
     void testDisplayAllToDo() throws Exception {
         when(toDoService.findAllToDoOfUserId(any(long.class))).thenReturn(List.of(toDo));
         when(userService.findUserById(any(long.class))).thenReturn(user);
@@ -217,7 +216,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("addCollaborator() should add a collaborator to the ToDo and redirect to the ToDo tasks page")
     void testAddCollaborator() throws Exception {
         User otherUser = new User();
         otherUser.setId(2L);
@@ -233,7 +232,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("addCollaborator() should return the ToDo tasks page if the owner is being added as a collaborator")
     void testAddOwnerAsCollaborator() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
         when(userService.findUserById(any(long.class))).thenReturn(user);
@@ -247,7 +246,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should remove a collaborator from the ToDo and redirect to the ToDo tasks page")
     void testRemoveCollaborator() throws Exception {
         User otherUser = new User();
         otherUser.setId(2L);
@@ -266,7 +265,7 @@ public class ToDoControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should return the ToDo tasks page if the owner is being removed as a collaborator")
     void testRemoveOwnerFromCollaborators() throws Exception {
         when(toDoService.findToDoById(any(long.class))).thenReturn(toDo);
         when(userService.findUserById(any(long.class))).thenReturn(user);

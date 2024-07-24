@@ -1,6 +1,5 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.LoginController;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +14,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createRole;
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createUser;
+import static com.example.Todo_list.controller.utils.ControllerTestUtils.createRole;
+import static com.example.Todo_list.controller.utils.ControllerTestUtils.createUser;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

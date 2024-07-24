@@ -1,6 +1,6 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.NotificationController;
+import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
@@ -21,8 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createRole;
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createUser;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -42,8 +40,8 @@ public class NotificationControllerTests {
     @MockBean
     private UserServiceImpl userService;
 
-    private final User user = createUser();
-    private final Role role = createRole();
+    private final User user = ControllerTestUtils.createUser();
+    private final Role role = ControllerTestUtils.createRole();
 
     @BeforeEach
     public void beforeEach() {

@@ -1,6 +1,6 @@
-package com.example.Todo_list.unit.controller;
+package com.example.Todo_list.controller;
 
-import com.example.Todo_list.controller.UserController;
+import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.OAuthUser;
 import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.ToDo;
@@ -29,8 +29,6 @@ import org.springframework.util.MultiValueMap;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createRole;
-import static com.example.Todo_list.unit.controller.utils.ControllerTestUtils.createUser;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -54,8 +52,8 @@ public class UserControllerTests {
     @MockBean
     private PasswordService passwordService;
 
-    private final User user = createUser();
-    private final Role role = createRole();
+    private final User user = ControllerTestUtils.createUser();
+    private final Role role = ControllerTestUtils.createRole();
     private Role otherRole;
 
     @BeforeEach
@@ -80,7 +78,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showUserRegistrationForm() should return user-create view with empty user object")
     void testShowUserRegistrationForm() throws Exception {
         mockMvc.perform(get("/users/create"))
                 .andExpect(status().isOk())
@@ -94,7 +92,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createUser() should create a new user and redirect to login page with success message")
     void testCreateUser() throws Exception {
         when(userService.findUserByEmail(any(String.class))).thenThrow(EntityNotFoundException.class);
 
@@ -113,7 +111,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("createUser() should return user-create view with error message if user information is invalid")
     void testCreateInvalidUser() throws Exception {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("firstName", null);
@@ -129,7 +127,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayUserInfo() should return user-info view with user information")
     void testDisplayUserInfo() throws Exception {
         when(userService.findUserById(any(long.class))).thenReturn(user);
 
@@ -141,7 +139,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("displayUserInfo() should return 404 Not Found if user information is invalid")
     void testDisplayInvalidUserInfo() throws Exception {
         when(userService.findUserById(any(long.class))).thenThrow(EntityNotFoundException.class);
 
@@ -149,7 +147,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showUserUpdatePage() should return user-update view with user information")
     void testUpdateUser() throws Exception {
         when(userService.findUserById(any(long.class))).thenReturn(user);
         when(roleService.findRoleById(any(long.class))).thenReturn(otherRole);
@@ -165,7 +163,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showUserUpdatePage() should return user-update view with error message if user information is invalid")
     void testUpdateInvalidUser() throws Exception {
         when(userService.findUserById(any(long.class))).thenReturn(user);
         when(roleService.findRoleById(any(long.class))).thenReturn(otherRole);
@@ -181,7 +179,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showOAuthUserUpdatePage() should return user-oauth-update view with user information")
     void testShowOAuthUserUpdatePage() throws Exception {
         OAuthUser oAuthUser = new OAuthUser();
         oAuthUser.setId(1L);
@@ -202,7 +200,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showOAuthUserUpdatePage() should return user-oauth-update view with error message if user information is invalid")
     void testShowInvalidOAuthUserUpdatePage() throws Exception {
         OAuthUser oAuthUser = new OAuthUser();
         oAuthUser.setId(1L);
@@ -223,7 +221,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteUser() should delete the user and redirect to user list page with success message")
     void testDeleteUser() throws Exception {
         user.setCollaborators(Collections.emptyList());
         when(userService.findUserById(any(long.class))).thenReturn(user);
@@ -235,7 +233,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteUser() should return user list page with error message if user has collaborators")
     void testDeleteInvalidUser() throws Exception {
         user.setCollaborators(List.of(new ToDo(), new ToDo(), new ToDo()));
         when(userService.findUserById(any(long.class))).thenReturn(user);
@@ -247,7 +245,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("showUserList() should return user-list view with a list of users")
     void testShowUserList() throws Exception {
         when(userService.findAllUsers()).thenReturn(Collections.singletonList(user));
 

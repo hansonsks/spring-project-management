@@ -1,4 +1,4 @@
-package com.example.Todo_list.unit.service;
+package com.example.Todo_list.service;
 
 import com.example.Todo_list.entity.Comment;
 import com.example.Todo_list.entity.User;
@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-// TODO: Add the display names to the tests
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTests {
@@ -42,7 +41,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should save a comment and return it")
     void testSaveComment() {
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
@@ -53,13 +52,13 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should throw NullEntityException when saving a null comment")
     void testSaveInvalidComment() {
         assertThrows(NullEntityException.class, () -> commentService.save(null));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findCommentById() should return a comment when given a valid id")
     void testFindCommentById() {
         when(commentRepository.findById(any(long.class))).thenReturn(Optional.of(comment));
 
@@ -70,7 +69,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findCommentById() should throw EntityNotFoundException when given an invalid id")
     void testFindCommentByInvalidId() {
         when(commentRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
@@ -78,7 +77,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findCommentByUser() should return a list of comments by a user")
     void testFindCommentByUser() {
         when(commentRepository.findByUser(any(User.class))).thenReturn(List.of(comment));
 
@@ -91,14 +90,14 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findCommentByUser() should throw NullEntityException when given an invalid user")
     void testFindCommentByInvalidUser() {
         assertThrows(NullEntityException.class, () -> commentService.findCommentByUser(null));
         verify(commentRepository, times(0)).findByUser(any(User.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllComments() should return a list of all comments")
     void testFindAllComments() {
         when(commentRepository.findAll()).thenReturn(List.of(comment));
 
@@ -111,7 +110,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateComment() should update a comment and return it")
     void testUpdateComment() {
         comment.setIsEdited(true);
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
@@ -123,14 +122,14 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("updateComment() should throw NullEntityException when updating a null comment")
     void testUpdateInvalidComment() {
         assertThrows(NullEntityException.class, () -> commentService.updateComment(null));
         verify(commentRepository, times(0)).save(any(Comment.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteCommentById() should delete a comment by its id")
     void testDeleteCommentById() {
         when(commentRepository.findById(any(long.class))).thenReturn(Optional.of(comment));
 
@@ -140,21 +139,21 @@ public class CommentServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteCommentById() should throw EntityNotFoundException when given an invalid id")
     void testDeleteCommentByInvalidId() {
         assertThrows(EntityNotFoundException.class, () -> commentService.deleteCommentById(999L));
         verify(commentRepository, times(0)).delete(any(Comment.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteComment() should delete a comment")
     void testDeleteComment() {
         commentService.deleteComment(comment);
         verify(commentRepository).delete(any(Comment.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("deleteComment() should throw NullEntityException when deleting a null comment")
     void testDeleteInvalidComment() {
         assertThrows(NullEntityException.class, () -> commentService.deleteComment(null));
         verify(commentRepository, times(0)).delete(any(Comment.class));

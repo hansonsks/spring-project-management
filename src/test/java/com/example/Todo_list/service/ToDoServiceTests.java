@@ -1,4 +1,4 @@
-package com.example.Todo_list.unit.service;
+package com.example.Todo_list.service;
 
 import com.example.Todo_list.entity.ToDo;
 import com.example.Todo_list.entity.User;
@@ -54,7 +54,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should save a ToDo and return it")
     void saveToDo() {
         when(toDoRepository.save(any(ToDo.class))).thenReturn(toDo);
 
@@ -65,14 +65,14 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("save() should throw NullEntityException when saving null ToDo")
     void saveNullToDo() {
         assertThrows(NullEntityException.class, () -> toDoService.save(null));
         verify(toDoRepository, times(0)).save(any(ToDo.class));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findToDoById() should return a ToDo by its id")
     void testFindToDoById() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.of(toDo));
 
@@ -83,13 +83,13 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findToDoById() should throw EntityNotFoundException when ToDo is not found given an id")
     void testFindToDoByInvalidId() {
         assertThrows(EntityNotFoundException.class, () -> toDoService.findToDoById(999L));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findDeleteToDoById() should delete a ToDo by its id")
     void testDeleteToDoById() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.of(toDo));
 
@@ -100,7 +100,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findDeleteToDoById() should throw EntityNotFoundException when ToDo is not found given an id")
     void testDeleteToDoByInvalidId() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
@@ -111,7 +111,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllToDos() should return an empty list if no ToDos are found")
     void testFindAllToDosEmpty() {
         when(toDoRepository.findAll()).thenReturn(Collections.emptyList());
 
@@ -122,7 +122,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllToDos() should return a list of ToDos if they are found")
     void testFindAllToDosNonEmpty() {
         when(toDoRepository.findAll()).thenReturn(Collections.singletonList(toDo));
 
@@ -133,7 +133,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllToDosOfUserId() should return an empty list if no ToDos are found for a user")
     void testFindAllToDosOfUserIdEmpty() {
         when(toDoRepository.findTodoByOwnerId(any(long.class))).thenReturn(Collections.emptyList());
 
@@ -144,7 +144,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllToDosOfUserId() should return a list of ToDos if they are found for a user")
     void testFindAllToDosOfUserIdNonEmpty() {
         when(toDoRepository.findTodoByOwnerId(any(long.class))).thenReturn(Collections.singletonList(toDo));
 
@@ -156,14 +156,14 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("findAllToDosOfUserId() should throw EntityNotFoundException when no ToDos are found for a user")
     void testFindAllToDosOfInvalidUserId() {
         when(toDoService.findAllToDoOfUserId(any(long.class))).thenThrow(new EntityNotFoundException());
         assertThrows(EntityNotFoundException.class, () -> toDoService.findAllToDoOfUserId(999L));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("addCollaborator() should add a collaborator to a ToDo")
     void testAddCollaborator() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.of(toDo));
         when(userRepository.findById(any(long.class))).thenReturn(Optional.of(user));
@@ -175,20 +175,20 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("addCollaborator() should throw EntityNotFoundException when adding a collaborator to an invalid ToDo")
     void testAddInvalidCollaborator() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.of(toDo));
         assertThrows(EntityNotFoundException.class, () -> toDoService.addCollaborator(toDo.getId(), user.getId()));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("addCollaborator() should throw EntityNotFoundException when adding a collaborator to an invalid ToDo")
     void testAddCollaboratorToInvalidToDo() {
         assertThrows(EntityNotFoundException.class, () -> toDoService.addCollaborator(toDo.getId(), user.getId()));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should remove a collaborator from a ToDo")
     void testRemoveCollaborator() {
         toDo.getCollaborators().add(user);
 
@@ -201,7 +201,7 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should throw EntityNotFoundException when removing an invalid collaborator from a ToDo")
     void testRemoveInvalidCollaborator() {
         when(toDoRepository.findById(any(long.class))).thenReturn(Optional.of(toDo));
 
@@ -209,13 +209,13 @@ public class ToDoServiceTests {
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should throw EntityNotFoundException when removing a collaborator from an invalid ToDo")
     void testRemoveCollaboratorFromInvalidToDo() {
         assertThrows(EntityNotFoundException.class, () -> toDoService.removeCollaborator(toDo.getId(), user.getId()));
     }
 
     @Test
-    @DisplayName("Test")
+    @DisplayName("removeCollaborator() should throw UserIsToDoOwnerException when removing the owner from a ToDo")
     void testRemoveOwnerFromCollaborators() {
         toDo.setOwner(user);
 
