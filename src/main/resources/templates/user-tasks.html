@@ -27,7 +27,7 @@
                     <th>Name</th>
                     <th>Priority</th>
                     <th>State</th>
-                    <th>ToDo</th>
+                    <th>Project</th>
                     <th colspan="2">Operations</th>
                 </tr>
                 </thead>
@@ -45,7 +45,7 @@
                     </td>
                     <td>
                         <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
-                           th:href="@{|/todos/${task.todo.id}/tasks|}" class="btn btn-info">View TODO</a>
+                           th:href="@{|/todos/${task.todo.id}/tasks|}" class="btn btn-info">View Project</a>
                     </td>
                     <td>
                         <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"

@@ -1,5 +1,6 @@
 package com.example.Todo_list.dto;
 
+import com.example.Todo_list.entity.State;
 import com.example.Todo_list.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -61,7 +62,7 @@ public class TaskDTO {
     /**
      * The task's state
      */
-    private String state;
+    private State state;
 
     /**
      * The task's assigned users

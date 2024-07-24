@@ -68,7 +68,7 @@
             <div class="col-sm-8">
                 <select class="form-control" name="state" id="state">
                     <option th:each="state : ${states}"
-                            th:value="${state.name}"
+                            th:value="${state.id}"
                             th:selected="${state.equals(task.state)}"
                             th:text="${state.name}"/>
                 </select>
@@ -79,7 +79,7 @@
             <label class="col-sm-2 col-form-label" for="current-deadline">Current Deadline:</label>
             <div class="col-sm-8">
                 <input type="text" id="current-deadline"
-                       th:value="${task.getDeadline() == null ? 'No deadline has been set' : task.getDeadline()}"
+                       th:value="${task.getDeadline() == null ? 'No deadline has been set' : #temporals.format(task.deadline, 'dd.MM.yyyy HH:mm')}"
                        disabled class="form-control"/>
             </div>
         </div>

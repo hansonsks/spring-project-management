@@ -6,7 +6,7 @@
     <title>All ToDo lists of User</title>
     <script>
         function confirmDelete(event) {
-            if (!confirm("Are you sure you want to mark this ToDo item as complete?")) {
+            if (!confirm("Are you sure you want to mark this Project as complete?")) {
                 event.preventDefault();
             }
         }
@@ -15,11 +15,11 @@
 <body>
 <div th:replace="~{sidebars}"></div>
 <div class="container mt-4">
-    <h2 th:text="${'All ToDo Lists of ' + user.firstName + ' ' + user.lastName}"/>
+    <h2 th:text="${'All Projects of ' + user.firstName + ' ' + user.lastName}"/>
     <div class="row mb-3">
         <div class="col-md-12 text-right">
             <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.user.id"
-               th:href="@{|/todos/create/users/${user.id}|}" class="btn btn-primary btn-lg">Create ToDo Item</a>
+               th:href="@{|/todos/create/users/${user.id}|}" class="btn btn-primary btn-lg">Create Project</a>
         </div>
     </div>
     <table class="table table-striped">

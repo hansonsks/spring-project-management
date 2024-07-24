@@ -36,7 +36,7 @@ public class TaskController {
     private final StateService stateService;
     private final UserService userService;
     private final CommentService commentService;
-    private final NotificationService notificationService;  // TODO: Scan comments for @mentions and send notifications
+    private final NotificationService notificationService;
 
     /**
      * Displays all tasks of a specific ToDo
@@ -145,8 +145,8 @@ public class TaskController {
     ) {
         logger.info("TaskController.updateTask(): Attempting to update task with taskId=" + taskId);
 
-        // Check if the deadline is valid (not null and not before the current deadline)
-        if (taskDTO.getDeadline() == null || taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
+        // Allow user to set an optional deadline, but if it is set, it must be in the future
+        if (taskDTO.getDeadline() != null && taskDTO.getDeadline().isBefore(LocalDateTime.now())) {
             logger.error("TaskController.updateTask(): Deadline is invalid, aborting task update");
             prepareModelForTaskUpdate(taskId, model);
             return "task-update";
@@ -154,6 +154,7 @@ public class TaskController {
 
         if (result.hasErrors()) {
             logger.error("TaskController.updateTask(): Error found in data received, aborting task update");
+            logger.error(result.getAllErrors().toString());
             prepareModelForTaskUpdate(taskId, model);
             return "task-update";
         }
@@ -162,8 +163,12 @@ public class TaskController {
         Task task = TaskTransformer.convertDTOToEntity(
                 taskDTO,
                 toDoService.findToDoById(taskDTO.getToDoId()),
-                stateService.findStateByName(taskDTO.getState())
+                stateService.findStateByName(taskDTO.getState().getName())
         );
+
+        if (task.getDeadline() == null) {
+            task.setDeadline(taskService.findTaskById(taskId).getDeadline());
+        }
 
         logger.info("TaskController.updateTask(): Updating " + task);
         taskService.save(task);
@@ -197,9 +202,6 @@ public class TaskController {
         }
 
         model.addAttribute("availableUsers", availableUsers);
-
-        logger.error("TaskController.prepareModelForTaskUpdate(): Prepared model for task update {}", task);
-        logger.error("TaskController.prepareModelForTaskUpdate(): Prepared model for task update {}", taskDTO);
     }
 
     /**

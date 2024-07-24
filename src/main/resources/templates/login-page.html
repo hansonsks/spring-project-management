@@ -6,7 +6,7 @@
   <title>Login</title>
   <style>
     body {
-      background-color: #f8f9fa;
+      background-color: #e9ecef;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -19,7 +19,7 @@
       border-radius: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       padding: 30px;
-      width: 700px; /* Original: 420px */
+      width: 700px;
     }
 
     .login-form h2 {
@@ -61,11 +61,34 @@
       padding: 10px;
       margin-top: 10px;
       margin-bottom: 10px;
-      color: red;
+      color: #8B0000;
     }
 
     .left-content {
-      width: 50%;
+      width: 60%;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .left-content h1,
+    .left-content h3,
+    .left-content p,
+    .left-content ul {
+      margin-top: 15px;
+    }
+
+    .left-content h1 {
+      font-size: 2.5rem;
+    }
+
+    .left-content h3 {
+      color: #343a40;
+    }
+
+    .left-content p {
+      color: #6c757d;
     }
 
     .separator {
@@ -89,16 +112,93 @@
     .separator::after {
       margin-left: .25em;
     }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .left-content li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      color: #343a40;
+    }
+
+    .left-content ul li i {
+      margin-right: 10px; /* Space between icon and text */
+      font-size: 1.5rem; /* Increase icon size only for technologies list */
+    }
+
+    /* Specific icon colors */
+    .fab.fa-java {
+      color: #f89820; /* Java color */
+    }
+
+    .fas.fa-cog {
+      color: #6c757d; /* Gray for Spring Boot */
+    }
+
+    .fas.fa-shield-alt {
+      color: #007bff; /* Blue for Spring Security */
+    }
+
+    .fas.fa-database {
+      color: #28a745; /* Green for Data JPA */
+    }
+
+    .fas.fa-code {
+      color: #17a2b8; /* Teal for Spring MVC */
+    }
+
+    .fas.fa-user-friends {
+      color: #6610f2; /* Purple for Spring Session */
+    }
+
+    .fas.fa-file-code {
+      color: #e83e8c; /* Pink for Thymeleaf */
+    }
+
+    .fab.fa-bootstrap {
+      color: #7952b3; /* Bootstrap purple */
+    }
+
+    .fas.fa-leaf {
+      margin-left: 5px;
+      color: #28a745; /* Green for leaf */
+    }
   </style>
 </head>
 <body>
 <div class="left-content">
-  <h1>Welcome to our website!</h1>
-  <p>This is some text to the left of the login form.</p>
+  <h1>Welcome to my Spring Project Management App! <i class="fas fa-leaf"></i></h1>
+  <p>This application is designed to help teams manage their projects efficiently and effectively.</p>
+
+  <h3>Technologies Used:</h3>
+  <ul>
+    <li><i class="fab fa-java"></i> Spring Framework</li>
+    <li><i class="fas fa-cog"></i> Spring Boot</li>
+    <li><i class="fas fa-shield-alt"></i> Spring Security (including OAuth2 login)</li>
+    <li><i class="fas fa-database"></i> Spring Data JPA (with MySQL/PostgreSQL)</li>
+    <li><i class="fas fa-code"></i> Spring MVC</li>
+    <li><i class="fas fa-user-friends"></i> Spring Session</li>
+    <li><i class="fas fa-file-code"></i> Thymeleaf Templates</li>
+    <li><i class="fab fa-bootstrap"></i> Bootstrap 5 HTML/CSS/Javascript</li>
+  </ul>
+
+  <h3>Purpose:</h3>
+  <p>This app allows teams to collaborate on projects, track tasks, and streamline workflow.</p>
+
+  <h3>How to Use:</h3>
+  <p>To learn more about the features, please check the <a href="/about" class="text-primary">About</a> section below.</p>
+
+  <h3>Get Started:</h3>
+  <p>Log in or sign up to start managing your projects! You can also sign in as a guest or use OAuth2 for easy access.</p>
 </div>
 
 <div class="login-form">
-  <h2>Login</h2>
+  <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
   <form class="form-horizontal" method="POST" id="login-form" th:action="@{/login-form}">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
@@ -155,14 +255,12 @@
         <i class="fab fa-google"></i> Login with Google
       </a>
 
-      <!-- TODO: Add facebook login -->
       <a th:href="@{/oauth2/authorization/facebook}" class="btn btn-primary mx-2" style="flex: 1;">
-        <i class="fab fa-square-facebook"></i> Login with Facebook
+        <i class="fab fa-facebook-f"></i> Login with Facebook
       </a>
     </div>
   </form>
 
-  <!-- Terrible practice in production, but this information is "public" as it is revealed on the login page and intended for public use-->
   <form id="guestLoginForm" action="/login-form" method="POST" style="display:none;">
     <input type="hidden" name="username" value="guest@mail.com">
     <input type="hidden" name="password" value="Guest123?">

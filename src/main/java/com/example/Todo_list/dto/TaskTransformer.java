@@ -55,7 +55,7 @@ public class TaskTransformer {
         dto.setPriority(task.getPriority().toString());
         dto.setToDoId(task.getTodo().getId());
         dto.setOwnerId(task.getTodo().getOwner().getId());
-        dto.setState(task.getState().toString());
+        dto.setState(task.getState());
         dto.setAssignedUsers(task.getAssignedUsers());
 
         // Convert ZonedDateTime to LocalDateTime

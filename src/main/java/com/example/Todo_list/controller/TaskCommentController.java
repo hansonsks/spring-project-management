@@ -27,7 +27,7 @@ public class TaskCommentController {
     private final UserService userService;
 
     /**
-     * Display all comments
+     * Display all comments by when they were created
      *
      * @param model Model object
      * @return comments-all.html
@@ -36,17 +36,15 @@ public class TaskCommentController {
     @GetMapping("/all")
     public String showAllComments(Model model) {
         logger.info("TaskCommentController.showAllComments(): Displaying all comments ...");
-        for (Comment comment : commentService.findAllComments()) {
-            System.out.println(comment);
-            System.out.println(comment.getTask());
-            System.out.println(comment.getTask().getId());
-        }
-        model.addAttribute("comments", commentService.findAllComments());
+        model.addAttribute("comments", commentService.findAllComments()
+                                                     .stream()
+                                                     .sorted((c1, c2) -> c2.getCreatedAt().compareTo(c1.getCreatedAt()))
+                                                     .toList());
         return "comments-all";
     }
 
     /**
-     * Display all comments by user
+     * Display all comments by user in order of creation
      *
      * @param userId User ID
      * @param model Model object
@@ -56,7 +54,10 @@ public class TaskCommentController {
     @GetMapping("/all/users/{user_id}")
     public String showAllCommentsByUserId(@PathVariable("user_id") Long userId, Model model) {
         logger.info("TaskCommentController.showAllCommentsByUserId(): Displaying all comments by userId=" + userId);
-        model.addAttribute("comments", commentService.findCommentByUser(userService.findUserById(userId)));
+        model.addAttribute("comments", commentService.findCommentByUser(userService.findUserById(userId))
+                                                     .stream()
+                                                     .sorted((c1, c2) -> c2.getCreatedAt().compareTo(c1.getCreatedAt()))
+                                                     .toList());
         return "comments-user";
     }
 }

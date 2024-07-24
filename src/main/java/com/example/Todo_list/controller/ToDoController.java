@@ -232,8 +232,8 @@ public class ToDoController {
 
         notificationService.sendNotificationToUserId(
                 userId,
-                "Removed from Project",
-                String.format("You have been removed from a Project [%s]", todo.getTitle())
+                "Added to Project",
+                String.format("You have been added to a Project [%s]", todo.getTitle())
         );
 
         toDoService.addCollaborator(todoId, userId);
