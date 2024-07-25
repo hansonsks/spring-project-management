@@ -34,7 +34,7 @@
     </form>
     <div class="row mt-3">
         <div class="col-md-12 text-center">
-            <a th:href="@{|/todos/all/users/${ownerId}|}" class="btn btn-outline-primary">Return to Project List</a>
+            <a th:href="@{|/todos/all/users/${#authentication.principal.id}|}" class="btn btn-outline-primary">Return to Project List</a>
         </div>
     </div>
     <div th:replace="~{footer}"></div>

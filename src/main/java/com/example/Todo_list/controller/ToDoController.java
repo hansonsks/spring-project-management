@@ -121,7 +121,6 @@ public class ToDoController {
             "@toDoServiceImpl.findToDoById(#todoId).collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/{todo_id}/update/users/{owner_id}")
     public String showToDoUpdateForm(
-            Authentication authentication,
             @PathVariable("todo_id") Long todoId,
             @PathVariable("owner_id") Long ownerId,
             Model model
@@ -150,15 +149,17 @@ public class ToDoController {
             @Valid @ModelAttribute("todo") ToDo todo,
             BindingResult result)
     {
+        ToDo oldTodo = toDoService.findToDoById(todoId);
+        todo.setCreatedAt(oldTodo.getCreatedAt());
         logger.info("ToDoController.updateToDo(): Attempting to update ToDo with toDoId=" + todoId);
 
         if (result.hasErrors()) {
             todo.setOwner(userService.findUserById(ownerId));
             logger.info("ToDoController.updateToDo(): Error found in data received, aborting ToDo update");
+            logger.info("ToDoController.updateToDo(): " + result.getAllErrors());
             return "todo-update";
         }
 
-        ToDo oldTodo = toDoService.findToDoById(todoId);
         todo.setOwner(oldTodo.getOwner());
         todo.setCollaborators(oldTodo.getCollaborators());
 

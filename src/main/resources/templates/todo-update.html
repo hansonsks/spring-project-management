@@ -29,6 +29,14 @@
             <div class="col-sm-8">
                 <input class="form-control" type="text" th:field="*{description}" id="description" th:value="*{description}"/>
                 <small class="form-text text-muted" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                <small class="form-text text-muted" th:if="${#fields.hasGlobalErrors()}">Error found in input.</small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="createdAt">Created at:</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" th:field="*{createdAt}" id="createdAt" th:value="*{createdAt}" disabled/>
+                <small class="form-text text-muted" th:if="${#fields.hasErrors('createdAt')}" th:errors="*{createdAt}"></small>
             </div>
         </div>
         <div class="form-group row">
@@ -37,8 +45,9 @@
                 <button type="reset" class="btn btn-secondary">Clear</button>
             </div>
         </div>
+        <small class="form-text text-muted" th:if="${#fields.hasGlobalErrors()}">Error found in input.</small>
         <input type="hidden" name="id" th:value="*{id}">
-        <input type="hidden" th:field="*{createdAt}" th:value="*{createdAt}">
+        <input type="hidden" th:field="*{createdAt}" th:value="${#temporals.format(todo.createdAt, 'yyyy-MM-ddTHH:mm:ssXXX')}">
     </form>
     <div class="row mt-3">
         <div class="col-md-12 text-center">

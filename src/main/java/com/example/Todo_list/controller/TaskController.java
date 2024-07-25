@@ -154,7 +154,7 @@ public class TaskController {
 
         if (result.hasErrors()) {
             logger.error("TaskController.updateTask(): Error found in data received, aborting task update");
-            logger.error(result.getAllErrors().toString());
+            logger.error("TaskController.updateTask(): " + result.getAllErrors());
             prepareModelForTaskUpdate(taskId, model);
             return "task-update";
         }

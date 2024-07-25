@@ -34,7 +34,7 @@ public class TaskCommentController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
-    public String showAllComments(Authentication authentication, Model model) {
+    public String showAllComments(Model model) {
         logger.info("TaskCommentController.showAllComments(): Displaying all comments ...");
         model.addAttribute("comments", commentService.findAllComments()
                                                      .stream()
