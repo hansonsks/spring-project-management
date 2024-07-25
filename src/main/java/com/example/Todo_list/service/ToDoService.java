@@ -4,6 +4,9 @@ import com.example.Todo_list.entity.ToDo;
 
 import java.util.List;
 
+/**
+ * Service interface for the ToDo entity.
+ */
 public interface ToDoService {
 
     /**

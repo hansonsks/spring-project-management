@@ -39,7 +39,7 @@ public class ControllerTestUtils {
         toDo.setId(1L);
         toDo.setTitle("ToDo Title");
         toDo.setDescription("ToDo Description");
-        // toDo.setCreatedAt(ZonedDateTime.now());  // Difficult to test, causes formatting error in the thymeleaf template, but have no effect on the actual functionality
+        toDo.setCreatedAt(ZonedDateTime.now());
         return toDo;
     }
 

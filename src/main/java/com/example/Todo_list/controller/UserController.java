@@ -214,7 +214,15 @@ public class UserController {
         return "oauth-user-update";
     }
 
-
+    /**
+     * Update user information
+     * @param userId the user id
+     * @param roleId the role id
+     * @param model Model
+     * @param newUser the new user information
+     * @param result BindingResult
+     * @return user-update.html or redirect:/users/{id}/read
+     */
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @PostMapping("/{user_id}/oauth-update")

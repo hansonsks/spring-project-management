@@ -43,10 +43,12 @@
     </style>
 </head>
 <body>
+<div th:replace="~{sidebars}"></div>
 <div class="error-container">
     <h1 class="error-code" th:text="${code}"></h1>
     <h2 class="error-description" th:text="${codeDescription}"></h2>
     <p class="error-message" th:text="${message}"></p>
+<div th:replace="~{footer}"></div>
 </div>
 </body>
 </html>

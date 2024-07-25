@@ -60,6 +60,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, exception);
     }
 
+    /**
+     * Handles AccessDeniedException
+     * @param exception
+     * @return ModelAndView
+     */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ModelAndView handleAccessDeniedException(AccessDeniedException exception) {

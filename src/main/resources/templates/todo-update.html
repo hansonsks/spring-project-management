@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Update existing ToDo Item</title>
+    <script>
+        // Format date for submission (ZonedDateTime)
+        // This script is necessary as not using it will casue a SpelParseException: Expression [#temporals.format(todo.createdAt, 'yyyy-MM-dd\'T\'HH:mm:ssXXX')] @48: EL1065E: Unexpected escape character
+        const createdAt = document.getElementById('createdAt');
+        function formatDateForSubmission(dateString) {
+            const date = new Date(dateString);
+            return date.toISOString();
+        }
+
+        document.getElementById('todoForm').onsubmit = function() {
+            document.getElementById('createdAtInput').value = formatDateForSubmission(createdAt);
+        };
+    </script>
 </head>
 <body>
 <div th:replace="~{sidebars}"></div>
@@ -47,14 +60,13 @@
         </div>
         <small class="form-text text-muted" th:if="${#fields.hasGlobalErrors()}">Error found in input.</small>
         <input type="hidden" name="id" th:value="*{id}">
-        <input type="hidden" th:field="*{createdAt}" th:value="${#temporals.format(todo.createdAt, 'yyyy-MM-ddTHH:mm:ssXXX')}">
     </form>
     <div class="row mt-3">
         <div class="col-md-12 text-center">
             <a th:href="@{|/todos/all/users/${todo.owner.id}|}" class="btn btn-outline-primary">Go to Project List</a>
         </div>
     </div>
-    <div th:replace="~{footer}"></div>
 </div>
+<div th:replace="~{footer}"></div>
 </body>
 </html>
