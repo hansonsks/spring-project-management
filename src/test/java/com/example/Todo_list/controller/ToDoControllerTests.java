@@ -293,7 +293,7 @@ public class ToDoControllerTests {
         formData.add("id",          "1");
         formData.add("title",       "");
         formData.add("description", "");
-        formData.add("createdAt",   "");
+        formData.add("createdAt",   "2024-07-25T14:30:00Z");
         return formData;
     }
 }

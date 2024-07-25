@@ -87,6 +87,9 @@ public class NotificationServiceTests {
         task.setDeadline(ZonedDateTime.now().minusHours(12));
         task.setAssignedUsers(Collections.singletonList(user));
 
+        user.setNotifications(Collections.singletonList(notification));
+        notification.setUser(user);
+
         when(taskRepository.findAll()).thenReturn(Collections.singletonList(task));
         when(userRepository.findById(any(long.class))).thenReturn(java.util.Optional.of(user));
 

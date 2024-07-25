@@ -44,9 +44,11 @@ public class NotificationServiceImpl implements NotificationService {
             if (!Objects.equals(task.getState().getName(), "Completed") &&   // Task is not completed
                     task.getDeadline() != null &&                               // Task has a due date
                     task.getDeadline().isBefore(ZonedDateTime.now())) {         // Task is past due
-                for (User user : task.getAssignedUsers()) {
-                    // TODO: Implement notification throttling or notification count limit to improve user experience
-                    this.sendNotificationToUserId(user.getId(), "Task Due", "Task " + task.getName() + " is due");
+                for (User user : task.getAssignedUsers()) { // Send notification to all users assigned to the task if they don't already have a notification for the task
+                    if (user.getNotifications() != null &&
+                            user.getNotifications().stream().noneMatch(notification -> notification.getMessage().contains("Task " + task.getName() + " is due"))) {
+                        this.sendNotificationToUserId(user.getId(), "Task Due", "Task " + task.getName() + " is due");
+                    }
                 }
             }
         }
