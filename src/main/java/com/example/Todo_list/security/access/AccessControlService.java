@@ -1,4 +1,4 @@
-package com.example.Todo_list.security;
+package com.example.Todo_list.security.access;
 
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import org.springframework.security.core.Authentication;

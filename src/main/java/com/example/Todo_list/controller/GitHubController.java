@@ -6,6 +6,7 @@ import com.example.Todo_list.entity.github.Repo;
 import com.example.Todo_list.service.github.GitHubService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class GitHubController {
     public String listRepos(Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout?logout=true";
+            throw new AccessDeniedException("You are not logged in with GitHub");
         }
 
         List<Repo> repos = gitHubService.getUserRepos(client);
@@ -60,7 +61,7 @@ public class GitHubController {
     public String listIssues(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout?logout=true";
+            throw new AccessDeniedException("You are not logged in with GitHub");
         }
 
         List<Issue> issues = gitHubService.getRepoIssues(client, owner, repo);
@@ -83,7 +84,7 @@ public class GitHubController {
     public String listPullRequests(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
         if (client == null) {
-            return "redirect:/logout?logout=true";
+            throw new AccessDeniedException("You are not logged in with GitHub");
         }
 
         List<PullRequest> pulls = gitHubService.getRepoPullRequests(client, owner, repo);

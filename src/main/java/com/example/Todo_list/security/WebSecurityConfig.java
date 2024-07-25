@@ -1,6 +1,7 @@
 package com.example.Todo_list.security;
 
 import com.example.Todo_list.security.local.WebSecurityUserDetailsService;
+import com.example.Todo_list.security.logout.CustomLogoutSuccessHandler;
 import com.example.Todo_list.security.oauth2.CustomOAuth2AuthenticationSuccessHandler;
 import com.example.Todo_list.security.oauth2.CustomOAuth2UserService;
 import jakarta.servlet.RequestDispatcher;

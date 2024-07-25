@@ -3,7 +3,7 @@ package com.example.Todo_list.controller;
 import com.example.Todo_list.entity.Task;
 import com.example.Todo_list.entity.ToDo;
 import com.example.Todo_list.entity.User;
-import com.example.Todo_list.security.AccessControlService;
+import com.example.Todo_list.security.access.AccessControlService;
 import com.example.Todo_list.service.NotificationService;
 import com.example.Todo_list.service.TaskService;
 import com.example.Todo_list.service.ToDoService;
