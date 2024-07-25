@@ -96,14 +96,14 @@ public class UserController {
 
     /**
      * Display user information
-     * @param id the user id
+     * @param userId the user id
      * @param model Model
      * @return user-info.html
      */
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
-    @GetMapping("/{id}/read")
-    public String displayUserInfo(@PathVariable Long id, Model model) {
-        User user = userService.findUserById(id);
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
+    @GetMapping("/{user_id}/read")
+    public String displayUserInfo(@PathVariable("user_id") Long userId, Model model) {
+        User user = userService.findUserById(userId);
         logger.info("UserController.displayUser(): Found " + user);
         model.addAttribute("user", user);
         return "user-info";
@@ -111,14 +111,14 @@ public class UserController {
 
     /**
      * Display user update page
-     * @param id the user id
+     * @param userId the user id
      * @param model Model
      * @return user-update.html
      */
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
-    @GetMapping("/{id}/update")
-    public String showUserUpdatePage(@PathVariable Long id, Model model) {
-        User user = userService.findUserById(id);
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
+    @GetMapping("/{user_id}/update")
+    public String showUserUpdatePage(@PathVariable("user_id") Long userId, Model model) {
+        User user = userService.findUserById(userId);
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.findAllRoles());
         logger.info("UserController.showUserUpdatePage(): Displaying user update page with " + user);
@@ -127,7 +127,7 @@ public class UserController {
 
     /**
      * Update user information
-     * @param id the user id
+     * @param userId the user id
      * @param roleId the role id
      * @param oldPassword the old password
      * @param model Model
@@ -136,18 +136,17 @@ public class UserController {
      * @return user-update.html or redirect:/users/{id}/read
      */
     // TODO: Refactor this method to result.reject() instead of redirecting to the same page
-    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
-    @PostMapping("/{id}/update")
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
+    @PostMapping("/{user_id}/update")
     public String updateUser(
-            @PathVariable Long id,
+            @PathVariable("user_id") Long userId,
             @RequestParam("roleId") Long roleId,
             @RequestParam("oldPassword") String oldPassword,
             Model model,
             @Valid @ModelAttribute("user") User newUser,
             BindingResult result
     ) {
-        User oldUser = userService.findUserById(id);
-
+        User oldUser = userService.findUserById(userId);
         logger.info("UserController.updateUser(): Attempting to update " + oldUser);
 
         if (result.hasErrors()) {
@@ -157,22 +156,22 @@ public class UserController {
             if (result.hasFieldErrors("firstName")) {
                 logger.error("UserController.updateUser(): Your first name must " +
                              "have a minimum of 3 characters and a maximum of 255 characters");
-                return String.format("redirect:/users/%d/update?badFirstName=true", id);
+                return String.format("redirect:/users/%d/update?badFirstName=true", userId);
             }
 
             if (result.hasFieldErrors("lastName")) {
                 logger.error("UserController.updateUser(): Your last name must have a maximum of 255 characters");
-                return String.format("redirect:/users/%d/update?badLastName=true", id);
+                return String.format("redirect:/users/%d/update?badLastName=true", userId);
             }
 
             if (result.hasFieldErrors("password")) {
                 logger.error("UserController.updateUser(): Password too weak");
-                return String.format("redirect:/users/%d/update?weakNewPassword=true", id);
+                return String.format("redirect:/users/%d/update?weakNewPassword=true", userId);
             }
 
             if (result.hasFieldErrors("email")) {
                 logger.error("UserController.updateUser(): Invalid email");
-                return String.format("redirect:/users/%d/update?badEmail=true", id);
+                return String.format("redirect:/users/%d/update?badEmail=true", userId);
             }
 
             if (!passwordService.matches(oldPassword, oldUser.getPassword())) {
@@ -181,12 +180,12 @@ public class UserController {
 
                 newUser.setRole(oldUser.getRole());
                 model.addAttribute("roles", roleService.findAllRoles());
-                return String.format("redirect:/users/%d/update?incorrectOldPassword=true", id);
+                return String.format("redirect:/users/%d/update?incorrectOldPassword=true", userId);
             }
 
             if (newUser.getRole() == null) {
                 logger.error("UserController.updateUser(): Error found in data received, aborting user update");
-                return String.format("redirect:/users/%d/update?error=true", id);
+                return String.format("redirect:/users/%d/update?error=true", userId);
             }
         }
 
@@ -227,7 +226,6 @@ public class UserController {
             BindingResult result
     ) {
         User oldUser = userService.findUserById(userId);
-
         logger.info("UserController.updateOAuthUser(): Attempting to update " + oldUser);
 
         if (result.hasErrors()) {
@@ -281,8 +279,7 @@ public class UserController {
      * @return user-list.html
      */
     @GetMapping("/all")
-    public String showUserList(Model model,
-                               @RequestParam(name = "badDeleteUserId", required = false) Long badDeleteUserId) {
+    public String showUserList(Model model, @RequestParam(name = "badDeleteUserId", required = false) Long badDeleteUserId) {
         model.addAttribute("users", userService.findAllUsers());
         model.addAttribute("badDeleteUserId", badDeleteUserId);
 

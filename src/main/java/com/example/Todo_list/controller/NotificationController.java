@@ -8,6 +8,7 @@ import com.example.Todo_list.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -32,6 +33,7 @@ public class NotificationController {
      * @param userId ID of the user
      * @return List of notifications
      */
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/user/{userId}")
     public List<NotificationDTO> getUserNotifications(@PathVariable Long userId) {
         logger.info("Fetching notifications for user with ID: {}", userId);
@@ -48,9 +50,10 @@ public class NotificationController {
      * @param notificationId ID of the notification
      * @param userId         ID of the user
      */
+    @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @PostMapping("/user/{user_id}/delete/{notification_id}")
-    public void markNotificationsAsRead(@PathVariable("notification_id") Long notificationId,
-                                        @PathVariable("user_id") Long userId) {
+    public void markNotificationsAsRead(@PathVariable("user_id") Long userId,
+                                        @PathVariable("notification_id") Long notificationId) {
         logger.info("Marking notification with ID: {} as read", notificationId);
         notificationService.deleteNotificationById(notificationId);
     }

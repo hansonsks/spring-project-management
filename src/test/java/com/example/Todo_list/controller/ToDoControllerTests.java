@@ -3,7 +3,6 @@ package com.example.Todo_list.controller;
 import com.example.Todo_list.controller.utils.ControllerTestUtils;
 import com.example.Todo_list.entity.*;
 import com.example.Todo_list.exception.UserIsToDoOwnerException;
-import com.example.Todo_list.security.access.AccessControlService;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
 import com.example.Todo_list.service.impl.*;
 import com.example.Todo_list.utils.PasswordService;
@@ -28,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -60,9 +59,6 @@ public class ToDoControllerTests {
     @MockBean
     private NotificationServiceImpl notificationService;
 
-    @MockBean
-    private AccessControlService accessControlService;
-
     private final User user = ControllerTestUtils.createUser();
     private final Role role = ControllerTestUtils.createRole();
     private final Task task = ControllerTestUtils.createTask();
@@ -88,10 +84,6 @@ public class ToDoControllerTests {
                 List.of(new SimpleGrantedAuthority(user.getRole().getName()))
         );
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-        when(accessControlService.hasAccess(any(), anyLong())).thenReturn(true);
-        when(accessControlService.hasAccess(any(), anyList())).thenReturn(true);
-        when(accessControlService.hasAdminAccess(any())).thenReturn(true);
     }
 
     @AfterEach
@@ -208,7 +200,8 @@ public class ToDoControllerTests {
 
         mockMvc.perform(post("/todos/1/delete/users/1")
                 .with(csrf()))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/todos/all/users/1"));
     }
 
     @Test
