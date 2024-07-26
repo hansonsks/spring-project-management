@@ -31,20 +31,20 @@ public class SampleTodoInitializer {
 
         ToDo todo1 = new ToDo();
         todo1.setOwner(user);
-        todo1.setTitle("Sample Todo #1");
-        todo1.setDescription("This is a sample todo created by the system.");
+        todo1.setTitle("Sample Project #1");
+        todo1.setDescription("This is a sample project created by the system.");
         toDoRepository.save(todo1);
 
         ToDo todo2 = new ToDo();
         todo2.setOwner(user);
-        todo2.setTitle("Sample Todo #2");
-        todo2.setDescription("This is a sample todo created by the system.");
+        todo2.setTitle("Sample Project #2");
+        todo2.setDescription("This is a sample project created by the system.");
         toDoRepository.save(todo2);
 
         ToDo todo3 = new ToDo();
         todo3.setOwner(user);
-        todo3.setTitle("Sample Todo #3");
-        todo3.setDescription("This is a sample todo created by the system.");
+        todo3.setTitle("Sample Project #3");
+        todo3.setDescription("This is a sample project created by the system.");
         toDoRepository.save(todo3);
 
         Comment comment = new Comment();
@@ -94,11 +94,11 @@ public class SampleTodoInitializer {
 
         task1.getAssignedUsers().add(user);
         user.getAssignedTasks().add(task1);
+        taskRepository.save(task1);
 
         task1.setComments(List.of(comment));
         comment.setTask(task1);
         commentRepository.save(comment);
-        taskRepository.save(task1);
 
         todo1.setTasks(List.of(task1, task2, task3, task4, task5));
 
@@ -110,5 +110,16 @@ public class SampleTodoInitializer {
         notification.setUser(user);
         notification.setCreatedAt(ZonedDateTime.now());
         notificationRepository.save(notification);
+
+        Notification signUpNotification = new Notification();
+        signUpNotification.setTitle("Please read me!");
+        if (user.getIsGuest()) {
+            signUpNotification.setMessage("Your account will be deleted after 30 minutes of use. Please sign up to access all features.");
+        } else {
+            signUpNotification.setMessage("Feel free to change your role to 'Admin' in your profile to access all features.");
+        }
+        signUpNotification.setUser(user);
+        signUpNotification.setCreatedAt(ZonedDateTime.now());
+        notificationRepository.save(signUpNotification);
     }
 }

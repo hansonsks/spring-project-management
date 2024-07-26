@@ -113,7 +113,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // Bad practice: Generate an "uncrackable" password for users who log in with OAuth
         user.setPassword(passwordService.generateEncodedPassword(64));
-        user.setRole(roleRepository.findByName("ADMIN").get());
+        user.setRole(roleRepository.findByName("USER").get());
 
         logger.info("CustomOAuth2UserService.createUser(): Saving " + user);
         userRepository.save(user);

@@ -19,7 +19,7 @@
     <div class="row mb-3">
         <div class="col-md-12 text-right">
             <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.user.id"
-               th:href="@{|/todos/create/users/${user.id}|}" class="btn btn-primary btn-lg">Create Project</a>
+               th:href="@{|/todos/create/users/${user.id}|}" class="btn btn-primary btn-lg">Create New Project</a>
         </div>
     </div>
     <table class="table table-striped">

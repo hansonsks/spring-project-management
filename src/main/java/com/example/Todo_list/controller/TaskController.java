@@ -114,8 +114,8 @@ public class TaskController {
      * @return The view to be displayed
      */
     @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
-                "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+            "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
+            "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @GetMapping("/{task_id}/update")
     public String showTaskUpdateForm(@PathVariable("task_id") Long taskId, Model model) {
         logger.info("TaskController.showTaskUpdateForm(): Displaying task update form");
@@ -134,8 +134,8 @@ public class TaskController {
      */
     // TODO: Handle task update errors by rejecting them and displaying an error <div>
     @PreAuthorize("hasAuthority('ADMIN') or " +
-                "principal.id == @taskServiceImpl.findTaskById(taskId).todo.owner.id or " +
-                "@taskServiceImpl.findTaskById(taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
+                "principal.id == @taskServiceImpl.findTaskById(#taskId).todo.owner.id or " +
+                "@taskServiceImpl.findTaskById(#taskId).todo.collaborators.contains(@userServiceImpl.findUserById(principal.id))")
     @PostMapping("/{task_id}/update")
     public String updateTask(
             @PathVariable("task_id") Long taskId,
@@ -378,14 +378,17 @@ public class TaskController {
     private void checkTaggedUsers(Comment comment, Long taskId) {
         logger.info("TaskController.checkTaggedUsers(): Checking for tagged users in comment");
 
+        // Only send a notification if the tagged user is assigned to the task or is the owner of the task
         Task task = taskService.findTaskById(taskId);
         commentService.findTaggedUserInComment(comment).forEach(user -> {
-            notificationService.sendNotificationToUser(
-                    user,
-                    "You have been mentioned in a comment",
-                    String.format("You have been mentioned in a comment by [%s] in Task [%s] in Project [%s]",
-                            task.getTodo().getOwner().getFirstName(), task.getName(), task.getTodo().getTitle())
-            );
+            if (task.getAssignedUsers().contains(user) || task.getTodo().getOwner().equals(user)) {
+                notificationService.sendNotificationToUser(
+                        user,
+                        "You have been mentioned in a comment",
+                        String.format("You have been mentioned in a comment by [%s] in Task [%s] in Project [%s]",
+                                task.getTodo().getOwner().getFirstName(), task.getName(), task.getTodo().getTitle())
+                );
+            }
         });
     }
 
@@ -413,6 +416,7 @@ public class TaskController {
      * @param model  The model to be passed to the view
      * @return The view to be displayed
      */
+    @PreAuthorize("hasAuthority('ADMIN') or principal.id == #userId")
     @GetMapping("/all/users/{user_id}")
     public String displayAllTasksOfUser(@PathVariable("user_id") Long userId, Model model) {
         List<Task> tasks = taskService.findAssignedTasksByUserId(userId);

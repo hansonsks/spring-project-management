@@ -53,14 +53,14 @@ public class CustomOAuth2UserDetails extends User implements OAuth2User {
     }
 
     public boolean isGitHubConnected() {
-        return this.getProvider().name().equals("GITHUB");
+        return this.getProvider().equals(OAuth2Provider.GITHUB);
     }
 
     public boolean isGoogleConnected() {
-        return this.getProvider().name().equals("GOOGLE");
+        return this.getProvider().equals(OAuth2Provider.GOOGLE);
     }
 
     public boolean isFacebookConnected() {
-        return this.getProvider().name().equals("FACEBOOK");
+        return this.getProvider().equals(OAuth2Provider.FACEBOOK);
     }
 }

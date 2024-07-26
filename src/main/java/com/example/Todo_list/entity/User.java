@@ -8,7 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,4 +122,14 @@ public class User {
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Notification> notifications;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+
+    /**
+     * Whether the user is a guest.
+     */
+    @Column(name = "is_guest")
+    private Boolean isGuest = false;
 }

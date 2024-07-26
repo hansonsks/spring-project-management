@@ -36,7 +36,7 @@ public class NotificationController {
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/user/{userId}")
     public List<NotificationDTO> getUserNotifications(@PathVariable Long userId) {
-        logger.info("Fetching notifications for user with ID: {}", userId);
+        logger.info("NotificationController.getUserNotifications(): Fetching notifications for user with ID: {}", userId);
         return notificationService.findNotificationsByUser(userService.findUserById(userId))
                 .stream()
                 .sorted(Comparator.comparing(Notification::getCreatedAt).reversed())

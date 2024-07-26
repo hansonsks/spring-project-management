@@ -41,19 +41,17 @@
                     <td th:text="${task.priority.name().substring(0, 1) + task.priority.name().substring(1).toLowerCase()}"/>
                     <td th:class="${#strings.replace(task.state.name, ' ', '-').toLowerCase()}" th:text="${task.state.name}"/>
                     <td>
-                        <a th:href="@{|/todos/${task.todo.id}/read|}" th:text="${task.todo.title}"></a>
+                        <a th:href="@{|/todos/${task.todo.id}/tasks|}" th:text="${task.todo.title}"></a>
+                    </td>
+                    <td> <!-- sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUsers().stream().anyMatch(user -> user.id==#authentication.principal.id)" -->
+                        <a th:href="@{|/todos/${task.todo.id}/tasks|}" class="btn btn-info">View Project</a>
                     </td>
                     <td>
-                        <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
-                           th:href="@{|/todos/${task.todo.id}/tasks|}" class="btn btn-info">View Project</a>
+                        <!-- sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUsers().stream().anyMatch(user -> user.id==#authentication.principal.id)"-->
+                        <a th:href="@{|/tasks/${task.id}/update|}" class="btn btn-warning">Edit Task</a>
                     </td>
-                    <td>
-                        <a sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
-                           th:href="@{|/tasks/${task.id}/update|}" class="btn btn-warning">Edit Task</a>
-                    </td>
-                    <td>
-                        <form sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUser().id"
-                              th:action="@{|/tasks/${task.id}/delete/todos/${task.todo.id}|}" method="POST"
+                    <td> <!-- sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id==#vars.task.getAssignedUsers().stream().anyMatch(user -> user.id==#authentication.principal.id)"-->
+                        <form th:action="@{|/tasks/${task.id}/delete/todos/${task.todo.id}|}" method="POST"
                               onsubmit="return confirmDelete(event)">
                             <input type="hidden" name="taskId" th:value="${task.id}">
                             <input type="hidden" name="todoId" th:value="${task.todo.id}">

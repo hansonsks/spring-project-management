@@ -34,7 +34,7 @@ public class GitHubController {
      * @param request HttpServletRequest
      * @return github-repos.html
      */
-    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
+    @PreAuthorize("authentication.isAuthenticated() and authentication.principal.isGitHubConnected()")
     @GetMapping("/repos")
     public String listRepos(Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
@@ -56,7 +56,7 @@ public class GitHubController {
      * @param request HttpServletRequest
      * @return github-issues.html
      */
-    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
+    @PreAuthorize("authentication.isAuthenticated() and authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/issues")
     public String listIssues(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
@@ -79,7 +79,7 @@ public class GitHubController {
      * @param request HttpServletRequest
      * @return github-pull-requests.html
      */
-    @PreAuthorize("isAuthenticated() and #authentication.principal.isGitHubConnected()")
+    @PreAuthorize("authentication.isAuthenticated() and authentication.principal.isGitHubConnected()")
     @GetMapping("/repos/{owner}/{repo}/pulls")
     public String listPullRequests(@PathVariable String owner, @PathVariable String repo, Model model, HttpServletRequest request) {
         OAuth2AuthorizedClient client = (OAuth2AuthorizedClient) request.getSession().getAttribute("oauth2AuthorizedClient");
