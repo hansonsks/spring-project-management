@@ -1,19 +1,26 @@
 package com.example.Todo_list.controller;
 
 import com.example.Todo_list.entity.User;
+import com.example.Todo_list.security.local.WebSecurityUserDetails;
+import com.example.Todo_list.security.oauth2.CustomOAuth2UserDetails;
 import com.example.Todo_list.service.RoleService;
 import com.example.Todo_list.service.UserService;
+import com.example.Todo_list.service.guest.GuestService;
 import com.example.Todo_list.utils.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Comparator;
 
 /**
  * Controller class for handling User operations
@@ -27,6 +34,7 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final PasswordService passwordService;
+    private final GuestService guestService;
 
     /**
      * Display the user registration form
@@ -139,6 +147,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @PostMapping("/{user_id}/update")
     public String updateUser(
+            Authentication authentication,
             @PathVariable("user_id") Long userId,
             @RequestParam("roleId") Long roleId,
             @RequestParam("oldPassword") String oldPassword,
@@ -193,10 +202,14 @@ public class UserController {
 
         newUser.setRole(roleService.findRoleById(roleId));
         newUser.setPassword(passwordService.encodePassword(newUser.getPassword()));
+        newUser.setCreatedAt(oldUser.getCreatedAt());
         userService.updateUser(newUser);
 
-        return "redirect:/logout?updateSuccess=true";
-        // return String.format("redirect:/users/%d/read", id);
+        if (((WebSecurityUserDetails) authentication.getPrincipal()).getId().equals(userId)) {
+            return "redirect:/logout?updateSuccess=true";
+        } else {
+            return String.format("redirect:/users/%d/read", userId);
+        }
     }
 
     /**
@@ -227,6 +240,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') or #userId == authentication.principal.id")
     @PostMapping("/{user_id}/oauth-update")
     public String updateOAuthUser(
+            Authentication authentication,
             @PathVariable("user_id") Long userId,
             @RequestParam("roleId") Long roleId,
             Model model,
@@ -256,10 +270,14 @@ public class UserController {
 
         newUser.setPassword(oldUser.getPassword());
         newUser.setRole(roleService.findRoleById(roleId));
+        newUser.setCreatedAt(oldUser.getCreatedAt());
         userService.updateUser(newUser);
 
-        return "redirect:/logout?updateSuccess=true";
-        // return String.format("redirect:/users/%d/read", id);
+        if (((CustomOAuth2UserDetails) authentication.getPrincipal()).getId().equals(userId)) {
+            return "redirect:/logout?updateSuccess=true";
+        } else {
+            return String.format("redirect:/users/%d/read", userId);
+        }
     }
 
     /**
@@ -288,10 +306,16 @@ public class UserController {
      */
     @GetMapping("/all")
     public String showUserList(Model model, @RequestParam(name = "badDeleteUserId", required = false) Long badDeleteUserId) {
-        model.addAttribute("users", userService.findAllUsers());
+        model.addAttribute("users", userService.findAllUsers().stream().sorted(Comparator.comparingLong(User::getId)).toList());
         model.addAttribute("badDeleteUserId", badDeleteUserId);
 
         logger.info("UserController.showUserList(): Displaying all users");
         return "user-list";
+    }
+
+    @PostMapping("/guest-login")
+    public String guestLogin(HttpServletRequest request) {
+        guestService.createTemporaryUser(request);
+        return "redirect:/home";
     }
 }

@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    is_guest BOOLEAN NOT NULL,
     role_id BIGINT,
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
@@ -34,7 +36,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     priority VARCHAR(255),
     state_id BIGINT,
     todo_id BIGINT,
-    assigned_user_id BIGINT NULL,
+    assigned_user_id BIGINT,
     deadline TIMESTAMP WITH TIME ZONE,
     FOREIGN KEY (todo_id) REFERENCES todos(id),
     FOREIGN KEY (state_id) REFERENCES states(id),

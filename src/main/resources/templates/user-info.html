@@ -36,7 +36,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-12 text-left" style="margin-bottom: 10px;" sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id == #vars.user.id">
-            <a th:href="@{|/todos/all/users/${user.id}|}" class="btn btn-info btn-lg">View TODOs</a>
+            <a th:href="@{|/todos/all/users/${user.id}|}" class="btn btn-success btn-lg">View Projects</a>
         </div>
         <div class="col-md-12 text-left" style="margin-bottom: 10px;" sec:authorize="hasAuthority('ADMIN') or #authentication.principal.id == #vars.user.id">
             <a th:href="@{|/comments/all/users/${user.id}|}" class="btn btn-info btn-lg">View Comments</a>

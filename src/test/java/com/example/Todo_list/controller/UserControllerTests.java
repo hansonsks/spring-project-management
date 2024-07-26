@@ -6,7 +6,9 @@ import com.example.Todo_list.entity.Role;
 import com.example.Todo_list.entity.ToDo;
 import com.example.Todo_list.entity.User;
 import com.example.Todo_list.security.local.WebSecurityUserDetails;
+import com.example.Todo_list.security.oauth2.CustomOAuth2UserDetails;
 import com.example.Todo_list.security.oauth2.OAuth2Provider;
+import com.example.Todo_list.service.guest.GuestService;
 import com.example.Todo_list.service.impl.RoleServiceImpl;
 import com.example.Todo_list.service.impl.UserServiceImpl;
 import com.example.Todo_list.utils.PasswordService;
@@ -20,14 +22,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,6 +57,9 @@ public class UserControllerTests {
 
     @MockBean
     private PasswordService passwordService;
+
+    @MockBean
+    private GuestService guestService;
 
     private final User user = ControllerTestUtils.createUser();
     private final Role role = ControllerTestUtils.createRole();
@@ -141,7 +150,7 @@ public class UserControllerTests {
     @Test
     @DisplayName("displayUserInfo() should return 404 Not Found if user information is invalid")
     void testDisplayInvalidUserInfo() throws Exception {
-        when(userService.findUserById(any(long.class))).thenThrow(EntityNotFoundException.class);
+        when(userService.findUserById(999L)).thenThrow(EntityNotFoundException.class);
 
         mockMvc.perform(get("/user/999/read")).andExpect(status().isNotFound());
     }
@@ -186,6 +195,29 @@ public class UserControllerTests {
         oAuthUser.setProvider(OAuth2Provider.GITHUB);
         oAuthUser.setProviderUserId("1234567890");
         oAuthUser.setUser(user);
+
+        // Needed to create a CustomOAuth2UserDetails object instead of a WebSecurityUserDetails object
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                new CustomOAuth2UserDetails(user, new OAuth2User() {
+                    @Override
+                    public Map<String, Object> getAttributes() {
+                        return null;
+                    }
+
+                    @Override
+                    public Collection<? extends GrantedAuthority> getAuthorities() {
+                        return null;
+                    }
+
+                    @Override
+                    public String getName() {
+                        return null;
+                    }
+                }, OAuth2Provider.GITHUB),
+                "password",
+                List.of(new SimpleGrantedAuthority(user.getRole().getName()))
+        );
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         when(userService.findUserById(any(long.class))).thenReturn(user);
 

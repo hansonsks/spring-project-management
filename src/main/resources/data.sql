@@ -24,19 +24,19 @@
 INSERT INTO roles (name) VALUES ('ADMIN');
 INSERT INTO roles (name) VALUES ('USER');
 
-INSERT INTO users (first_name, last_name, email, password, role_id)
+INSERT INTO users (first_name, last_name, email, password, role_id, created_at, is_guest)
 VALUES
     -- Admin Password: Admin123?
-    ('Admin',  'Doe', 'admin@mail.com', '$2a$10$oSJ00.BgokS3L96e0x4VKOKtilabLz.lLgHsvz5tVgKbt5hrG/Mvu', 1),
+    ('Admin',  'Doe', 'admin@mail.com', '$2a$10$oSJ00.BgokS3L96e0x4VKOKtilabLz.lLgHsvz5tVgKbt5hrG/Mvu', 1, NOW(), FALSE),
 
     -- User Password: User123?
-    ('User',   'Doe', 'user@mail.com',  '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2),
+    ('User',   'Doe', 'user@mail.com',  '$2a$10$W9FNNXcqGD6QQ0YE4wAcSO5sxOf9BF8leP3T1EEARmM.bHiChU2uG', 2, NOW(), FALSE),
 
     -- Guest Password: Guest123?
-    ('Guest', 'Doe', 'guest@mail.com', '$2a$10$77co3ie.zQsgUVfDvswRF.ES3Nkv6fUzg9Gje7r83jnj6kO/nSRQK', 1),
+    ('Guest', 'Doe', 'guest@mail.com', '$2a$10$77co3ie.zQsgUVfDvswRF.ES3Nkv6fUzg9Gje7r83jnj6kO/nSRQK', 1, NOW(), FALSE),
 
     -- GitHubUser Password: GitHubUser123?
-    ('GitHub User', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1);
+    ('GitHub User', 'Doe', 'githubuser@mail.com', '$2a$10$JMAqfLKYASu6cpcV..HQzeLxquiKTvd5F4e/QPnUoZ/cPIkE3oRF2', 1, NOW(), FALSE);
 
 INSERT INTO states (name) VALUES
                               ('New'),
