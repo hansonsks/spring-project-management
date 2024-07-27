@@ -82,6 +82,40 @@
             border: 1px solid #ccc;
             margin: 20px 0;
         }
+
+        /* Style for feature sections */
+        .feature-section {
+            display: flex; /* Enable flexbox for side-by-side layout */
+            align-items: center; /* Vertically align content */
+            margin-bottom: 20px;
+        }
+
+        .feature-text {
+            flex: 1; /* Text takes up remaining space */
+            margin-right: 20px;
+        }
+
+        .feature-image-container {
+            display: flex;
+            justify-content: center; /* Center the image horizontally */
+            align-items: center; /* Center the image vertically */
+            flex: 1; /* Allow the image to take up the remaining space */
+        }
+
+        .feature-image {
+            width: 400px; /* Adjust as needed */
+            margin-left: 50px;
+            margin-right: auto;
+            height: auto;
+        }
+
+        .feature-section h4 {
+            margin-top: 0;
+        }
+
+        .feature-section p {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -92,80 +126,185 @@
 
         <h2>Login</h2>
 
-        <h4>Local Login</h4>
-        <p>Users may sign up with their first name, last name, email, and password.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Local Login</h4>
+                <p>Users can create an account using their first name, last name, email, and a password.</p>
+                <p><strong>Existing users can sign in with their email and password.</strong></p>
+                <p>For convenience, users can check the <strong>"Remember me"</strong> box to automatically log in for 24 hours.</p>
+            </div>
+            <div>
+                <img src="/images/local-login.png" alt="Local Login Image" class="feature-image feature-image-container" style="width: 350px; height: auto; margin-right: 75px">
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>OAuth2 Login</h4>
+                <p>Users can conveniently log in using their existing accounts on popular platforms like <strong>Google, Facebook, or GitHub.</strong></p>
+                <p>Only the user's <strong>Unique ID, Username, and Email will be stored</strong> in the database of this app.</p>
+                <p>If the email is unavailable, a placeholder email will be used with the user's first name, which the user can update later.</p>
+                <p>If the username is unavailable, a username based on the OAuth2 provider and ID will be generated.</p>
+            </div>
+            <div>
+                <img src="/images/oauth2-login-buttons.png" alt="OAuth2 Login Buttons Image" class="feature-image" style="width: 500px; height: auto">
+            </div>
+        </div>
+
+
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Guest Login</h4>
+                <p><strong>Guests may test out the app by signing in as a guest.</strong> This allows them to explore features and functionality without creating an account.</p>
+                <p>Guest users are deleted after 30 minutes of use to prevent abuse and ensure a fair experience for all users.</p>
+            </div>
+            <div>
+                <img src="/images/guest-login-button.png" alt="Guest Login Button Image" class="feature-image" style="width: 500px; height: auto">
+            </div>
+        </div>
         <hr>
 
-        <h4>OAuth2 Login</h4>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <hr>
+        <h2>Project Management</h2>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Project</h4>
+                <p><strong>Users can create and manage projects, organizing their tasks and collaborating with others.</strong></p>
+                <p>Each project includes a title, description, a list of tasks, and the ability to add collaborators.</p>
+                <p>Users can mark projects as complete once all tasks are finished.</p>
+                <p>Projects provide a structured framework for managing complex tasks and achieving goals.</p>
+                <p>Users can break down large projects into smaller, manageable tasks, track progress, and collaborate effectively with team members.</p>
+            </div>
+            <div>
+                <img src="/images/project-list.png" alt="Sample Project List Image" class="feature-image" style="height: 246px; width: auto">
+            </div>
+        </div>
 
-        <h4>Guest Login</h4>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <hr>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Collaborators</h4>
+                <p><strong>Project owners can invite existing users to collaborate on their projects.</strong></p>
+                <p>Only project owners have the ability to add or remove collaborators.</p>
+                <p>Access to projects is restricted to the project owner and their invited collaborators.</p>
+                <p>Admins have access to all projects, while other users can only view projects they are involved in.</p>
+            </div>
+            <div>
+                <img src="/images/collaborator-list.png" alt="Collaborator list Image" class="feature-image" style="width: 792px; height: auto">
+            </div>
+        </div>
 
-        <h2>Projects</h2>
-        <p>Description of feature 2 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <hr>
-
-        <h2>Tasks</h2>
-        <p>Description of feature 3 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <hr>
-
-        <h4>Deadlines</h4>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Tasks</h4>
+                <p><strong>Project owners and Collaborators may create tasks for their projects.</strong></p>
+                <p>Each task has its own <strong>name, description, priority, state, optional deadline, and assigned users.</strong></p>
+                <p>The tasks in the task list are sorted by priority. <strong>(Urgent > High > Medium > Low > Trivial)</strong></p>
+                <p>A task has one of four states. <strong>(New, In Progress, Under Review, Completed)</strong></p>
+                <p>Tasks may not have deadlines before the current time.</p>
+                <p>Project owners may assign existing collaborators to tasks.</p>
+            </div>
+            <div>
+                <img src="/images/task-list.png" alt="Task List Image" class="feature-image" style="width: 792px; height: auto">
+            </div>
+        </div>
         <hr>
 
         <h2>Comments</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <hr>
-
-        <h4>Tagging Users</h4>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Leaving Comments</h4>
+                <p><strong>Users may leave comments in tasks they have been assigned to and edit or delete them.</strong></p>
+                <p>Users may leave comments starting with '@' and another existing user's username to tag them.</p>
+                <p>For example, '@hansonsks', '@User Doe', '@Hanson Siu 123'.</p>
+                <p>Notifications will be sent to tagged users only if they are assigned to the task the comment is in.</p>
+            </div>
+            <div>
+                <img src="/images/task-comments.png" alt="Task Comments Image" class="feature-image" style="width: 800px; height: auto">
+            </div>
+        </div>
         <hr>
 
         <h2>Notifications</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Receiving Notifications</h4>
+                <p><strong>Users receive notifications for various events in the app, displayed on the right sidebar.</strong></p>
+                <p>Notifications include updates on tasks, reminders for tasks past their deadline, being added as a collaborator, being assigned to a task, and being tagged in comments.</p>
+                <p>Clicking the "Mark as Read" button on a notification will mark it as read and remove it from the sidebar, keeping your notifications organized and focused.</p>
+            </div>
+            <div>
+                <img src="/images/notification-1.png" alt="Notification Image 1" class="feature-image" style="height: 200px; width: auto">
+            </div>
+            <div>
+                <img src="/images/notification-2.png" alt="Notification Image 2" class="feature-image" style="height: 200px; width: auto">
+            </div>
+            <div>
+                <img src="/images/notification-3.png" alt="Notification Image 3" class="feature-image" style="height: 200px; width: auto">
+            </div>
+        </div>
         <hr>
 
         <h2>User Roles</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Admins & Users</h4>
+                <p>The project management app currently has two roles: 1. <strong>User</strong>  2. <strong>Admin</strong></p>
+                <p><strong>A User can create, edit, and manage their own projects, collaborate with others, and track progress.</strong></p>
+                <p><strong>An Admin has all the capabilities of a User, plus additional administrative privileges.</strong></p>
+                <p>This includes managing users, creating and deleting projects, and controlling access permissions.</p>
+            </div>
+            <div>
+                <img src="/images/user-functions.png" alt="User Functions Image" class="feature-image"
+                     style="height: 240px; width: auto">
+            </div>
+            <div>
+                <img src="/images/admin-functions.png" alt="Admin Functions Image" class="feature-image"
+                     style="height: 240px; width: auto; margin-right: 200px">
+            </div>
+        </div>
         <hr>
 
         <h2>Security</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Role-based Access Control</h4>
+                <p>The app implements <strong>role-based access control (RBAC)</strong> to ensure that <strong>users only have access to the features and data they are authorized to see and modify.</strong></p>
+                <p>RBAC assigns specific permissions to each role, such as "User" or "Admin," limiting their actions based on their assigned role.</p>
+                <p>This helps maintain data security, prevent unauthorized access, and ensure that only authorized individuals can perform critical operations.</p>
+                <p>Unauthorised users may only access the about, javadocs, images, user creation, guest login, and standard login pages.</p>
+            </div>
+        </div>
         <hr>
 
         <h2>Database</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>MySQL/PostgreSQL</h4>
+                <p>The project management app utilizes either <strong>MySQL</strong> or <strong>PostgreSQL</strong> as its database management system (DBMS), depending on the chosen cloud service provider.</p>
+                <p>On cloud platforms like Amazon RDS and Azure SQL Server, both MySQL and PostgreSQL are supported and offer comparable performance. </p>
+                <p>For deployments on Heroku, PostgreSQL is the recommended choice. It's included as a standard service, while MySQL is available as an add-on with additional costs.</p>
+            </div>
+        </div>
         <hr>
 
         <h2>OAuth2 User functions</h2>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
-        <p>Description of feature 1 goes here. Explain its benefits and how it works.</p>
+        <div class="feature-section">
+            <div class="feature-text">
+                <h4>Github / Google / Facebook</h4>
+                <p><strong>GitHub:</strong> Users may conveniently preview their repositories, streamlining access to their projects on GitHub.</p>
+                <p><strong>Google:</strong> Users can quickly access their Google Drive and Google Calendar. (TBD: Integration with both services.)</p>
+                <p><strong>Facebook:</strong> Users can easily navigate to their Facebook homepage and Events to schedule project deadlines.</p>
+            </div>
+            <div>
+                <img src="/images/github-functions.png" alt="Local Login Image" class="feature-image" style="width: 200px; height: auto">
+            </div>
+            <div>
+                <img src="/images/google-functions.png" alt="Local Login Image" class="feature-image" style="width: 200px; height: auto">
+            </div>
+            <div>
+                <img src="/images/facebook-functions.png" alt="Local Login Image" class="feature-image" style="width: 200px; height: auto">
+            </div>
+        </div>
         <hr>
-    </div>
-
-    <div class="feature-right">
-        <img src="/images/notification-sidebar.png" alt="Feature 1 image">
-        <img src="/images/login.png" alt="Feature 2 image">
-        <img src="/images/login.png" alt="Feature 3 image">
     </div>
 </div>
 
@@ -195,7 +334,7 @@
 
 <script>
     function openSourceCode() {
-        window.open("https://github.com/hansonsks/todo_list", "_blank");
+        window.open("https://github.com/hansonsks/spring-project-management", "_blank");
     }
 
     function openJavadocs() {

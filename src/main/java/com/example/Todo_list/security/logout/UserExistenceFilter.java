@@ -17,7 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Filter to check if the user exists in the database.
+ * Filter to check if the user exists in the database; Bad practice to query the database on every request.
+ * TODO: Is there a better approach? Perhaps caching or an event listener is a better option for high-traffic apps
  */
 @Component
 @RequiredArgsConstructor
