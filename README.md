@@ -1,5 +1,7 @@
 # Spring Project Management
 
+![Build Status](https://github.com/hansonsks/spring-project-management/actions/workflows/maven.yml/badge.svg)
+
 ## Overview
 This project is a web application built using Java, the Spring framework, and 
 Maven. It includes functionalities for local and OAuth2 user authentication, 
@@ -26,7 +28,7 @@ for additional features.
 - **Bootstrap 5** (HTML / CSS / JavaScript)
 - **MySQL / PostgreSQL**
 - **H2 Database** (for testing)
-- **GitHub / Google / Facebook APIs** (OAuth2, dditional featuresA)
+- **GitHub / Google / Facebook APIs** (OAuth2, additional features)
 - **JUnit + Mockito** (for testing)
 
 ## Deployment Platforms
